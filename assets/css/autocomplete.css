@@ -1,0 +1,4 @@
+.autocomplete-suggestions { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #313131; font-size: 80%; line-height: 1; border: 1px solid #999; background: #fff; cursor: default; overflow: auto; width:100%;}
+.autocomplete-suggestion { padding: 10px 5px; font-size: 1.2em; white-space: nowrap; overflow: initial;}
+.autocomplete-selected { background: #f0f0f0; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399ff; }

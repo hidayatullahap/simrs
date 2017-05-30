@@ -1,0 +1,101 @@
+{
+  "settings": {
+    "currentPage": "index.html",
+    "versionFirst": "3.8.1",
+    "uniqCompNum": 0,
+    "versionPublish": "3.8.1",
+    "name": "My Site",
+    "theme": {
+      "name": "mobirise3",
+      "title": "Mobirise 3",
+      "styling": {
+        "primaryColor": "#c0a375",
+        "secondaryColor": "#bfcecb",
+        "successColor": "#90a878",
+        "infoColor": "#7e9b9f",
+        "warningColor": "#f3c649",
+        "dangerColor": "#f28281",
+        "titleFont": "Montserrat",
+        "subtitleFont": "Lora",
+        "textFont": "Raleway",
+        "isRoundedButtons": false,
+        "isAnimatedOnScroll": true,
+        "isScrollToTopButton": false
+      }
+    },
+    "publishType": "local",
+    "publishPath": "file:///D:/xampp/htdocs/pkmsimas/assets/images/slider/test"
+  },
+  "pages": {
+    "index.html": {
+      "settings": {
+        "main": true,
+        "title": "",
+        "meta_descr": "",
+        "header_custom": "",
+        "footer_custom": "",
+        "html_before": ""
+      },
+      "components": [
+        {
+          "_styles": {
+            ".mbr-section-title, .mbr-section-lead": {
+              "color": "#fff"
+            },
+            "H2": {
+              "text-align": "center"
+            },
+            "P": {
+              "text-align": "center",
+              "font-size": "17px"
+            }
+          },
+          "_tags": [
+            "Theme"
+          ],
+          "_name": "slider2",
+          "_params": {
+            "autoplay": true,
+            "timeout": "3",
+            "paddingTop": "0",
+            "paddingBottom": "0",
+            "slides": [
+              {
+                "active": false,
+                "image": "@PROJECT_PATH@/assets/images/slide2-min-2000x1250-99.jpg",
+                "playVideo": false,
+                "videoUrl": "https://www.youtube.com/watch?v=uNCr7NdOJgw",
+                "overlay": true,
+                "overlayOpacity": "0.5",
+                "contentAlign": "center",
+                "showTitle": true,
+                "title": "Halo, ADMIN!",
+                "showText": true,
+                "text": "Selamat Datang di Aplikasi SIMAS<br>(Sistem Informasi Manajemen Puskesmas)<br>versi 2.0",
+                "showButtons": false,
+                "buttons": " <a data-app-btn=\"true\" class=\"btn btn-lg btn-white btn-white-outline\" href=\"https://mobirise.com\" data-toolbar=\"-mbrBtnMove\">FOR MAC</a>"
+              },
+              {
+                "active": true,
+                "image": "@PROJECT_PATH@/assets/images/slide3-min-2000x1250-70.jpg",
+                "playVideo": false,
+                "videoUrl": "https://www.youtube.com/watch?v=uNCr7NdOJgw",
+                "overlay": true,
+                "contentAlign": "right",
+                "showTitle": true,
+                "title": "Selamat Bertugas!",
+                "showText": true,
+                "text": "Silahkan Gunakan Menu Navigasi di sebelah Kiri untuk dapat menggunakan Aplikasi SIMAS.<br>Anda hanya dapat mengakses &nbsp;dan menggunakan fitur-fitur berdasarkan Hak Akses yang diberikan oleh ADMIN.",
+                "showButtons": false,
+                "buttons": "<a data-app-btn=\"true\" class=\"btn btn-lg btn-info\" href=\"https://mobirise.com\" data-toolbar=\"-mbrBtnMove\">FOR WINDOWS</a> "
+              }
+            ],
+            "bgColor": "#fff",
+            "showBullets": true
+          },
+          "_anchor": "slider2-0"
+        }
+      ]
+    }
+  }
+}
