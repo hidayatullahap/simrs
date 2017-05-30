@@ -35,6 +35,36 @@ class m_pasien extends CI_Model
         return $data;
     }
 
+    public function searchData($search)
+    {   
+        if (!isset($search)) {
+            $search ="";
+        }
+
+        $query = $this->db->query(
+        "SELECT
+        pasien.pasien_id AS pasien_id,
+        pasien.nama AS nama,
+        pasien.tempat_lahir AS tempat_lahir,
+        pasien.tanggal_lahir AS tanggal_lahir,
+        pasien.alamat AS alamat,
+        pasien.jenis_kelamin AS jenis_kelamin,
+        pasien.golongan_darah AS golongan_darah,
+        pasien.agama AS agama,
+        pasien.nomor_RM AS nomor_RM,
+        pasien.jenis_pasien_id AS jenis_pasien_id,
+        jenis_pasien.nama_jenis_pasien AS `jenis_pasien`,
+        pasien.tanggal_daftar AS tanggal_daftar
+        FROM
+        pasien
+        INNER JOIN jenis_pasien ON pasien.jenis_pasien_id = jenis_pasien.jenis_pasien_id
+        WHERE
+        pasien.nama LIKE '%$search%'
+        ORDER BY `pasien`.`pasien_id` ASC")->result();
+        $data = array("data"=>$query);  
+        return $data;
+    }
+
     public function postData($data)
     {
         $insert = $this->db->insert('pasien', $data);

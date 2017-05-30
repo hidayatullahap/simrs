@@ -1,7 +1,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <b>Kelola - Pasien</b>
+            <a href="<?php echo base_url('/kelola/kelolapasien'); ?>"><font color='black'><strong>Kelola - Pasien</strong></font></a>
         </h1>
     </section>
 
@@ -15,13 +15,14 @@
                             <div class="col-xs-2">
                                 <a href="<?php echo base_url('/apotek/c_apotek/permintaanObat'); ?>"><button  id="send" type="submit" class="btn btn-primary pull-left">Tambah Permintaan Obat</button></a>
                             </div>
-
+                            <form method="post" action="<?php echo base_url('/kelola/kelolapasien/search') ?>">
                             <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
-                            <input  type="text" class="form-control" placeholder="Search" name="search" id="search">
+                            <input  type="text" class="form-control" placeholder="Cari nama pasien" name="search" id="search">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                                 </div>
                             </div>
+                            </form>
                         </div>
                         
                         <table class="table table-bordered table-hover" id="tabel" cellspacing="0" width="100%">
@@ -31,45 +32,51 @@
                                 <th><font color="white">Nama</th>
                                 <th><font color="white">Tempat Lahir</th>
                                 <th><font color="white">Tanggal Lahir</th>
-                                <th><font color="white">Alamt</th>
+                                <th><font color="white">Alamat</th>
                                 <th><font color="white">Jenis Kelamin</th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php
-                            foreach ($data as $field => $values) {
-                                echo "<tr>";
-                                echo "<td width='5%'>".$values['pasien_id']."</td>";
-                                echo "<td>".$values['nama']."</td>";
-                                echo "<td>".$values['tanggal_lahir']."</td>";
-                                echo "<td>".$values['tempat_lahir']."</td>";
-                                echo "<td>".$values['alamat']."</td>";
-                                echo "<td>".$values['alamat']."</td>";
-                                echo "</tr>";
+                            if(!empty($data)){
+                                foreach ($data as $field => $values) {
+                                    echo "<tr>";
+                                    echo "<td width='5%'>".$values['pasien_id']."</td>";
+                                    echo "<td>".$values['nama']."</td>";
+                                    echo "<td>".$values['tanggal_lahir']."</td>";
+                                    echo "<td>".$values['tempat_lahir']."</td>";
+                                    echo "<td>".$values['alamat']."</td>";
+                                    echo "<td>".$values['alamat']."</td>";
+                                    echo "</tr>";
+                                }
+                            }else{
+                                echo "<tr><td colspan='6' align='center'><font size='3' color='red'>Tidak ada data</font></td></tr>";
                             }
                             ?>
                             </tbody>
                         </table>
-                        <?php echo "<p style='font-family:Calibri; font-size:85%;'>Showing page: ".$currentPage." with total data: ".$totalData."</p>"; ?>
+                        <?php  if(isset($totalPages)){echo "<p style='font-family:Calibri; font-size:85%;'>Showing page: ".$currentPage." with total data: ".$totalData."</p>"; }?>
                     <div class="box-footer clearfix">
                     <ul class="pagination pagination-lg no-margin pull-right">
                         <?php
-                        if($currentPage>1){
-                            echo "<li><a href='".base_url('/kelola/kelolapasien/page/'.($currentPage-1))."'>&laquo;</a></li>";
-                        }else{
-                            echo "<li><a href='".base_url('/kelola/kelolapasien/page/'.($currentPage))."'>&laquo;</a></li>";
-                        }
-                        for ($i=1; $i-1 < $totalPages; $i++) {
-                            if ($i==$currentPage) {
-                                echo "<li class='active'><a href='".base_url('/kelola/kelolapasien/page/'.$i)."'>$i</a></li>";
+                        if(isset($totalPages)){
+                            if ($currentPage>1) {
+                                echo "<li><a href='".base_url('/kelola/kelolapasien/page/'.($currentPage-1))."'>&laquo;</a></li>";
                             } else {
-                                echo "<li><a href='".base_url('/kelola/kelolapasien/page/'.$i)."'>$i</a></li>";
+                                echo "<li><a href='".base_url('/kelola/kelolapasien/page/'.($currentPage))."'>&laquo;</a></li>";
                             }
-                        }
-                        if($currentPage<$totalPages){
-                            echo "<li><a href='".base_url('/kelola/kelolapasien/page/'.($currentPage+1))."'>&raquo;</a></li>";
-                        }else{
-                            echo "<li><a href='".base_url('/kelola/kelolapasien/page/'.($currentPage))."'>&raquo;</a></li>";
+                            for ($i=1; $i-1 < $totalPages; $i++) {
+                                if ($i==$currentPage) {
+                                    echo "<li class='active'><a href='".base_url('/kelola/kelolapasien/page/'.$i)."'>$i</a></li>";
+                                } else {
+                                    echo "<li><a href='".base_url('/kelola/kelolapasien/page/'.$i)."'>$i</a></li>";
+                                }
+                            }
+                            if ($currentPage<$totalPages) {
+                                echo "<li><a href='".base_url('/kelola/kelolapasien/page/'.($currentPage+1))."'>&raquo;</a></li>";
+                            } else {
+                                echo "<li><a href='".base_url('/kelola/kelolapasien/page/'.($currentPage))."'>&raquo;</a></li>";
+                            }
                         }
                         ?>
                     </ul>
@@ -102,15 +109,15 @@
 
 <script>
     $('#delete').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget)
-        var dataID = button.data('id')
-        var dataNIK = button.data('nik')
-        var dataNama = button.data('nama')
+    var button = $(event.relatedTarget)
+    var dataID = button.data('id')
+    var dataNIK = button.data('nik')
+    var dataNama = button.data('nama')
 
-        var modal = $(this)
-        modal.find('.modal-NIK').text(dataNIK)
-        modal.find('.modal-Nama').text(dataNama)
-        document.getElementById("deletelink").href="<?php echo base_url('loket/c_daftarbaru/hapuspasien/'); ?>"+"/"+dataID;
+    var modal = $(this)
+    modal.find('.modal-NIK').text(dataNIK)
+    modal.find('.modal-Nama').text(dataNama)
+    document.getElementById("deletelink").href="<?php echo base_url('loket/c_daftarbaru/hapuspasien/'); ?>"+"/"+dataID;
     })
 </script>
 

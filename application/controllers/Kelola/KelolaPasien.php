@@ -27,8 +27,11 @@ class KelolaPasien extends CI_Controller
         $this->load->view('footer');
     }
 
-    public function page($page)
+    public function page($page=null)
     {   
+        if(!isset($page)){
+            $page=1;
+        }
         $title['title']="Kelola Pasien";
         if(!isset($page)){ $page = 1; }
         $limit = $this->default_setting->pagination('LIMIT'); 
@@ -40,6 +43,32 @@ class KelolaPasien extends CI_Controller
         $this->load->view('navbar');
         $this->load->view('/kelola/kelolapasien', $data);
         $this->load->view('footer');
+    }
+
+    public function search($search=null)
+    {   
+        if(!isset($search)){
+            $search="";
+        }
+        $title['title']="Kelola Pasien";
+        $search = $this->input->post('search');
+        $data = $this->m_kelolapasien->searchData($search);
+
+        $this->load->view('header',$title);
+        $this->load->view('navbar');
+        $this->load->view('/kelola/kelolapasien', $data);
+        $this->load->view('footer');
+    }
+    
+    public function insert_obat() {
+
+        if ($this->input->post('batal')) {
+            redirect('/kelola/c_obat', 'refresh');
+        } else {
+            $affectedRow = $this->m_gudang->insertObat();
+            $this->pesan("Tambah", $affectedRow);
+            redirect('/kelola/c_obat', 'refresh');
+        }
     }
 
     public function test()

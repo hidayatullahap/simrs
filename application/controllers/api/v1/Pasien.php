@@ -20,6 +20,8 @@ class Pasien extends REST_Controller
         $sort = $this->get('sort');
         $page = $this->get('page');
         $limitItemPage = $this->get('limit');
+        $search = $this->get('search');
+
         if (!isset($limitItemPage)) {
             $limitItemPage = $this->default_setting->pagination('LIMIT');
         }
@@ -30,10 +32,11 @@ class Pasien extends REST_Controller
             $sort = $this->default_setting->pagination('SORT');
         }
         $page=($page*$limitItemPage)-$limitItemPage;
-
-        if ($pasien_id == '') {
+        if (isset($pasien_id)) {
             $data = $this->m_pasien->getData($pasien_id, $sort, $page, $limitItemPage);
-        } else {
+        }else if(isset($search)){
+            $data = $this->m_pasien->searchData($search);
+        }else{
             $data = $this->m_pasien->getData($pasien_id, $sort, $page, $limitItemPage);
         }
         if (!empty($data)) {
