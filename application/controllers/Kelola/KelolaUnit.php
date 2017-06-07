@@ -2,9 +2,10 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'Unit.php';
+require_once CLASSES_DIR  . 'mastertabel.php';
+require_once CLASSES_DIR  . 'pengguna.php';
 
-class kelolaunit extends CI_Controller
+class KelolaUnit extends CI_Controller
 {   
     function __construct()
     {
@@ -12,6 +13,10 @@ class kelolaunit extends CI_Controller
         $this->load->helper('form');
         $this->load->model('default_setting');
         $this->session->set_userdata('navbar_status', 'kelola');
+        $pengguna = new Pengguna();
+        if (!$pengguna->is_loggedin()){
+            redirect('login');
+        }
     }
     
     public function index()
@@ -21,7 +26,8 @@ class kelolaunit extends CI_Controller
 
     public function page($page=null)
     {   
-        $pasien = new Unit();
+        $namatabel = "unit";
+        $master = new MasterTabel();
         if(!isset($page)){
             $page=1;
         }
@@ -36,7 +42,7 @@ class kelolaunit extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
         
-        $data = $pasien->getData($sort, $page, $limit);
+        $data = $master->getData($namatabel, $sort, $page, $limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/kelola/kelolaunit', $data);
@@ -45,11 +51,11 @@ class kelolaunit extends CI_Controller
 
     public function detil($id=null)
     {   
-        $pasien = new Unit();
-        //$url="pasien";
+        $namatabel = "unit";
+        $master = new MasterTabel();
         $title['title']="Kelola Unit";
         
-        $data = $pasien->getOne($id);
+        $data = $master->getOne($namatabel, $id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/kelola/kelolaunit', $data);
@@ -59,11 +65,12 @@ class kelolaunit extends CI_Controller
 
     public function search($search=null)
     {   
-        $search = $this->input->post('search');
-        $pasien = new Unit();
+        $namatabel = "unit";
+        $search = $_POST['search'];
+        $master = new MasterTabel();
         $title['title']="Kelola Unit";
         
-        $data = $pasien->searchData($search);
+        $data = $master->searchData($namatabel, $search);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/kelola/kelolaunit', $data);
@@ -71,22 +78,25 @@ class kelolaunit extends CI_Controller
     }
     
     public function insertData() {
-        $pasien = new Unit();
-        $affectedRow = $pasien->postData();
+        $namatabel = "unit";
+        $master = new MasterTabel();
+        $affectedRow = $master->postData($namatabel);
         $this->pesan("Tambah", $affectedRow);
         redirect('/kelola/kelolaunit', 'refresh');
     }
 
     public function editData($id) {
-        $pasien = new Unit();
-        $affectedRow = $pasien->editData($id);
+        $namatabel = "unit";
+        $master = new MasterTabel();
+        $affectedRow = $master->editData($namatabel, $id);
         $this->pesan("Edit", $affectedRow);
         redirect('/kelola/kelolaunit', 'refresh');
     }
 
     public function deleteData($id) {
-        $pasien = new Unit();
-        $affectedRow = $pasien->deleteData($id);
+        $namatabel = "unit";
+        $master = new MasterTabel();
+        $affectedRow = $master->deleteData($namatabel, $id);
         $this->pesan("Hapus", $affectedRow);
         redirect('/kelola/kelolaunit', 'refresh');
     }

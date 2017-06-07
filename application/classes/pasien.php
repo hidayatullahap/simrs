@@ -81,7 +81,7 @@ class Pasien{
         $golongan_darah = $_POST['golongan_darah'];
         $agama          = $_POST['agama'];
         $nomor_RM       = $_POST['nomor_rm'];
-        $jenis_pasien_id= $_POST['jenis_pasien'];
+        $jenis_pasien_id= $_POST['optionJenisPasien'];
 
         $query =
         "INSERT

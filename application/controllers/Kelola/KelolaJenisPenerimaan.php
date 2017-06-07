@@ -2,7 +2,8 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'jenispenerimaan.php';
+require_once CLASSES_DIR  . 'mastertabel.php';
+require_once CLASSES_DIR  . 'pengguna.php';
 
 class KelolaJenisPenerimaan extends CI_Controller
 {   
@@ -12,6 +13,10 @@ class KelolaJenisPenerimaan extends CI_Controller
         $this->load->helper('form');
         $this->load->model('default_setting');
         $this->session->set_userdata('navbar_status', 'kelola');
+        $pengguna = new Pengguna();
+        if (!$pengguna->is_loggedin()){
+            redirect('login');
+        }
     }
     
     public function index()
@@ -21,7 +26,8 @@ class KelolaJenisPenerimaan extends CI_Controller
 
     public function page($page=null)
     {   
-        $pasien = new JenisPenerimaan();
+        $namatabel = "jenis_penerimaan";
+        $master = new MasterTabel();
         if(!isset($page)){
             $page=1;
         }
@@ -36,7 +42,7 @@ class KelolaJenisPenerimaan extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
         
-        $data = $pasien->getData($sort, $page, $limit);
+        $data = $master->getData($namatabel, $sort, $page, $limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/kelola/kelolajenispenerimaan', $data);
@@ -45,11 +51,11 @@ class KelolaJenisPenerimaan extends CI_Controller
 
     public function detil($id=null)
     {   
-        $pasien = new JenisPenerimaan();
-        //$url="pasien";
+        $namatabel = "jenis_penerimaan";
+        $master = new MasterTabel();
         $title['title']="Kelola Jenis Penerimaan";
         
-        $data = $pasien->getOne($id);
+        $data = $master->getOne($namatabel, $id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/kelola/kelolajenispenerimaan', $data);
@@ -59,11 +65,12 @@ class KelolaJenisPenerimaan extends CI_Controller
 
     public function search($search=null)
     {   
-        $search = $this->input->post('search');
-        $pasien = new JenisPenerimaan();
+        $namatabel = "jenis_penerimaan";
+        $search = $_POST['search'];
+        $master = new MasterTabel();
         $title['title']="Kelola Jenis Penerimaan";
         
-        $data = $pasien->searchData($search);
+        $data = $master->searchData($namatabel, $search);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/kelola/kelolajenispenerimaan', $data);
@@ -71,22 +78,25 @@ class KelolaJenisPenerimaan extends CI_Controller
     }
     
     public function insertData() {
-        $pasien = new JenisPenerimaan();
-        $affectedRow = $pasien->postData();
+        $namatabel = "jenis_penerimaan";
+        $master = new MasterTabel();
+        $affectedRow = $master->postData($namatabel);
         $this->pesan("Tambah", $affectedRow);
         redirect('/kelola/kelolajenispenerimaan', 'refresh');
     }
 
     public function editData($id) {
-        $pasien = new JenisPenerimaan();
-        $affectedRow = $pasien->editData($id);
+        $namatabel = "jenis_penerimaan";
+        $master = new MasterTabel();
+        $affectedRow = $master->editData($namatabel, $id);
         $this->pesan("Edit", $affectedRow);
         redirect('/kelola/kelolajenispenerimaan', 'refresh');
     }
 
     public function deleteData($id) {
-        $pasien = new JenisPenerimaan();
-        $affectedRow = $pasien->deleteData($id);
+        $namatabel = "jenis_penerimaan";
+        $master = new MasterTabel();
+        $affectedRow = $master->deleteData($namatabel, $id);
         $this->pesan("Hapus", $affectedRow);
         redirect('/kelola/kelolajenispenerimaan', 'refresh');
     }

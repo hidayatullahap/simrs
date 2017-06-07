@@ -2,10 +2,11 @@
     exit('No direct script access allowed');
 }
 
+require_once CLASSES_DIR  . 'barang.php';
 require_once CLASSES_DIR  . 'mastertabel.php';
 require_once CLASSES_DIR  . 'pengguna.php';
 
-class KelolaJenisPasien extends CI_Controller
+class KelolaBarang extends CI_Controller
 {   
     function __construct()
     {
@@ -26,12 +27,13 @@ class KelolaJenisPasien extends CI_Controller
 
     public function page($page=null)
     {   
-        $namatabel = "jenis_pasien";
+        $barang = new Barang();
         $master = new MasterTabel();
+
         if(!isset($page)){
             $page=1;
         }
-        $title['title']="Kelola Jenis Pasien";
+        $title['title']="Kelola Barang";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
         if(!isset($page)){ $page = 1; }
@@ -41,64 +43,60 @@ class KelolaJenisPasien extends CI_Controller
         if(!isset($sort)){ 
             $sort = $this->default_setting->pagination('SORT'); 
         }
-        
-        $data = $master->getData($namatabel, $sort, $page, $limit);
+        $data = $barang->getData($sort, $page, $limit);
+        $data['daftarGrupBarang'] = $master->getData("grup_barang");
+        $data['daftarSatuan']     = $master->getData("satuan");
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolajenispasien', $data);
+        $this->load->view('/kelola/kelolabarang', $data);
         $this->load->view('footer');
     }
 
     public function detil($id=null)
     {   
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $title['title']="Kelola Jenis Pasien";
+        $barang = new Barang();
+        $title['title']="Kelola Barang";
         
-        $data = $master->getOne($namatabel, $id);
+        $data = $barang->getOne($id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolajenispasien', $data);
+        $this->load->view('/kelola/kelolabarang', $data);
         $this->load->view('footer');
     }
 
 
     public function search($search=null)
     {   
-        $namatabel = "jenis_pasien";
         $search = $_POST['search'];
-        $master = new MasterTabel();
-        $title['title']="Kelola Jenis Pasien";
+        $barang = new Barang();
+        $title['title']="Kelola Barang";
         
-        $data = $master->searchData($namatabel, $search);
+        $data = $barang->searchData($search);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolajenispasien', $data);
+        $this->load->view('/kelola/kelolabarang', $data);
         $this->load->view('footer');
     }
     
     public function insertData() {
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->postData($namatabel);
+        $barang = new Barang();
+        $affectedRow = $barang->postData();
         $this->pesan("Tambah", $affectedRow);
-        redirect('/kelola/kelolajenispasien', 'refresh');
+        redirect('/kelola/kelolabarang', 'refresh');
     }
 
     public function editData($id) {
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->editData($namatabel, $id);
+        $barang = new Barang();
+        $affectedRow = $barang->editData($id);
         $this->pesan("Edit", $affectedRow);
-        redirect('/kelola/kelolajenispasien', 'refresh');
+        redirect('/kelola/kelolabarang', 'refresh');
     }
 
     public function deleteData($id) {
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->deleteData($namatabel, $id);
+        $barang = new Barang();
+        $affectedRow = $barang->deleteData($id);
         $this->pesan("Hapus", $affectedRow);
-        redirect('/kelola/kelolajenispasien', 'refresh');
+        redirect('/kelola/kelolabarang', 'refresh');
     }
 
     public function pesan($metode, $affectedRow) {

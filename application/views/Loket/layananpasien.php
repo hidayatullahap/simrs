@@ -23,7 +23,7 @@
                             <div class="col-xs-2">
                                 <button type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Pasien</button>
                             </div>
-                            <form method="post" action="<?php echo base_url('/kelola/kelolapasien/search') ?>">
+                            <form method="post" action="<?php echo base_url('/loket/layananpasien/search') ?>">
                             <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
                             <input  type="text" class="form-control" placeholder="Cari nama pasien" name="search" id="search">
                                 <div class="input-group-btn">
@@ -68,29 +68,14 @@
                                     echo "<td>".$values['jenis_pasien']."</td>";
                                     $date=strtotime($values['tanggal_daftar']);
                                     echo "<td>".date('d M Y H:i:s', $date)."</td>";
-                                    
-                                    //onclick='editModal($i);'
-                                    /*
-                                    echo "<td><a href='".base_url('kelola/kelolapasien/detil/')."/".$values['pasien_id']."' data-toggle='tooltip' title='detil';><i class='fa fa-info'></i></a>
-                                    <a data-toggle='tooltip' title='hapus'><i class='fa fa-fw fa-remove' data-toggle='modal' data-target='.bs-example-modal-sm' data-id='".$values['pasien_id']."' 
-                                    data-nama='".$values['nama']."'></i></a></td>";
-                                    */
 
-                                    echo "<td><a data-toggle='tooltip' onclick='editModal($i);' title='edit'><i class='fa fa-fw fa-edit'></i></a>
-                                    <a data-toggle='tooltip' title='hapus'><i class='fa fa-fw fa-remove' data-toggle='modal' data-target='.bs-example-modal-sm' data-id='".$values['pasien_id']."' 
-                                    data-nama='".$values['nama']."'></i></a></td>";
+                                    echo "<td><button type='button' class='btn btn-info btn-md' id='buttonTambahLayanan' data-toggle='modal' data-target='#addForm'>Layani</button></td>";
                                     echo "</tr>";
                                     $i++;
                                 }
                             } else {
                                 echo "<tr><td colspan='11' align='center'><font size='3' color='red'>Tidak ada data</font></td></tr>";
                             }
-                            
-                            /* ----Ngetest echo field index
-                            foreach ($values as $key => $row) {
-                                echo $key." ";
-                            }
-                            */
                             ?>
                             </tbody>
                         </table>
@@ -99,7 +84,7 @@
                         }
                     ?>
 
-                    <form method="post" id="formModal" action="<?php echo base_url('/kelola/kelolapasien/insertdata') ?>">
+                    <form method="post" id="formModal" action="<?php echo base_url('/loket/layananpasien/insertdata') ?>">
                     <div class="modal fade" id="addForm" role="dialog">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
@@ -276,7 +261,7 @@
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
                         if (isset($totalPages)) {
-                            $entity->tampilkan('kelola/kelolapasien',$currentPage, $totalPages);
+                            $entity->tampilkan('loket/layananpasien',$currentPage, $totalPages);
                         }
                         ?>
                     </div>
@@ -335,7 +320,7 @@ $(document).ready(function(){
     $("#buttonTambah").click(function(){
         document.getElementById("headerModal").innerHTML = "Tambah Pasien";
         document.getElementById("submitModal").innerHTML = "Simpan";
-        document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolapasien/insertdata') ?>";
+        document.getElementById("formModal").action ="<?php echo base_url('/loket/layananpasien/insertdata') ?>";
     });
 });
 
@@ -354,7 +339,7 @@ function editModal(row) {
 
     document.getElementById("headerModal").innerHTML = "Edit Pasien";
     document.getElementById("submitModal").innerHTML = "Simpan Perubahan";
-    document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolapasien/editdata') ?>"+"/"+id;
+    document.getElementById("formModal").action ="<?php echo base_url('/loket/layananpasien/editdata') ?>"+"/"+id;
     $("#addForm").modal();
 }
 </script>

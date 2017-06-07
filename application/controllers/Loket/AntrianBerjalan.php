@@ -2,17 +2,19 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'mastertabel.php';
+require_once CLASSES_DIR  . 'antrian.php';
 require_once CLASSES_DIR  . 'pengguna.php';
+require_once CLASSES_DIR  . 'Antrian.php';
+require_once CLASSES_DIR  . 'mastertabel.php';
 
-class KelolaJenisPasien extends CI_Controller
+class AntrianBerjalan extends CI_Controller
 {   
     function __construct()
     {
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
-        $this->session->set_userdata('navbar_status', 'kelola');
+        $this->session->set_userdata('navbar_status', 'antrianberjalan');
         $pengguna = new Pengguna();
         if (!$pengguna->is_loggedin()){
             redirect('login');
@@ -26,12 +28,13 @@ class KelolaJenisPasien extends CI_Controller
 
     public function page($page=null)
     {   
-        $namatabel = "jenis_pasien";
+        $antrian = new Antrian();
         $master = new MasterTabel();
+
         if(!isset($page)){
             $page=1;
         }
-        $title['title']="Kelola Jenis Pasien";
+        $title['title']="Kelola Antrian";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
         if(!isset($page)){ $page = 1; }
@@ -41,64 +44,70 @@ class KelolaJenisPasien extends CI_Controller
         if(!isset($sort)){ 
             $sort = $this->default_setting->pagination('SORT'); 
         }
-        
-        $data = $master->getData($namatabel, $sort, $page, $limit);
+        $data = $antrian->AntrianHariIni($sort, $page, $limit);
+        $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolajenispasien', $data);
+        $this->load->view('/loket/antrianberjalan', $data);
         $this->load->view('footer');
     }
-
-    public function detil($id=null)
-    {   
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $title['title']="Kelola Jenis Pasien";
-        
-        $data = $master->getOne($namatabel, $id);
-        $this->load->view('header',$title);
-        $this->load->view('navbar');
-        $this->load->view('/kelola/kelolajenispasien', $data);
-        $this->load->view('footer');
-    }
-
 
     public function search($search=null)
     {   
-        $namatabel = "jenis_pasien";
         $search = $_POST['search'];
-        $master = new MasterTabel();
-        $title['title']="Kelola Jenis Pasien";
+        $antrian = new Antrian();
+        $title['title']="Kelola Antrian";
         
-        $data = $master->searchData($namatabel, $search);
+        $data = $antrian->searchData($search);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolajenispasien', $data);
+        $this->load->view('/loket/antrianberjalan', $data);
         $this->load->view('footer');
     }
     
     public function insertData() {
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->postData($namatabel);
+        $antrian = new Antrian();
+        $affectedRow = $antrian->postData();
         $this->pesan("Tambah", $affectedRow);
-        redirect('/kelola/kelolajenispasien', 'refresh');
+        redirect('/loket/antrianberjalan', 'refresh');
     }
 
     public function editData($id) {
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->editData($namatabel, $id);
+        $antrian = new Antrian();
+        $affectedRow = $antrian->editData($id);
         $this->pesan("Edit", $affectedRow);
-        redirect('/kelola/kelolajenispasien', 'refresh');
+        redirect('/loket/antrianberjalan', 'refresh');
     }
 
     public function deleteData($id) {
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->deleteData($namatabel, $id);
+        $antrian = new Antrian();
+        $affectedRow = $antrian->deleteData($id);
         $this->pesan("Hapus", $affectedRow);
-        redirect('/kelola/kelolajenispasien', 'refresh');
+        redirect('/loket/antrianberjalan', 'refresh');
+    }
+
+    public function test()
+    {   
+        $data = $this->m_kelolapasien->getData();
+        var_dump($data);
+        echo "<br><br><br><br><br><br>";
+        $this->load->view('/tests/testDumpKelolaPasien', $data);
+    }
+
+    public function testantrian()
+    {   
+        $limit = $_COOKIE["pageLimit"];
+        $sort = $_COOKIE["pageSort"];
+        if(!isset($page)){ $page = 1; }
+        if(!isset($limit)){ 
+            $limit = $this->default_setting->pagination('LIMIT'); 
+        }
+        if(!isset($sort)){ 
+            $sort = $this->default_setting->pagination('SORT'); 
+        }
+        $antrian = new Antrian();
+        $test=$antrian->AntrianHariIni($sort, $page, $limit);
+        var_dump($test);
     }
 
     public function pesan($metode, $affectedRow) {

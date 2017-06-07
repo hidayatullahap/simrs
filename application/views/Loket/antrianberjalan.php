@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/kelola/kelolapasien'); ?>"><font color='black'><strong>Kelola - Pasien</strong></font></a>
+            <a href="<?php echo base_url('/loket/antrianberjalan'); ?>"><font color='black'><strong>Antrian Berjalan Hari Ini</strong></font></a>
         </h1>
     </section>
 
@@ -23,7 +23,7 @@
                             <div class="col-xs-2">
                                 <button type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Pasien</button>
                             </div>
-                            <form method="post" action="<?php echo base_url('/kelola/kelolapasien/search') ?>">
+                            <form method="post" action="<?php echo base_url('/loket/antrianberjalan/search') ?>">
                             <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
                             <input  type="text" class="form-control" placeholder="Cari nama pasien" name="search" id="search">
                                 <div class="input-group-btn">
@@ -38,15 +38,10 @@
                             <tr>
                                 <th><font color="white">Pasien ID</th>
                                 <th><font color="white">Nama</th>
-                                <th><font color="white">Tempat Lahir</th>
-                                <th><font color="white">Tanggal Lahir</th>
-                                <th><font color="white">Alamat</th>
-                                <th><font color="white">Jenis Kelamin</th>
-                                <th><font color="white">Nomor RM</th>
-                                <th><font color="white">Agama</th>
-                                <th><font color="white">Golongan Darah</th>
-                                <th><font color="white">Jenis Pasien</th>
-                                <th><font color="white">Tanggal Daftar</th>
+                                <th><font color="white">Jenis Kunjungan</th>
+                                <th><font color="white">Tujuan</th>
+                                <th><font color="white">Status</th>
+                                <th><font color="white">Tanggal Mendaftar</th>
                                 <th><font color="white">Aksi</th>
                             </tr>
                             </thead>
@@ -58,23 +53,12 @@
                                     echo "<tr>";
                                     echo "<td width='5%'>".$values['pasien_id']."</td>";
                                     echo "<td>".$values['nama']."</td>";
-                                    echo "<td>".$values['tempat_lahir']."</td>";
-                                    echo "<td>".$values['tanggal_lahir']."</td>";
-                                    echo "<td>".$values['alamat']."</td>";
-                                    echo "<td>".$values['jenis_kelamin']."</td>";
-                                    echo "<td>".$values['nomor_RM']."</td>";
-                                    echo "<td>".$values['agama']."</td>";
-                                    echo "<td>".$values['golongan_darah']."</td>";
-                                    echo "<td>".$values['jenis_pasien']."</td>";
-                                    $date=strtotime($values['tanggal_daftar']);
+                                    echo "<td>".$values['jenis_kunjungan']."</td>";
+                                    echo "<td>".$values['nama_unit']."</td>";
+                                    echo "<td>".$values['status']."</td>";
+                                   
+                                    $date=strtotime($values['tanggal_antrian']);
                                     echo "<td>".date('d M Y H:i:s', $date)."</td>";
-                                    
-                                    //onclick='editModal($i);'
-                                    /*
-                                    echo "<td><a href='".base_url('kelola/kelolapasien/detil/')."/".$values['pasien_id']."' data-toggle='tooltip' title='detil';><i class='fa fa-info'></i></a>
-                                    <a data-toggle='tooltip' title='hapus'><i class='fa fa-fw fa-remove' data-toggle='modal' data-target='.bs-example-modal-sm' data-id='".$values['pasien_id']."' 
-                                    data-nama='".$values['nama']."'></i></a></td>";
-                                    */
 
                                     echo "<td><a data-toggle='tooltip' onclick='editModal($i);' title='edit'><i class='fa fa-fw fa-edit'></i></a>
                                     <a data-toggle='tooltip' title='hapus'><i class='fa fa-fw fa-remove' data-toggle='modal' data-target='.bs-example-modal-sm' data-id='".$values['pasien_id']."' 
@@ -85,12 +69,6 @@
                             } else {
                                 echo "<tr><td colspan='11' align='center'><font size='3' color='red'>Tidak ada data</font></td></tr>";
                             }
-                            
-                            /* ----Ngetest echo field index
-                            foreach ($values as $key => $row) {
-                                echo $key." ";
-                            }
-                            */
                             ?>
                             </tbody>
                         </table>
@@ -99,7 +77,7 @@
                         }
                     ?>
 
-                    <form method="post" id="formModal" action="<?php echo base_url('/kelola/kelolapasien/insertdata') ?>">
+                    <form method="post" id="formModal" action="<?php echo base_url('/loket/antrianberjalan/insertdata') ?>">
                     <div class="modal fade" id="addForm" role="dialog">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
@@ -276,7 +254,7 @@
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
                         if (isset($totalPages)) {
-                            $entity->tampilkan('kelola/kelolapasien',$currentPage, $totalPages);
+                            $entity->tampilkan('loket/antrianberjalan',$currentPage, $totalPages);
                         }
                         ?>
                     </div>
@@ -335,7 +313,7 @@ $(document).ready(function(){
     $("#buttonTambah").click(function(){
         document.getElementById("headerModal").innerHTML = "Tambah Pasien";
         document.getElementById("submitModal").innerHTML = "Simpan";
-        document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolapasien/insertdata') ?>";
+        document.getElementById("formModal").action ="<?php echo base_url('/loket/antrianberjalan/insertdata') ?>";
     });
 });
 
@@ -354,7 +332,7 @@ function editModal(row) {
 
     document.getElementById("headerModal").innerHTML = "Edit Pasien";
     document.getElementById("submitModal").innerHTML = "Simpan Perubahan";
-    document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolapasien/editdata') ?>"+"/"+id;
+    document.getElementById("formModal").action ="<?php echo base_url('/loket/antrianberjalan/editdata') ?>"+"/"+id;
     $("#addForm").modal();
 }
 </script>

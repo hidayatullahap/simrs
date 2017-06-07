@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/kelola/kelolajenispasien'); ?>"><font color='black'><strong>Kelola - Jenis Pasien</strong></font></a>
+            <a href="<?php echo base_url('/kelola/kelolabarang'); ?>"><font color='black'><strong>Kelola - Barang</strong></font></a>
         </h1>
     </section>
 
@@ -21,11 +21,11 @@
                     <div class="box-header with-border">
                         <div class="form-group row">
                             <div class="col-xs-2">
-                                <button type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Jenis Pasien</button>
+                                <button type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Barang</button>
                             </div>
-                            <form method="post" action="<?php echo base_url('/kelola/kelolajenispasien/search') ?>">
+                            <form method="post" action="<?php echo base_url('/kelola/kelolabarang/search') ?>">
                             <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
-                            <input  type="text" class="form-control" autocomplete="off" placeholder="Cari nama Jenis Pasien" name="search" id="search">
+                            <input  type="text" class="form-control" placeholder="Cari nama Barang" name="search" id="search">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                                 </div>
@@ -36,8 +36,11 @@
                         <table class="table table-bordered table-hover" id="tabel" cellspacing="0" width="100%">
                             <thead bgcolor="#4a4a4c">
                             <tr>
-                                <th><font color="white">Jenis Pasien ID</th>
-                                <th><font color="white">Nama Jenis Pasien</th>
+                                <th><font color="white">Barang ID</th>
+                                <th><font color="white">Nama Barang</th>
+                                <th><font color="white">Grup Barang</th>
+                                <th><font color="white">Satuan</th>
+                                <th><font color="white">Tanggal Pencatatan</th>
                                 <th><font color="white">Aksi</th>
                             </tr>
                             </thead>
@@ -47,12 +50,17 @@
                                 $i=1;
                                 foreach ($data as $field => $values) {
                                     echo "<tr>";
-                                    echo "<td width='8%'>".$values['jenis_pasien_id']."</td>";
-                                    echo "<td>".$values['nama_jenis_pasien']."</td>";
+                                    echo "<td width='5%'>".$values['barang_id']."</td>";
+                                    echo "<td>".$values['nama_barang']."</td>";
+                                    echo "<td>".$values['grup_barang']."</td>";
+                                    echo "<td>".$values['satuan']."</td>";
+
+                                    $date=strtotime($values['tanggal_pencatatan']);
+                                    echo "<td>".date('d M Y H:i:s', $date)."</td>";
 
                                     echo "<td><a data-toggle='tooltip' onclick='editModal($i);' title='edit'><i class='fa fa-fw fa-edit'></i></a>
-                                    <a data-toggle='tooltip' title='hapus'><i class='fa fa-fw fa-remove' data-toggle='modal' data-target='.bs-example-modal-sm' data-id='".$values['jenis_pasien_id']."' 
-                                    data-nama='".$values['nama_jenis_pasien']."'></i></a></td>";
+                                    <a data-toggle='tooltip' title='hapus'><i class='fa fa-fw fa-remove' data-toggle='modal' data-target='.bs-example-modal-sm' data-id='".$values['barang_id']."' 
+                                    data-nama='".$values['nama_barang']."'></i></a></td>";
                                     echo "</tr>";
                                     $i++;
                                 }
@@ -67,34 +75,67 @@
                         }
                     ?>
 
-                    <form method="post" id="formModal" action="<?php echo base_url('/kelola/kelolajenispasien/insertdata') ?>">
+                    <form method="post" id="formModal" action="<?php echo base_url('/kelola/kelolabarang/insertdata') ?>">
                     <div class="modal fade" id="addForm" role="dialog">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
                                 <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title" id="headerModal">Tambah Jenis Pasien</h4>
+                                <h4 class="modal-title" id="headerModal">Tambah Barang</h4>
                                 </div>
 
                                 <div class="modal-body" style="text-align: right; ">
                                     <div class="item form-group">
-                                        <label class="col-md-4 control-label paddingForm" for="nama_jenis_pasien">Nama Jenis Pasien</label>
+                                        <label class="col-md-3 control-label paddingForm" for="nama_barang">Nama Barang</label>
                                         <div class="col-md-6">
                                             <?php
                                             $data = array(
-                                                'name' => 'nama_jenis_pasien',
+                                                'name' => 'nama_barang',
                                                 'autocomplete' => 'off',
                                                 'required' => 'required',
-                                                'id' => 'nama_jenis_pasien',
+                                                'id' => 'nama_barang',
                                                 'type' => 'text',
                                                 'class' => 'form-control col-md-7 col-xs-12',
-                                                'placeholder' => 'Isikan Jenis Pasien',
+                                                'placeholder' => 'Isikan nama barang',
                                             );
                                             echo form_input($data);
                                             ?>
-                                        </div>
+                                        </div><br><br>
+
+                                        <label class="col-md-3 control-label paddingForm" for="jenis_pasien">Jenis grup barang</label>
+                                        <div class="col-md-6">
+                                        <select class="select2_single form-control" tabindex="-1" name="grup_barang_id" required>
+                                            <option id= "grup_barang_id" hidden="" value="">Pilih grup barang</option>
+                                                <?php 
+                                                foreach ($daftarGrupBarang['data'] as $field => $values) {
+                                                    echo "<option value=";
+                                                    echo $values['grup_barang_id'];
+                                                    echo ">";
+                                                    echo $values['nama_grup_barang']; 
+                                                    echo "</option>";
+                                                }
+                                                ?>
+                                        </select>
+                                        </div><br><br>
+
+                                        <label class="col-md-3 control-label paddingForm" for="jenis_pasien">Jenis satuan</label>
+                                        <div class="col-md-6">
+                                        <select class="select2_single form-control" tabindex="-1" name="satuan_id" required>
+                                            <option id= "satuan_id" hidden="" value="">Pilih satuan</option>
+                                                <?php 
+                                                foreach ($daftarSatuan['data'] as $field => $values) {
+                                                    echo "<option value=";
+                                                    echo $values['satuan_id'];
+                                                    echo ">";
+                                                    echo $values['nama_satuan']; 
+                                                    echo "</option>";
+                                                }
+                                                ?>
+                                        </select>
+                                        </div><br><br>
+                                        
                                     </div>
-                                </div><br><br>
+                                </div><br><br><br>
                                 <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                                 <button class="btn btn-primary" id="submitModal" type="submit">Simpan</button>
@@ -108,11 +149,11 @@
                             <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">Hapus Data Jenis Pasien</h4>
+                                <h4 class="modal-title" id="myModalLabel">Hapus Data Barang</h4>
                             </div>
                             <div class="modal-body">
-                                Anda yakin ingin menghapus data Jenis Pasien <br>
-                                Nama : <strong class="modal-Nama">Nama Jenis Pasien</strong>
+                                Anda yakin ingin menghapus data Barang <br>
+                                Nama : <strong class="modal-Nama">Nama Barang</strong>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-success" data-dismiss="modal">Batal</button>
@@ -126,15 +167,15 @@
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
                         if (isset($totalPages)) {
-                            $entity->tampilkan('kelola/kelolajenispasien',$currentPage, $totalPages);
+                            $entity->tampilkan('kelola/kelolabarang',$currentPage, $totalPages);
                         }
                         ?>
                     </div>
                     <?php if($this->session->flashdata('pesan')) {?>
                         <div class="alert alert-success alert-dismissible" id="success-alert">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <h4><i class="icon fa fa-info"></i> Data Jenis Pasien</h4>
-                            <?php echo $this->session->flashdata('metode')." data Jenis Pasien ".$this->session->flashdata('pesan'); ?>
+                            <h4><i class="icon fa fa-info"></i> Data Barang</h4>
+                            <?php echo $this->session->flashdata('metode')." data Barang ".$this->session->flashdata('pesan'); ?>
                         </div>
                     <?php } ?>
                     </div>
@@ -172,7 +213,7 @@
         
         var modal = $(this)
         modal.find('.modal-Nama').text(dataNama)
-        document.getElementById("deletelink").href="<?php echo base_url('kelola/kelolajenispasien/deletedata/'); ?>"+"/"+dataID;
+        document.getElementById("deletelink").href="<?php echo base_url('kelola/kelolabarang/deletedata/'); ?>"+"/"+dataID;
     });
 </script>
 
@@ -183,23 +224,26 @@ $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
 
 $(document).ready(function(){
     $("#buttonTambah").click(function(){
-        document.getElementById("headerModal").innerHTML = "Tambah Jenis Pasien";
+        document.getElementById("headerModal").innerHTML = "Tambah Barang";
         document.getElementById("submitModal").innerHTML = "Simpan";
-        document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolajenispasien/insertdata') ?>";
+        document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolabarang/insertdata') ?>";
     });
 });
 
 function editModal(row) {
     var id= document.getElementById("tabel").rows[row].cells[0].innerHTML;
     
-    document.getElementById("nama_jenis_pasien").value = document.getElementById("tabel").rows[row].cells[1].innerHTML;
+    document.getElementById("nama_barang").value           = document.getElementById("tabel").rows[row].cells[1].innerHTML;
+    document.getElementById("grup_barang_id").innerHTML = document.getElementById("tabel").rows[row].cells[2].innerHTML;
+    document.getElementById("satuan_id").innerHTML   = document.getElementById("tabel").rows[row].cells[3].innerHTML;
 
-    document.getElementById("headerModal").innerHTML = "Edit Jenis Pasien";
+    document.getElementById("headerModal").innerHTML = "Edit Barang";
     document.getElementById("submitModal").innerHTML = "Simpan Perubahan";
-    document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolajenispasien/editdata') ?>"+"/"+id;
+    document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolabarang/editdata') ?>"+"/"+id;
     $("#addForm").modal();
 }
 </script>
+
 
 </body>
 </html>

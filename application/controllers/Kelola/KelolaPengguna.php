@@ -2,17 +2,16 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'mastertabel.php';
 require_once CLASSES_DIR  . 'pengguna.php';
 
-class KelolaJenisPasien extends CI_Controller
+class kelolapengguna extends CI_Controller
 {   
     function __construct()
     {
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
-        $this->session->set_userdata('navbar_status', 'kelola');
+        $this->session->set_userdata('navbar_status', 'adminarea');
         $pengguna = new Pengguna();
         if (!$pengguna->is_loggedin()){
             redirect('login');
@@ -26,12 +25,12 @@ class KelolaJenisPasien extends CI_Controller
 
     public function page($page=null)
     {   
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
+        $pengguna = new Pengguna();
+
         if(!isset($page)){
             $page=1;
         }
-        $title['title']="Kelola Jenis Pasien";
+        $title['title']="Kelola Pengguna";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
         if(!isset($page)){ $page = 1; }
@@ -41,64 +40,58 @@ class KelolaJenisPasien extends CI_Controller
         if(!isset($sort)){ 
             $sort = $this->default_setting->pagination('SORT'); 
         }
-        
-        $data = $master->getData($namatabel, $sort, $page, $limit);
+        $data = $pengguna->getData($sort, $page, $limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolajenispasien', $data);
+        $this->load->view('/kelola/kelolapengguna', $data);
         $this->load->view('footer');
     }
 
     public function detil($id=null)
     {   
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $title['title']="Kelola Jenis Pasien";
+        $pengguna = new Pengguna();
+        $title['title']="Kelola Pengguna";
         
-        $data = $master->getOne($namatabel, $id);
+        $data = $pengguna->getOne($id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolajenispasien', $data);
+        $this->load->view('/kelola/kelolapengguna', $data);
         $this->load->view('footer');
     }
 
 
     public function search($search=null)
     {   
-        $namatabel = "jenis_pasien";
         $search = $_POST['search'];
-        $master = new MasterTabel();
-        $title['title']="Kelola Jenis Pasien";
+        $pengguna = new Pengguna();
+        $title['title']="Kelola Pengguna";
         
-        $data = $master->searchData($namatabel, $search);
+        $data = $pengguna->searchData($search);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolajenispasien', $data);
+        $this->load->view('/kelola/kelolapengguna', $data);
         $this->load->view('footer');
     }
     
     public function insertData() {
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->postData($namatabel);
+        $pengguna = new Pengguna();
+        $affectedRow = $pengguna->postData();
         $this->pesan("Tambah", $affectedRow);
-        redirect('/kelola/kelolajenispasien', 'refresh');
+        redirect('/kelola/kelolapengguna', 'refresh');
     }
 
     public function editData($id) {
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->editData($namatabel, $id);
+        $pengguna = new Pengguna();
+        $affectedRow = $pengguna->editData($id);
         $this->pesan("Edit", $affectedRow);
-        redirect('/kelola/kelolajenispasien', 'refresh');
+        redirect('/kelola/kelolapengguna', 'refresh');
     }
 
     public function deleteData($id) {
-        $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->deleteData($namatabel, $id);
+        $pengguna = new Pengguna();
+        $affectedRow = $pengguna->deleteData($id);
         $this->pesan("Hapus", $affectedRow);
-        redirect('/kelola/kelolajenispasien', 'refresh');
+        redirect('/kelola/kelolapengguna', 'refresh');
     }
 
     public function pesan($metode, $affectedRow) {

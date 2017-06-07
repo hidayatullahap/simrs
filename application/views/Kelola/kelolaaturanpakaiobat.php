@@ -13,7 +13,7 @@
         </h1>
     </section>
 
-    <!-- Main content -->`
+    <!-- Main content -->
     <section class="content">
         <div class="row">
             <div class="col-md-12">
@@ -126,12 +126,12 @@
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
                         if (isset($totalPages)) {
-                            $entity->tampilkan('kelolaaturanpakaiobat',$currentPage, $totalPages);
+                            $entity->tampilkan('kelola/kelolaaturanpakaiobat',$currentPage, $totalPages);
                         }
                         ?>
                     </div>
                     <?php if($this->session->flashdata('pesan')) {?>
-                        <div class="alert alert-success alert-dismissible">
+                        <div class="alert alert-success alert-dismissible" id="success-alert">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                             <h4><i class="icon fa fa-info"></i> Data Aturan Pakai Obat</h4>
                             <?php echo $this->session->flashdata('metode')." data Aturan Pakai Obat ".$this->session->flashdata('pesan'); ?>
@@ -177,6 +177,10 @@
 </script>
 
 <script>
+$("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+    $("#success-alert").slideUp(500);
+});
+
 $(document).ready(function(){
     $("#buttonTambah").click(function(){
         document.getElementById("headerModal").innerHTML = "Tambah Aturan Pakai Obat";

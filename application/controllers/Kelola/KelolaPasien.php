@@ -2,9 +2,10 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'apicall.php';
 require_once CLASSES_DIR  . 'pasien.php';
-require_once CLASSES_DIR  . 'jenispasien.php';
+require_once CLASSES_DIR  . 'mastertabel.php';
+require_once CLASSES_DIR  . 'pengguna.php';
+require_once CLASSES_DIR  . 'antrian.php';
 
 class KelolaPasien extends CI_Controller
 {   
@@ -13,10 +14,11 @@ class KelolaPasien extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
-        $this->load->model('kelola/m_kelolapasien');
-        $this->session->set_userdata('navbar_status', 'kelola');
-        setcookie("pageLimit",15, time()+86400, "/","", 0);   //---------------Taruh ini di login dan setting
-        setcookie("pageSort", "DESC", time()+86400, "/","", 0);   //---------------Taruh ini di login dan setting
+        $this->session->set_userdata('navbar_status', 'adminarea');
+        $pengguna = new Pengguna();
+        if (!$pengguna->is_loggedin()){
+            redirect('login');
+        }
     }
     
     public function index()
@@ -27,7 +29,8 @@ class KelolaPasien extends CI_Controller
     public function page($page=null)
     {   
         $pasien = new Pasien();
-        //$url="pasien";
+        $master = new MasterTabel();
+
         if(!isset($page)){
             $page=1;
         }
@@ -41,8 +44,8 @@ class KelolaPasien extends CI_Controller
         if(!isset($sort)){ 
             $sort = $this->default_setting->pagination('SORT'); 
         }
-        //$data = $entity->getAll($url, $page, $limit, $sort);
         $data = $pasien->getData($sort, $page, $limit);
+        $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/kelola/kelolapasien', $data);
@@ -65,11 +68,13 @@ class KelolaPasien extends CI_Controller
 
     public function search($search=null)
     {   
-        $search = $this->input->post('search');
+        $search = $_POST['search'];
         $pasien = new Pasien();
+        $master = new MasterTabel();
         $title['title']="Kelola Pasien";
         
         $data = $pasien->searchData($search);
+        $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/kelola/kelolapasien', $data);
@@ -103,6 +108,22 @@ class KelolaPasien extends CI_Controller
         var_dump($data);
         echo "<br><br><br><br><br><br>";
         $this->load->view('/tests/testDumpKelolaPasien', $data);
+    }
+
+    public function testantrian()
+    {   
+        $limit = $_COOKIE["pageLimit"];
+        $sort = $_COOKIE["pageSort"];
+        if(!isset($page)){ $page = 1; }
+        if(!isset($limit)){ 
+            $limit = $this->default_setting->pagination('LIMIT'); 
+        }
+        if(!isset($sort)){ 
+            $sort = $this->default_setting->pagination('SORT'); 
+        }
+        $antrian = new Antrian();
+        $test=$antrian->AntrianHariIni($sort, $page, $limit);
+        var_dump($test);
     }
 
     public function pesan($metode, $affectedRow) {
