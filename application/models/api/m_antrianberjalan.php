@@ -37,7 +37,7 @@ class m_antrianberjalan extends CI_Model
             antrian
             INNER JOIN unit ON antrian.unit_id_tujuan = unit.unit_id
             INNER JOIN pasien ON antrian.pasien_id = pasien.pasien_id
-            WHEREzx
+            WHERE
             antrian.jenis_kunjungan = '$jenis_kunjungan'
             ORDER BY `antrian`.`antrian_id` $sort LIMIT $page,$limitItemPage")
             ->result();

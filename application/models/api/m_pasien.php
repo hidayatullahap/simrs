@@ -30,7 +30,8 @@ class m_pasien extends CI_Model
             $data = array("data"=>$query, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);  
         } else {
             $this->db->where('pasien_id', $pasien_id);
-            $data = $this->db->get('pasien')->result();
+            $query = $this->db->get('pasien')->result();
+            $data = array("data"=>$query);  
         }
         return $data;
     }

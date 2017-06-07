@@ -2,21 +2,16 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'apicall.php';
-require_once CLASSES_DIR  . 'pasien.php';
-require_once CLASSES_DIR  . 'jenispasien.php';
+require_once CLASSES_DIR  . 'Unit.php';
 
-class KelolaPasien extends CI_Controller
+class kelolaunit extends CI_Controller
 {   
     function __construct()
     {
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
-        $this->load->model('kelola/m_kelolapasien');
         $this->session->set_userdata('navbar_status', 'kelola');
-        setcookie("pageLimit",15, time()+86400, "/","", 0);   //---------------Taruh ini di login dan setting
-        setcookie("pageSort", "DESC", time()+86400, "/","", 0);   //---------------Taruh ini di login dan setting
     }
     
     public function index()
@@ -26,12 +21,11 @@ class KelolaPasien extends CI_Controller
 
     public function page($page=null)
     {   
-        $pasien = new Pasien();
-        //$url="pasien";
+        $pasien = new Unit();
         if(!isset($page)){
             $page=1;
         }
-        $title['title']="Kelola Pasien";
+        $title['title']="Kelola Unit";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
         if(!isset($page)){ $page = 1; }
@@ -41,24 +35,24 @@ class KelolaPasien extends CI_Controller
         if(!isset($sort)){ 
             $sort = $this->default_setting->pagination('SORT'); 
         }
-        //$data = $entity->getAll($url, $page, $limit, $sort);
+        
         $data = $pasien->getData($sort, $page, $limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolapasien', $data);
+        $this->load->view('/kelola/kelolaunit', $data);
         $this->load->view('footer');
     }
 
     public function detil($id=null)
     {   
-        $pasien = new Pasien();
+        $pasien = new Unit();
         //$url="pasien";
-        $title['title']="Kelola Pasien";
+        $title['title']="Kelola Unit";
         
         $data = $pasien->getOne($id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolapasien', $data);
+        $this->load->view('/kelola/kelolaunit', $data);
         $this->load->view('footer');
     }
 
@@ -66,43 +60,35 @@ class KelolaPasien extends CI_Controller
     public function search($search=null)
     {   
         $search = $this->input->post('search');
-        $pasien = new Pasien();
-        $title['title']="Kelola Pasien";
+        $pasien = new Unit();
+        $title['title']="Kelola Unit";
         
         $data = $pasien->searchData($search);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/kelola/kelolapasien', $data);
+        $this->load->view('/kelola/kelolaunit', $data);
         $this->load->view('footer');
     }
     
     public function insertData() {
-        $pasien = new Pasien();
+        $pasien = new Unit();
         $affectedRow = $pasien->postData();
         $this->pesan("Tambah", $affectedRow);
-        redirect('/kelola/kelolapasien', 'refresh');
+        redirect('/kelola/kelolaunit', 'refresh');
     }
 
     public function editData($id) {
-        $pasien = new Pasien();
+        $pasien = new Unit();
         $affectedRow = $pasien->editData($id);
         $this->pesan("Edit", $affectedRow);
-        redirect('/kelola/kelolapasien', 'refresh');
+        redirect('/kelola/kelolaunit', 'refresh');
     }
 
     public function deleteData($id) {
-        $pasien = new Pasien();
+        $pasien = new Unit();
         $affectedRow = $pasien->deleteData($id);
         $this->pesan("Hapus", $affectedRow);
-        redirect('/kelola/kelolapasien', 'refresh');
-    }
-
-    public function test()
-    {   
-        $data = $this->m_kelolapasien->getData();
-        var_dump($data);
-        echo "<br><br><br><br><br><br>";
-        $this->load->view('/tests/testDumpKelolaPasien', $data);
+        redirect('/kelola/kelolaunit', 'refresh');
     }
 
     public function pesan($metode, $affectedRow) {
