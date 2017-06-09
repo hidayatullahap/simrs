@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/kelola/kelolapasien'); ?>"><font color='black'><strong>Kelola - Pasien</strong></font></a>
+            <a href="<?php echo base_url('/loket/layananpasien'); ?>"><font color='black'><strong>Layanan - Pasien</strong></font></a>
         </h1>
     </section>
 
@@ -33,7 +33,7 @@
                             </form>
                         </div>
                         
-                        <table class="table table-bordered table-hover" id="tabel" cellspacing="0" width="100%">
+                        <table class="table table-bordered table-hover responsive" id="tabel" cellspacing="0" width="100%">
                             <thead bgcolor="#4a4a4c">
                             <tr>
                                 <th><font color="white">Pasien ID</th>
@@ -48,6 +48,7 @@
                                 <th><font color="white">Jenis Pasien</th>
                                 <th><font color="white">Tanggal Daftar</th>
                                 <th><font color="white">Aksi</th>
+                                <th><font color="white">Layanan</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -56,7 +57,7 @@
                                 $i=1;
                                 foreach ($data as $field => $values) {
                                     echo "<tr>";
-                                    echo "<td width='5%'>".$values['pasien_id']."</td>";
+                                    echo "<td width='4%'>".$values['pasien_id']."</td>";
                                     echo "<td>".$values['nama']."</td>";
                                     echo "<td>".$values['tempat_lahir']."</td>";
                                     echo "<td>".$values['tanggal_lahir']."</td>";
@@ -69,7 +70,13 @@
                                     $date=strtotime($values['tanggal_daftar']);
                                     echo "<td>".date('d M Y H:i:s', $date)."</td>";
 
-                                    echo "<td><button type='button' class='btn btn-info btn-md' id='buttonTambahLayanan' data-toggle='modal' data-target='#addForm'>Layani</button></td>";
+                                    echo "<td width='4%' align='center'><span data-toggle='tooltip' onclick='editModal($i);' title='Edit data pasien'><i class='fa fa-sm fa-edit'>Edit</i></span></td>";
+                                    if($values['is_dilayani']){
+                                        $is_disabled="disabled";
+                                    }else{
+                                        $is_disabled="";
+                                    }
+                                    echo "<td width='5%' align='center'><button type='button' class='btn btn-primary btn-sm $is_disabled' id='buttonTambahLayanan'  onclick='kunjungan($i);'>Kunjungan</button></td>";
                                     echo "</tr>";
                                     $i++;
                                 }
@@ -226,10 +233,72 @@
                                                 }
                                                 ?>
                                         </select>
+                                        </div>
+                                    </div>
+                                </div><br><br>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                                <button class="btn btn-primary" id="submitModal" type="submit">Simpan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                    <form method="post" id="formModal" action="<?php echo base_url('/loket/layananpasien/kunjungan') ?>">
+                    <div class="modal fade" id="kunjungan" role="dialog">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title" id="headerModal">Kunjungan</h4>
+                                </div>
+
+                                <div class="modal-body" style="text-align: right; ">
+                                    <input hidden name="idPasien" id="idPasien"></input>
+                                    <div class="item form-group">
+                                        <label class="col-md-3 control-label paddingForm" for="nama">Nama</label>
+                                        <div class="col-md-6">
+                                            <?php
+                                            $data = array(
+                                                'name' => 'nama',
+                                                'autocomplete' => 'off',
+                                                'required' => 'required',
+                                                'id' => 'namapasien',
+                                                'type' => 'text',
+                                                'class' => 'form-control col-md-7 col-xs-12',
+                                                'readonly' =>'readonly'
+                                            );
+                                            echo form_input($data);
+                                            ?>
                                         </div><br><br>
                                         
+                                        <label class="col-md-3 control-label paddingForm" for="jenis_kunjungan">Jenis Kunjungan</label>
+                                        <div class="col-md-6">
+                                        <select class="select2_single form-control" tabindex="-1" name="jenis_kunjungan" required>
+                                            <option id= "jenis_kunjungan" hidden="" value="">Pilih jenis kunjungan</option>
+                                                <option value="rawat_jalan">Rawat Jalan</option>
+                                                <option value="rawat_inap">Rawat Inap</option>
+                                                <option value="lainnya">Lainnya</option>
+                                        </select>
+                                        </div><br><br>
+
+                                        <label class="col-md-3 control-label paddingForm" for="unitsesudah">Unit Tujuan</label>
+                                        <div class="col-md-6">
+                                        <select class="select2_single form-control" tabindex="-1" name="unitsesudah" required>
+                                            <option id= "unitsesudah" hidden="" value="">Pilih jenis pasien</option>
+                                                <?php 
+                                                foreach ($daftarUnit['data'] as $field => $values) {
+                                                    echo "<option value=";
+                                                    echo $values['unit_id'];
+                                                    echo ">";
+                                                    echo $values['nama_unit']; 
+                                                    echo "</option>";
+                                                }
+                                                ?>
+                                        </select>
+                                        </div><br><br>
                                     </div>
-                                </div><br><br><br>
+                                </div>
                                 <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                                 <button class="btn btn-primary" id="submitModal" type="submit">Simpan</button>
@@ -268,8 +337,8 @@
                     <?php if($this->session->flashdata('pesan')) {?>
                         <div class="alert alert-success alert-dismissible" id="success-alert">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <h4><i class="icon fa fa-info"></i> Data Pasien</h4>
-                            <?php echo $this->session->flashdata('metode')." data pasien ".$this->session->flashdata('pesan'); ?>
+                            <h4><i class="icon fa fa-info"></i> Notifikasi</h4>
+                            <?php echo $this->session->flashdata('metode')." pasien ".$this->session->flashdata('pesan'); ?>
                         </div>
                     <?php } ?>
                     </div>
@@ -312,7 +381,7 @@
 </script>
 
 <script>
-$("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+$("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     $("#success-alert").slideUp(500);
 });
 
@@ -342,7 +411,14 @@ function editModal(row) {
     document.getElementById("formModal").action ="<?php echo base_url('/loket/layananpasien/editdata') ?>"+"/"+id;
     $("#addForm").modal();
 }
+function kunjungan(row) {
+    document.getElementById("idPasien").value       = document.getElementById("tabel").rows[row].cells[0].innerHTML;
+    document.getElementById("namapasien").value     = document.getElementById("tabel").rows[row].cells[1].innerHTML;
+    $("#kunjungan").modal();
+}
+
 </script>
+
 
 
 </body>

@@ -51,7 +51,7 @@ class Login extends CI_Controller {
                 $sess_data['pengguna_username'] = $values['username'];
                 $sess_data['pengguna_peran'] = $values['role'];
                 $this->session->set_userdata($sess_data);
-                setcookie("pageLimit",15, time()+86400, "/","", 0);
+                setcookie("pageLimit",10, time()+86400, "/","", 0);
                 setcookie("pageSort", "DESC", time()+86400, "/","", 0);
                 redirect('kelola/kelolapasien');
             }

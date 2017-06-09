@@ -4,7 +4,6 @@
 
 require_once CLASSES_DIR  . 'antrian.php';
 require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'Antrian.php';
 require_once CLASSES_DIR  . 'mastertabel.php';
 
 class AntrianBerjalan extends CI_Controller
@@ -34,7 +33,7 @@ class AntrianBerjalan extends CI_Controller
         if(!isset($page)){
             $page=1;
         }
-        $title['title']="Kelola Antrian";
+        $title['title']="Antrian Berjalan";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
         if(!isset($page)){ $page = 1; }
@@ -45,7 +44,7 @@ class AntrianBerjalan extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
         $data = $antrian->AntrianHariIni($sort, $page, $limit);
-        $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
+        $data['daftarUnit'] = $master->getData("unit");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/loket/antrianberjalan', $data);
@@ -56,9 +55,11 @@ class AntrianBerjalan extends CI_Controller
     {   
         $search = $_POST['search'];
         $antrian = new Antrian();
-        $title['title']="Kelola Antrian";
+        $master = new MasterTabel();
+        $title['title']="Antrian Berjalan";
         
         $data = $antrian->searchData($search);
+        $data['daftarUnit'] = $master->getData("unit");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/loket/antrianberjalan', $data);
@@ -76,6 +77,13 @@ class AntrianBerjalan extends CI_Controller
         $antrian = new Antrian();
         $affectedRow = $antrian->editData($id);
         $this->pesan("Edit", $affectedRow);
+        redirect('/loket/antrianberjalan', 'refresh');
+    }
+
+    public function editUnit() {
+        $antrian = new Antrian();
+        $affectedRow = $antrian->editUnitTujuan();
+        $this->pesan("Pindah unit ", $affectedRow);
         redirect('/loket/antrianberjalan', 'refresh');
     }
 
@@ -120,5 +128,10 @@ class AntrianBerjalan extends CI_Controller
         } else {
             $this->session->set_flashdata('pesan', 'gagal');
         }
+    }
+    
+    public function ajaxAntrianBerjalan(){
+        $antrian = new Antrian();
+        echo $antrian->ajaxAntrianHariIni();
     }
 }

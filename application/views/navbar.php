@@ -47,7 +47,8 @@
         100% { color: #0dc143; }
     }
 </style>
-<body class="skin-green">
+<!--<body class="skin-green">-->
+<body <?php if(!empty($navbar_collapse_menu)) { echo "class=\"skin-green sidebar-collapse sidebar-open sidebar-mini\""; } else { ?> class="skin-green sidebar-mini" <?php } ?>>
     <div class="wrapper">
 
 <header class="main-header">
@@ -58,7 +59,7 @@
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
         </a>
-        
+        <!--
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
 
@@ -86,6 +87,35 @@
                     </ul>
                 </li>
             </ul>
+        </div>-->
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+
+            <!-- User Account: style can be found in dropdown.less -->
+                <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="<?php echo base_url('assets/images/pkm/bareng/logo_whitebased.png'); ?>" class="user-image" alt="User Image"/>
+                        <span class="hidden-xs">Hi, <?php echo $this->session->userdata('pengguna_nama'); ?>!</span>
+                    </a>
+                    
+                    <ul class="dropdown-menu">
+                        <!-- User image -->
+                        <li class="user-header">
+                            <img src="<?php echo base_url('assets/images/pkm/bareng/logo_whitebased.png'); ?>" class="img-circle" alt="User Image" />
+                            <p>
+                                <?php echo substr($this->session->userdata('pengguna_nama'), 0, 9); ?> / <?php echo $this->session->userdata('pengguna_peran'); ?>
+                            </p>
+                        </li>
+                        <!-- Menu Body -->
+                        <!-- Menu Footer-->
+                        <li class="user-footer">
+                            <div class="pull-right">
+                                <a href="<?php echo base_url('login/logout'); ?>" class="btn btn-default btn-flat">Sign out</a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </nav>
 </header>
@@ -97,10 +127,9 @@
                 <img src="<?php echo base_url('assets/img/avatar5.png'); ?>" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
-                <p><?php echo $this->session->userdata('nama'); ?></p>
                 <i class="fa fa-circle text-success"></i><a class="colorter"> Online</a><br>
-                <?php echo $this->session->userdata('pengguna_nama'); ?>
-                <a><?php echo $this->session->userdata('pengguna_peran'); ?></a><br><br>
+                <a><?php echo substr($this->session->userdata('pengguna_peran'),0,20); ?></a><br>
+                <?php echo substr($this->session->userdata('pengguna_nama'),0,20); ?><br>
                 <a href="<?php echo base_url('login/logout'); ?>" style="color:red;"><i class="fa fa-power-off"></i> Logout</a><br>
             </div>
         </div>
@@ -115,17 +144,26 @@
                 </a>
             </li>
 
-            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "antrianberjalan") == 0 ? "active" : ""); ?>">
-                <a href="<?php echo base_url('loket/antrianberjalan'); ?>">
-                    <i class="fa fa-arrow-right"></i> <span>Antrian Berjalan</span> 
-                </a>
-            </li>
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "daftarpasien") == 0 ? "active" : ""); ?>">
                 <a href="<?php echo base_url('loket/layananpasien'); ?>">
                     <i class="fa fa-users"></i> <span>Layanan Pasien</span> 
                 </a>
             </li>
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "antrianberjalan") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('loket/antrianberjalan'); ?>">
+                    <i class="fa fa-arrow-right"></i> <span>Antrian Berjalan</span> 
+                </a>
+            </li>
 
+            <li class="header">MENU NAVIGASI FARMASI</li>
+            
+            <li class="treeview">
+                <a href="<?php echo base_url('farmasi/halamanutama'); ?>">
+                    <i class="fa fa-home"></i> <span>Dashboard</span> 
+                </a>
+            </li>
+
+            <li class="header">Pengaturan</li>
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "kelola") == 0 ? "active" : ""); ?>">
                 <a href="#">
                     <i class="fa fa-cogs"></i> <span>Kelola</span>
@@ -133,23 +171,11 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="<?php echo base_url('kelola/kelolabarang'); ?>"><i class="fa fa-table"></i>Master Barang</a></li>
-                </ul>
-                <ul class="treeview-menu">
                     <li><a href="<?php echo base_url('kelola/kelolajenispasien'); ?>"><i class="fa fa-table"></i>Jenis Pasien</a></li>
-                </ul>
-                <ul class="treeview-menu">
                     <li><a href="<?php echo base_url('kelola/kelolaaturanpakaiobat'); ?>"><i class="fa fa-table"></i>Aturan Pakai</a></li>
-                </ul>
-                <ul class="treeview-menu">
                     <li><a href="<?php echo base_url('kelola/kelolajenispenerimaan'); ?>"><i class="fa fa-table"></i>Jenis Penerimaan</a></li>
-                </ul>
-                <ul class="treeview-menu">
                     <li><a href="<?php echo base_url('kelola/kelolasatuan'); ?>"><i class="fa fa-table"></i>Satuan</a></li>
-                </ul>
-                <ul class="treeview-menu">
                     <li><a href="<?php echo base_url('kelola/kelolaunit'); ?>"><i class="fa fa-table"></i>Unit</a></li>
-                </ul>
-                <ul class="treeview-menu">
                     <li><a href="<?php echo base_url('kelola/kelolagrupbarang'); ?>"><i class="fa fa-table"></i>Grup Barang</a></li>
                 </ul>
 
@@ -162,8 +188,6 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="<?php echo base_url('kelola/kelolapengguna'); ?>"><i class="fa fa-user"></i>Pengguna</a></li>
-                </ul>
-                <ul class="treeview-menu">
                     <li><a href="<?php echo base_url('kelola/kelolapasien'); ?>"><i class="fa fa-table"></i>Data Pasien</a></li>
                 </ul>
             </li>

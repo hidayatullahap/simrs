@@ -7,7 +7,7 @@ require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'pasien.php';
 require_once CLASSES_DIR  . 'mastertabel.php';
 
-class LayananPasien extends CI_Controller
+class HalamanUtama extends CI_Controller
 {   
     function __construct()
     {
@@ -49,20 +49,19 @@ class LayananPasien extends CI_Controller
         $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/loket/layananpasien', $data);
+        $this->load->view('/farmasi/halamanutama', $data);
         $this->load->view('footer');
     }
 
     public function detil($id=null)
     {   
         $pasien = new Pasien();
-        //$url="pasien";
         $title['title']="Layanan Pasien";
         
         $data = $pasien->getOne($id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/loket/layananpasien', $data);
+        $this->load->view('/farmasi/halamanutama', $data);
         $this->load->view('footer');
     }
 
@@ -79,7 +78,7 @@ class LayananPasien extends CI_Controller
         $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/loket/layananpasien', $data);
+        $this->load->view('/farmasi/halamanutama', $data);
         $this->load->view('footer');
     }
     
@@ -87,28 +86,28 @@ class LayananPasien extends CI_Controller
         $pasien = new Pasien();
         $affectedRow = $pasien->postData();
         $this->pesan("Tambah", $affectedRow);
-        redirect('/loket/layananpasien', 'refresh');
+        redirect('/farmasi/halamanutama', 'refresh');
     }
 
     public function editData($id) {
         $pasien = new Pasien();
         $affectedRow = $pasien->editData($id);
         $this->pesan("Edit", $affectedRow);
-        redirect('/loket/layananpasien', 'refresh');
+        redirect('/farmasi/halamanutama', 'refresh');
     }
 
     public function kunjungan() {
         $antrian = new Antrian();
         $affectedRow = $antrian->kunjungan();
         $this->pesan("Layanan ", $affectedRow);
-        redirect('/loket/layananpasien', 'refresh');
+        redirect('/farmasi/halamanutama', 'refresh');
     }
 
     public function deleteData($id) {
         $pasien = new Pasien();
         $affectedRow = $pasien->deleteData($id);
         $this->pesan("Hapus", $affectedRow);
-        redirect('/loket/layananpasien', 'refresh');
+        redirect('/farmasi/halamanutama', 'refresh');
     }
 
     public function pesan($metode, $affectedRow) {

@@ -1,5 +1,4 @@
 <style rel="stylesheet">
-    
     .paddingForm {
         padding-top: 1.5%;
         text-align: right;
@@ -9,84 +8,48 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/loket/antrianberjalan'); ?>"><font color='black'><strong>Antrian Berjalan Hari Ini</strong></font></a>
+            <a href="<?php echo base_url('/loket/antrianberjalan'); ?>"><font color='black'><strong>Antrian berjalan</strong></font></a>
         </h1>
     </section>
-
     <!-- Main content -->
     <section class="content">
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
-                    <div class="box-header with-border">
-                        <div class="form-group row">
+                    <div class="box-header">
+                        <!--
+                        <form action="<?php echo base_url('/loket/layananpasien') ?>">
                             <div class="col-xs-2">
-                                <button type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Pasien</button>
-                            </div>
-                            <form method="post" action="<?php echo base_url('/loket/antrianberjalan/search') ?>">
-                            <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
-                            <input  type="text" class="form-control" placeholder="Cari nama pasien" name="search" id="search">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                                </div>
-                            </div>
-                            </form>
-                        </div>
-                        
-                        <table class="table table-bordered table-hover" id="tabel" cellspacing="0" width="100%">
-                            <thead bgcolor="#4a4a4c">
-                            <tr>
-                                <th><font color="white">Pasien ID</th>
-                                <th><font color="white">Nama</th>
-                                <th><font color="white">Jenis Kunjungan</th>
-                                <th><font color="white">Tujuan</th>
-                                <th><font color="white">Status</th>
-                                <th><font color="white">Tanggal Mendaftar</th>
-                                <th><font color="white">Aksi</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php
-                            if ($data->num_rows>0) {
-                                $i=1;
-                                foreach ($data as $field => $values) {
-                                    echo "<tr>";
-                                    echo "<td width='5%'>".$values['pasien_id']."</td>";
-                                    echo "<td>".$values['nama']."</td>";
-                                    echo "<td>".$values['jenis_kunjungan']."</td>";
-                                    echo "<td>".$values['nama_unit']."</td>";
-                                    echo "<td>".$values['status']."</td>";
-                                   
-                                    $date=strtotime($values['tanggal_antrian']);
-                                    echo "<td>".date('d M Y H:i:s', $date)."</td>";
+                                <button type="submit" class="btn btn-info btn-md" >Daftar Pasien</button>
+                            </div><br>
+                        </form>
+                        -->
+                        <!-- /.box-header -->
+                        <div class="box-body" >
+                            <table class="display responsive no-wrap" id="antrianUtama" cellspacing="0" width="100%" style="text-align: left;">
+                                <thead>
+                                <tr>
+                                    <th>Tanggal Antri</th>
+                                    <th>Nama</th>
+                                    <th>Jenis Kunjungan</th>
+                                    <th>Tujuan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div><!-- ./wrapper -->
 
-                                    echo "<td><a data-toggle='tooltip' onclick='editModal($i);' title='edit'><i class='fa fa-fw fa-edit'></i></a>
-                                    <a data-toggle='tooltip' title='hapus'><i class='fa fa-fw fa-remove' data-toggle='modal' data-target='.bs-example-modal-sm' data-id='".$values['pasien_id']."' 
-                                    data-nama='".$values['nama']."'></i></a></td>";
-                                    echo "</tr>";
-                                    $i++;
-                                }
-                            } else {
-                                echo "<tr><td colspan='11' align='center'><font size='3' color='red'>Tidak ada data</font></td></tr>";
-                            }
-                            ?>
-                            </tbody>
-                        </table>
-                    <?php  if (isset($totalPages)) {
-                        echo "<p style='font-family:Calibri; font-size:85%;'>Showing page: ".$currentPage." with total data: ".$totalData."</p>";
-                        }
-                    ?>
-
-                    <form method="post" id="formModal" action="<?php echo base_url('/loket/antrianberjalan/insertdata') ?>">
-                    <div class="modal fade" id="addForm" role="dialog">
+                    <form method="post" id="formModal" action="<?php echo base_url('/loket/antrianberjalan/editunit') ?>">
+                    <div class="modal fade" id="pindahunit" role="dialog">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
                                 <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title" id="headerModal">Tambah Pasien</h4>
+                                <h4 class="modal-title" id="headerModal">Alihkan Layanan Unit</h4>
                                 </div>
 
                                 <div class="modal-body" style="text-align: right; ">
+                                    <input hidden name="idPasien" id="idPasien"></input>
                                     <div class="item form-group">
                                         <label class="col-md-3 control-label paddingForm" for="nama">Nama</label>
                                         <div class="col-md-6">
@@ -98,131 +61,45 @@
                                                 'id' => 'nama',
                                                 'type' => 'text',
                                                 'class' => 'form-control col-md-7 col-xs-12',
-                                                'placeholder' => 'Isikan nama pasien',
+                                                'readonly' =>'readonly'
                                             );
                                             echo form_input($data);
                                             ?>
                                         </div><br><br>
 
-                                        <label class="col-md-3 control-label paddingForm" for="tanggal_lahir">Tanggal Lahir</label>
-                                        <div class="col-md-4">
-                                            <?php
-                                            $data = array(
-                                                'name' => 'tanggal_lahir',
-                                                'autocomplete' => 'off',
-                                                'required' => 'required',
-                                                'id' => 'tanggal_lahir',
-                                                'type' => 'date',
-                                                'class' => 'form-control col-md-7 col-xs-12',
-                                                'placeholder' => 'Isikan tanggal lahir',
-                                            );
-                                            echo form_input($data);
-                                            ?>
-                                        </div><br><br>
-
-                                        <label class="col-md-3 control-label paddingForm" for="tempat_lahir">Tempat Lahir</label>
-                                        <div class="col-md-4">
-                                            <?php
-                                            $data = array(
-                                                'name' => 'tempat_lahir',
-                                                'autocomplete' => 'off',
-                                                'required' => 'required',
-                                                'id' => 'tempat_lahir',
-                                                'type' => 'text',
-                                                'class' => 'form-control col-md-7 col-xs-12',
-                                                'placeholder' => 'Isikan tempat lahir',
-                                            );
-                                            echo form_input($data);
-                                            ?>
-                                        </div><br><br>
-
-                                       <label class="col-md-3 control-label paddingForm" for="alamat">Alamat</label>
-                                        <div class="col-md-8">
-                                            <?php
-                                            $data = array(
-                                                'name' => 'alamat',
-                                                'autocomplete' => 'off',
-                                                'required' => 'required',
-                                                'id' => 'alamat',
-                                                'type' => 'text',
-                                                'class' => 'form-control col-md-7 col-xs-12',
-                                                'placeholder' => 'Isikan alamat',
-                                            );
-                                            echo form_input($data);
-                                            ?>
-                                        </div><br><br>
-
-                                        <label class="col-md-3 control-label paddingForm" for="golongan_darah">Jenis Kelamin</label>
+                                        <label class="col-md-3 control-label paddingForm" for="unitsebelum">Unit Sebelumnya</label>
                                         <div class="col-md-6">
-                                        <select class="select2_single form-control" tabindex="-1" name="jenis_kelamin" required>
-                                            <option id= "jenis_kelamin" hidden="" value="">Pilih jenis kelamin</option>
-                                            <option value="Laki-laki">Laki-laki</option>
-                                            <option value="Perempuan">Perempuan</option>
-                                            <option value="Lainnya">Lainnya</option>
-                                        </select>
-                                        </div><br><br>
-
-                                        <label class="col-md-3 control-label paddingForm" for="nomor_rm">Nomor Rekam Medis</label>
-                                        <div class="col-md-4">
                                             <?php
                                             $data = array(
-                                                'name' => 'nomor_rm',
+                                                'name' => 'unitsebelum',
                                                 'autocomplete' => 'off',
                                                 'required' => 'required',
-                                                'id' => 'nomor_rm',
+                                                'id' => 'unitsebelum',
                                                 'type' => 'text',
                                                 'class' => 'form-control col-md-7 col-xs-12',
-                                                'placeholder' => 'Isikan nomor rm',
-                                            );
-                                            echo form_input($data);
-                                            ?>
-                                        </div><br><br><br>
-
-                                        <label class="col-md-3 control-label paddingForm" for="agama">Agama</label>
-                                        <div class="col-md-4">
-                                            <?php
-                                            $data = array(
-                                                'name' => 'agama',
-                                                'autocomplete' => 'off',
-                                                'required' => 'required',
-                                                'id' => 'agama',
-                                                'type' => 'text',
-                                                'class' => 'form-control col-md-7 col-xs-12',
-                                                'placeholder' => 'Isikan agama',
+                                                'readonly' =>'readonly'
                                             );
                                             echo form_input($data);
                                             ?>
                                         </div><br><br>
 
-                                        <label class="col-md-3 control-label paddingForm" for="golongan_darah">Golongan Darah</label>
+                                        <label class="col-md-3 control-label paddingForm" for="unitsesudah">Unit Tujuan</label>
                                         <div class="col-md-6">
-                                        <select class="select2_single form-control" tabindex="-1" name="golongan_darah" required>
-                                            <option id= "golongan_darah" hidden="" value="">Pilih golongan darah</option>
-                                            <option value="O">O</option>
-                                            <option value="A">A</option>
-                                            <option value="B">B</option>
-                                            <option value="AB">AB</option>
-                                        </select>
-                                        </div><br><br>
-
-                                        <label class="col-md-3 control-label paddingForm" for="jenis_pasien">Jenis Pasien</label>
-                                        <div class="col-md-6">
-                                        <select class="select2_single form-control" tabindex="-1" name="optionJenisPasien" required>
-                                            <option id= "optionJenisPasien" hidden="" value="">Pilih jenis pasien</option>
+                                        <select class="select2_single form-control" tabindex="-1" name="unitsesudah" required>
+                                            <option id= "unitsesudah" hidden="" value="">Pilih jenis pasien</option>
                                                 <?php 
-                                                foreach ($daftarJenisPasien['data'] as $field => $values) {
+                                                foreach ($daftarUnit['data'] as $field => $values) {
                                                     echo "<option value=";
-                                                    echo $values['jenis_pasien_id'];
+                                                    echo $values['unit_id'];
                                                     echo ">";
-                                                    echo $values['nama_jenis_pasien']; 
+                                                    echo $values['nama_unit']; 
                                                     echo "</option>";
                                                 }
                                                 ?>
                                         </select>
                                         </div><br><br>
-                                        
                                     </div>
-                                </div><br><br><br>
+                                </div>
                                 <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                                 <button class="btn btn-primary" id="submitModal" type="submit">Simpan</button>
@@ -231,38 +108,11 @@
                         </div>
                     </div>
                     </form>
-                    <div id="delete" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-                        <div class="modal-dialog modal-sm">
-                            <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">Hapus Data Pasien</h4>
-                            </div>
-                            <div class="modal-body">
-                                Anda yakin ingin menghapus data pasien <br>
-                                Nama : <strong class="modal-Nama">Nama Pasien</strong>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-success" data-dismiss="modal">Batal</button>
-                                <a id="deletelink" href="#"><button type="button" class="btn btn-danger">Hapus</button></a>
-                            </div>
-                            </div>
-                        </div>
-                    </div>    
-                    <div class="box-footer clearfix">
-                        <?php
-                            require_once(CLASSES_DIR  . "pagination.php");
-                            $entity = new Pagination();
-                        if (isset($totalPages)) {
-                            $entity->tampilkan('loket/antrianberjalan',$currentPage, $totalPages);
-                        }
-                        ?>
-                    </div>
                     <?php if($this->session->flashdata('pesan')) {?>
                         <div class="alert alert-success alert-dismissible" id="success-alert">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <h4><i class="icon fa fa-info"></i> Data Pasien</h4>
-                            <?php echo $this->session->flashdata('metode')." data pasien ".$this->session->flashdata('pesan'); ?>
+                            <h4><i class="icon fa fa-info"></i> Notifikasi</h4>
+                            <?php echo $this->session->flashdata('metode').$this->session->flashdata('pesan'); ?>
                         </div>
                     <?php } ?>
                     </div>
@@ -305,7 +155,7 @@
 </script>
 
 <script>
-$("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+$("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     $("#success-alert").slideUp(500);
 });
 
@@ -317,26 +167,37 @@ $(document).ready(function(){
     });
 });
 
-function editModal(row) {
-    var id= document.getElementById("tabel").rows[row].cells[0].innerHTML;
-    
-    document.getElementById("nama").value           = document.getElementById("tabel").rows[row].cells[1].innerHTML;
-    document.getElementById("tempat_lahir").value  = document.getElementById("tabel").rows[row].cells[2].innerHTML;
-    document.getElementById("tanggal_lahir").value   = document.getElementById("tabel").rows[row].cells[3].innerHTML;
-    document.getElementById("alamat").value         = document.getElementById("tabel").rows[row].cells[4].innerHTML;
-    document.getElementById("jenis_kelamin").innerHTML  = document.getElementById("tabel").rows[row].cells[5].innerHTML;
-    document.getElementById("nomor_rm").value       = document.getElementById("tabel").rows[row].cells[6].innerHTML;
-    document.getElementById("agama").value          = document.getElementById("tabel").rows[row].cells[7].innerHTML;
-    document.getElementById("golongan_darah").innerHTML = document.getElementById("tabel").rows[row].cells[8].innerHTML;
-    document.getElementById("optionJenisPasien").innerHTML   = document.getElementById("tabel").rows[row].cells[9].innerHTML;
-
-    document.getElementById("headerModal").innerHTML = "Edit Pasien";
-    document.getElementById("submitModal").innerHTML = "Simpan Perubahan";
-    document.getElementById("formModal").action ="<?php echo base_url('/loket/antrianberjalan/editdata') ?>"+"/"+id;
-    $("#addForm").modal();
+</script>
+<script>
+function editModal(id,nama,unit) {
+    document.getElementById("idPasien").value = id;
+    document.getElementById("nama").value = nama;
+    document.getElementById("unitsebelum").value = unit;
+    $("#pindahunit").modal();
 }
 </script>
-
-
+<script>
+    $.fn.dataTable.Buttons.swfPath = '<?php echo base_url();?>datatables/extensions/Buttons/swf/flashExport.swf';
+    $(document).ready(function () {
+        var table_antrianUtama = $('#antrianUtama').DataTable( {
+            //"dom": '<"top">lt<"bottom"if><"clear">',
+            "bSort": false,
+            "serverSide": true,
+            "ajax":{
+                url :"<?php Print( base_url('/loket/antrianberjalan/ajaxantrianberjalan/') ); ?>",
+                type: "post",
+                error: function(){
+                }
+            },
+            "language": {
+                "emptyTable": "Tidak ada data untuk Antrian Utama"
+            }
+        } );
+        setInterval( function () {
+            table_antrianUtama.ajax.reload(null, false);
+        }, 10000 );
+    });
+    
+</script>
 </body>
 </html>
