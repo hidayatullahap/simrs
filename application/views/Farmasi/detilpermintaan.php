@@ -125,25 +125,3 @@ function printHalaman() {
     window.print();
 }
 </script>
-
-<!--
-<script>
-function test(id){
-    document.getElementById('stok'+id).innerHTML = "id= "+id;
-
-    setInterval(function(){ 
-        var bool = "<?php 
-        require_once(CLASSES_DIR  . 'gudang.php');
-        $gudang=new Gudang();
-        $variable='test';
-        echo $gudang->test('$variable'); ?>"; 
-
-        document.getElementById('stok'+id).innerHTML = "id= "+bool; 
-        }, 1000);
-}
-
-$(document).ready(function () {
-	$('span[onload]').trigger('onload');
-});
-
-</script>-->

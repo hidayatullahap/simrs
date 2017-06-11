@@ -1,10 +1,8 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-
 require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'gudang.php';
-
 class Permintaan extends CI_Controller
 {   
     function __construct()
@@ -39,7 +37,7 @@ class Permintaan extends CI_Controller
         $this->load->view('/farmasi/detilpermintaan', $data);
         $this->load->view('footer');
     }
-
+    
     public function proses($jumlahItem)
     {   
         /*
@@ -57,7 +55,6 @@ class Permintaan extends CI_Controller
             $idbarang=$_POST['idbarang'.$i];
             $nomorPermintaan = $_POST['nomorpermintaan'.$i];
             $untuk_unit_id = $_POST['dariunitid'.$i];
-
             $jumlah = $_POST['jumlah'.$i];
             
             $gudang->prosesPermintaan($id, $idbarang, $unit_id, $untuk_unit_id, $jumlah);

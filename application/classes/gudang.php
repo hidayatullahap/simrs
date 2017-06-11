@@ -42,8 +42,7 @@ class Gudang{
         GROUP BY
         permintaan_stok.nomor_permintaan
         ORDER BY
-        permintaan_stok.tanggal_permintaan ASC
-        LIMIT $page, $limitItemPage) AS notifikasi");
+        permintaan_stok.tanggal_permintaan ASC) AS notifikasi");
 
         if( !empty($requestData['search']['value']) ) {
             $query =
@@ -78,8 +77,7 @@ class Gudang{
             GROUP BY
             permintaan_stok.nomor_permintaan
             ORDER BY
-            permintaan_stok.tanggal_permintaan ASC
-            LIMIT $page, $limitItemPage) AS notifikasi");
+            permintaan_stok.tanggal_permintaan ASC) AS notifikasi");
             }
         
         $result = $conn->query($query);
@@ -134,8 +132,7 @@ class Gudang{
         $sql = $conn->query("SELECT COUNT(*) FROM pengeluaran_barang WHERE
         pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
         AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
-        AND pengeluaran_barang.dari_unit_id = $unit_id
-        LIMIT $page, $limitItemPage");
+        AND pengeluaran_barang.dari_unit_id = $unit_id");
 
         if( !empty($requestData['search']['value']) ) {
             $query =
@@ -163,8 +160,7 @@ class Gudang{
             pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
             AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
             AND pengeluaran_barang.dari_unit_id = $unit_id
-            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
-            LIMIT $page, $limitItemPage");
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'");
             }
         
         $result = $conn->query($query);
@@ -216,8 +212,7 @@ class Gudang{
         
         $sql = $conn->query("SELECT COUNT(*) FROM pengadaan_barang WHERE
         pengadaan_barang.tanggal_masuk BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
-        AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
-        LIMIT $page, $limitItemPage");
+        AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')");
 
         if( !empty($requestData['search']['value']) ) {
             $query =
@@ -244,8 +239,7 @@ class Gudang{
             pengadaan_barang.tanggal_masuk BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
             AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
             AND pengadaan_barang.untuk_unit_id = $unit_id
-            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
-            LIMIT $page, $limitItemPage");
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'");
         }
         
         $result = $conn->query($query);
@@ -295,7 +289,6 @@ class Gudang{
         INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
         INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id 
         WHERE permintaan_stok.nomor_permintaan = '$nomorPermintaan'";
-
         $result = $conn->query($query);
         $data = array("data"=>$result);
         
@@ -344,12 +337,11 @@ class Gudang{
         return $result;
     }
 
-    public function prosesPengeluaranStokFarmasi(){
+    public function prosesPengeluaranStok($unit_id){
         $db=new DB;
         $conn=$db->connect();
         $totalTabel = $_POST['trTotal'];
         $i=1;
-        $unit_id=3;
 
         if($totalTabel>0){
             $tabel_barang_id        = $_POST['tabel_barang_id'];
@@ -414,12 +406,35 @@ class Gudang{
     {   
         $db=new DB;
         $conn=$db->connect();
-        //$tanggalAwal = $_POST['tanggalAwal'];
-        //$tanggalAkhir = $_POST['tanggalAkhir'];
-        $tanggalAwal = "2017-06-10 13:42:03";
-        $tanggalAkhir = "2017-06-11 13:42:03";
-        $sqlRangeDate = "AND pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00')";
-        $sqlRangeDate = "AND pengeluaran_barang.tanggal_keluar BETWEEN '$tanggalAwal' AND '$tanggalAkhir' ";
+        $page=($page*$limitItemPage)-$limitItemPage;
+        
+        if (isset($_POST['tanggalAwal'])){ $tanggalAwal = $_POST['tanggalAwal']; $tanggalAwal = $tanggalAwal." 00:00:00"; $_SESSION["tanggalAwal"] = $tanggalAwal;}
+        if (isset($_POST['tanggalAkhir'])){ $tanggalAkhir = $_POST['tanggalAkhir']; $tanggalAkhir = $tanggalAkhir." 23:59:59"; $_SESSION["tanggalAkhir"] = $tanggalAkhir; }
+        if (isset($_POST['search'])){ $search = $_POST['search'];  $_SESSION["searchFarmasi"] = $search;} 
+        if (isset($_SESSION["tanggalAwal"])){ $tanggalAwal =  $_SESSION["tanggalAwal"];}
+        if (isset($_SESSION["tanggalAkhir"])){ $tanggalAkhir =  $_SESSION["tanggalAkhir"];}
+        if (isset($_SESSION["searchFarmasi"])){ $search =  $_SESSION["searchFarmasi"];}
+        
+
+        //$tanggalAwal = "2017-06-10 13:42:03";
+        //$tanggalAkhir = "2017-06-11 13:42:03";
+
+        if(!isset($tanggalAwal) && !isset($tanggalAkhir)){
+            //$sqlRangeDate = "AND pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+            //AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')";
+            $sqlRangeDate = "";
+        }else if(isset($tanggalAwal) && isset($tanggalAkhir)){
+            $sqlRangeDate = "AND pengeluaran_barang.tanggal_keluar BETWEEN '$tanggalAwal' AND '$tanggalAkhir' ";
+        }else{
+            $sqlRangeDate = "";
+        }
+
+        if(isset($search)){
+            $sqlSearch = "AND barang.nama_barang LIKE '%$search%' ";
+        }else{
+            $sqlSearch = "";
+        }
+
         $data = array();
         
         $query =
@@ -427,23 +442,24 @@ class Gudang{
         barang.nama_barang,
         pengeluaran_barang.jumlah_pengeluaran,
         pengeluaran_barang.tanggal_keluar,
-        unit.nama_unit
+        unit.nama_unit,
+        grup_barang.nama_grup_barang,
+        pengeluaran_barang.no_batch
         FROM
         pengeluaran_barang
         INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id
         INNER JOIN unit ON unit.unit_id = pengeluaran_barang.untuk_unit_id
+        INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
         WHERE
-        pengeluaran_barang.dari_unit_id = $unit_id $sqlRangeDate
+        pengeluaran_barang.dari_unit_id = $unit_id $sqlRangeDate $sqlSearch
         ORDER BY
         pengeluaran_barang.tanggal_keluar DESC
         LIMIT $page, $limitItemPage";
-        
-        $sql = $conn->query("SELECT COUNT(*) FROM pengeluaran_barang WHERE
-        pengeluaran_barang.dari_unit_id = $unit_id $sqlRangeDate
-        LIMIT $page, $limitItemPage");
-        
         $result = $conn->query($query);
         
+        $sql = $conn->query("SELECT COUNT(*) FROM pengeluaran_barang INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id WHERE
+        pengeluaran_barang.dari_unit_id = $unit_id $sqlRangeDate $sqlSearch ");
+
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;

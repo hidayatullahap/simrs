@@ -290,15 +290,10 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
 </script>
 
 <?php
-    $myArray=[];
-foreach ($daftarPasien['data'] as $field => $values) {
-    $myArray[]=$values;
-}
-
     $arrayDaftarBarang=[];
-foreach ($daftarBarang['data'] as $field => $values) {
-    $arrayDaftarBarang[]=$values;
-}
+    foreach ($daftarBarang['data'] as $field => $values) {
+        $arrayDaftarBarang[]=$values;
+    }
 ?>
 <script>
     $(document).ready(function() {
