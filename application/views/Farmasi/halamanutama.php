@@ -18,16 +18,15 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="row">
-                    <div class="col-md-6 flexbo">
+                    <div class="col-md-12">
                         <div class="well">
-                        <h4 class="text-primary"><span class="label label-primary pull-right">Jumlah permintaannya</span> Permintaan Masuk</h4>
+                        <h4 class="text-primary">Permintaan Masuk</h4>
                         <br>
-                        <table class="display responsive no-wrap" id="antrianUtama" cellspacing="0" width="100%" style="text-align: left;">
+                        <table class="display responsive no-wrap" id="permintaanMasuk" cellspacing="0" width="100%" style="text-align: left;">
                                 <thead>
                                 <tr>
                                     <th>Nomor Permintaan</th>
                                     <th>Dari Unit</th>
-                                    <th>Jenis Kunjungan</th>
                                     <th>Tanggal Permintaan</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -35,31 +34,33 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="well">
-                        <h4 class="text-danger">Stok Keluar </h4>
+                        <h4 class="text-danger">Stok Keluar Hari Ini</h4>
                         <br>
-                        <table class="display responsive no-wrap" id="antrianUtama" cellspacing="0" width="100%" style="text-align: left;">
+                        <table class="display responsive no-wrap" id="stokKeluar" cellspacing="0" width="100%" style="text-align: left;">
                                 <thead>
                                 <tr>
                                     <th>Nama barang</th>
                                     <th>Jumlah</th>
-                                    <th>Tanggal Keluar</th>
+                                    <th>Untuk</th>
+                                    <th>Jam</th>
                                 </tr>
                                 </thead>
                             </table>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="well">
-                        <h4 class="text-success">Stok Masuk </h4>
+                        <h4 class="text-success">Stok Masuk Hari Ini</h4>
                         <br>
-                        <table class="display responsive no-wrap" id="antrianUtama" cellspacing="0" width="100%" style="text-align: left;">
+                        <table class="display responsive no-wrap" id="stokMasuk" cellspacing="0" width="100%" style="text-align: left;">
                                 <thead>
                                 <tr>
                                     <th>Nama barang</th>
                                     <th>Jumlah</th>
-                                    <th>Tanggal Masuk</th>
+                                    <th>Dari</th>
+                                    <th>Jam</th>
                                 </tr>
                                 </thead>
                             </table>
@@ -99,57 +100,73 @@
 <script src="<?php echo base_url("assets/js/plugins/Parsley.js-2.5.1/dist/parsley.js"); ?>"></script>
 
 <script>
-    $('#delete').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget)
-        var dataID = button.data('id')
-        var dataNama = button.data('nama')
-        
-        var modal = $(this)
-        modal.find('.modal-Nama').text(dataNama)
-        document.getElementById("deletelink").href="<?php echo base_url('kelola/kelolapasien/deletedata/'); ?>"+"/"+dataID;
-    });
-</script>
-
-<script>
 $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     $("#success-alert").slideUp(500);
 });
-
-$(document).ready(function(){
-    $("#buttonTambah").click(function(){
-        document.getElementById("headerModal").innerHTML = "Tambah Pasien";
-        document.getElementById("submitModal").innerHTML = "Simpan";
-        document.getElementById("formModal").action ="<?php echo base_url('/farmasi/halamanutama/insertdata') ?>";
-    });
-});
-
-function editModal(row) {
-    var id= document.getElementById("tabel").rows[row].cells[0].innerHTML;
-    
-    document.getElementById("nama").value           = document.getElementById("tabel").rows[row].cells[1].innerHTML;
-    document.getElementById("tempat_lahir").value  = document.getElementById("tabel").rows[row].cells[2].innerHTML;
-    document.getElementById("tanggal_lahir").value   = document.getElementById("tabel").rows[row].cells[3].innerHTML;
-    document.getElementById("alamat").value         = document.getElementById("tabel").rows[row].cells[4].innerHTML;
-    document.getElementById("jenis_kelamin").innerHTML  = document.getElementById("tabel").rows[row].cells[5].innerHTML;
-    document.getElementById("nomor_rm").value       = document.getElementById("tabel").rows[row].cells[6].innerHTML;
-    document.getElementById("agama").value          = document.getElementById("tabel").rows[row].cells[7].innerHTML;
-    document.getElementById("golongan_darah").innerHTML = document.getElementById("tabel").rows[row].cells[8].innerHTML;
-    document.getElementById("optionJenisPasien").innerHTML   = document.getElementById("tabel").rows[row].cells[9].innerHTML;
-
-    document.getElementById("headerModal").innerHTML = "Edit Pasien";
-    document.getElementById("submitModal").innerHTML = "Simpan Perubahan";
-    document.getElementById("formModal").action ="<?php echo base_url('/farmasi/halamanutama/editdata') ?>"+"/"+id;
-    $("#addForm").modal();
-}
-function kunjungan(row) {
-    document.getElementById("idPasien").value       = document.getElementById("tabel").rows[row].cells[0].innerHTML;
-    document.getElementById("namapasien").value     = document.getElementById("tabel").rows[row].cells[1].innerHTML;
-    $("#kunjungan").modal();
-}
-
 </script>
 
+<script>
+    $.fn.dataTable.Buttons.swfPath = '<?php echo base_url();?>datatables/extensions/Buttons/swf/flashExport.swf';
+    $(document).ready(function () {
+        var table_antrianUtama = $('#permintaanMasuk').DataTable( {
+            "bSort": false,
+            "serverSide": true,
+            "info": false,
+            "ajax":{
+                url :"<?php Print( base_url('farmasi/halamanutama/ajaxpermintaanmasuk') ); ?>",
+                type: "post",
+                error: function(){
+                }
+            },
+            "language": {
+                "emptyTable": "Tidak ada data untuk permintaan masuk"
+            }
+        } );
+        setInterval( function () {
+            table_antrianUtama.ajax.reload(null, false);
+        }, 10000 );
+    });
 
+    $(document).ready(function () {
+        var table_antrianUtama = $('#stokKeluar').DataTable( {
+            "bSort": false,
+            "serverSide": true,
+            "info": false,
+            "ajax":{
+                url :"<?php Print( base_url('farmasi/halamanutama/ajaxstokkeluar') ); ?>",
+                type: "post",
+                error: function(){
+                }
+            },
+            "language": {
+                "emptyTable": "Tidak ada data untuk stok keluar"
+            }
+        } );
+        setInterval( function () {
+            table_antrianUtama.ajax.reload(null, false);
+        }, 10000 );
+    });
+
+    $(document).ready(function () {
+        var table_antrianUtama = $('#stokMasuk').DataTable( {
+            "bSort": false,
+            "serverSide": true,
+            "info": false,
+            "ajax":{
+                url :"<?php Print( base_url('farmasi/halamanutama/ajaxstokmasuk') ); ?>",
+                type: "post",
+                error: function(){
+                }
+            },
+            "language": {
+                "emptyTable": "Tidak ada data untuk stok masuk"
+            }
+        } );
+        setInterval( function () {
+            table_antrianUtama.ajax.reload(null, false);
+        }, 10000 );
+    });
+</script>
 
 </body>
 </html>

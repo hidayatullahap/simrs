@@ -35,6 +35,29 @@ class Barang{
         return $data;
     }
 
+    public function getAll($unit_id)
+    {   
+        $db=new DB;
+        $conn=$db->connect();
+        $query =
+        "SELECT
+        barang.barang_id AS barang_id,
+        barang.nama_barang AS nama_barang,
+        IFNULL(stok.jumlah, 0) AS jumlah_stok,
+        grup_barang.nama_grup_barang AS grup_barang,
+        satuan.nama_satuan AS satuan
+        FROM
+        barang
+        INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
+        INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
+        LEFT JOIN stok ON stok.barang_id = barang.barang_id AND stok.unit_id = $unit_id";
+        $result = $conn->query($query);
+
+        $data = array("data"=>$result);
+
+        return $data;
+    }
+
     public function getOne($id)
     {   
         $db=new DB;

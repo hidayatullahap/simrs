@@ -65,7 +65,7 @@
                                     $i++;
                                 }
                             } else {
-                                echo "<tr><td colspan='11' align='center'><font size='3' color='red'>Tidak ada data</font></td></tr>";
+                                echo "<tr><td colspan='6' align='center'><font size='3' color='red'>Tidak ada data</font></td></tr>";
                             }
                             ?>
                             </tbody>

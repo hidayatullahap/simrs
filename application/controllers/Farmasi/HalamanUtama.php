@@ -2,10 +2,8 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'antrian.php';
 require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'pasien.php';
-require_once CLASSES_DIR  . 'mastertabel.php';
+require_once CLASSES_DIR  . 'gudang.php';
 
 class HalamanUtama extends CI_Controller
 {   
@@ -14,7 +12,7 @@ class HalamanUtama extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
-        $this->session->set_userdata('navbar_status', 'daftarpasien');
+        $this->session->set_userdata('navbar_status', 'halamanutamafarmasi');
         $pengguna = new Pengguna();
         if (!$pengguna->is_loggedin()){
             redirect('login');
@@ -23,102 +21,41 @@ class HalamanUtama extends CI_Controller
     
     public function index()
     {   
-        $this->page(1);
-    }
-
-    public function page($page=null)
-    {   
-        $antrian = new Antrian();
-        $master = new MasterTabel();
-
-        if(!isset($page)){
-            $page=1;
-        }
-        $title['title']="Layanan Pasien";
-        $limit = $_COOKIE["pageLimit"];
-        $sort = $_COOKIE["pageSort"];
-        if(!isset($page)){ $page = 1; }
-        if(!isset($limit)){ 
-            $limit = $this->default_setting->pagination('LIMIT'); 
-        }
-        if(!isset($sort)){ 
-            $sort = $this->default_setting->pagination('SORT'); 
-        }
-        $data = $antrian->getPasienWithStatus($sort, $page, $limit);
-        $data['daftarUnit'] = $master->getData("unit");
-        $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
+        $title['title']="Dashboard";
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/farmasi/halamanutama', $data);
+        $this->load->view('/farmasi/halamanutama');
         $this->load->view('footer');
     }
 
-    public function detil($id=null)
-    {   
-        $pasien = new Pasien();
-        $title['title']="Layanan Pasien";
-        
-        $data = $pasien->getOne($id);
-        $this->load->view('header',$title);
-        $this->load->view('navbar');
-        $this->load->view('/farmasi/halamanutama', $data);
-        $this->load->view('footer');
+    public function ajaxPermintaanMasuk(){
+        $gudang = new Gudang();
+        echo $gudang->ajaxPermintaanMasuk();
     }
 
-
-    public function search($search=null)
-    {   
-        $search = $_POST['search'];
-        $antrian = new Antrian();
-        $master = new MasterTabel();
-        $title['title']="Layanan Pasien";
-        
-        $data = $antrian->searchPasienWithStatus($search);
-        $data['daftarUnit'] = $master->getData("unit");
-        $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
-        $this->load->view('header',$title);
-        $this->load->view('navbar');
-        $this->load->view('/farmasi/halamanutama', $data);
-        $this->load->view('footer');
-    }
-    
-    public function insertData() {
-        $pasien = new Pasien();
-        $affectedRow = $pasien->postData();
-        $this->pesan("Tambah", $affectedRow);
-        redirect('/farmasi/halamanutama', 'refresh');
+    public function ajaxStokKeluar(){
+        $gudang = new Gudang();
+        echo $gudang->ajaxStokKeluar(3);
     }
 
-    public function editData($id) {
-        $pasien = new Pasien();
-        $affectedRow = $pasien->editData($id);
-        $this->pesan("Edit", $affectedRow);
-        redirect('/farmasi/halamanutama', 'refresh');
+    public function ajaxStokMasuk(){
+        $gudang = new Gudang();
+        echo $gudang->ajaxStokMasuk(3);
     }
 
-    public function kunjungan() {
-        $antrian = new Antrian();
-        $affectedRow = $antrian->kunjungan();
-        $this->pesan("Layanan ", $affectedRow);
-        redirect('/farmasi/halamanutama', 'refresh');
-    }
+    public function test() {
+        date_default_timezone_set('Asia/Jakarta');
+        $date = date('Y-m-d H:i:s');
+        $namaUnit="Depo Rajal";
+        $namaBarang="Parasetamol";
+        //$date="2017-05-23 13:11:32";
+        $md5Date=md5(strtotime($date));
 
-    public function deleteData($id) {
-        $pasien = new Pasien();
-        $affectedRow = $pasien->deleteData($id);
-        $this->pesan("Hapus", $affectedRow);
-        redirect('/farmasi/halamanutama', 'refresh');
-    }
-
-    public function pesan($metode, $affectedRow) {
-        $this->session->set_flashdata('metode', $metode);
-        if ($affectedRow == 1) {
-
-            $this->session->set_flashdata('pesan', 'berhasil');
-        } elseif ($affectedRow == 0 and $metode == "ubah") {
-            $this->session->set_flashdata('pesan', 'berhasil');
-        } else {
-            $this->session->set_flashdata('pesan', 'gagal');
-        }
+        $unitKey=substr($namaUnit,0,3);
+        $barangKey=substr($namaBarang,0,3);
+        $yearKey=substr(date('Y', strtotime($date)),2,2);
+        $md5Key=substr($md5Date,0,4);
+        $key=$unitKey.$barangKey.$yearKey.$md5Key;
+        echo strtoupper($key);
     }
 }

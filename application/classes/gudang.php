@@ -5,73 +5,178 @@ class Gudang{
 
     public function ajaxPermintaanMasuk()
     {   
+        $requestData = $_REQUEST;
         $db=new DB;
         $conn=$db->connect();
-        $requestData = $_REQUEST;
         $page = $requestData['start'];
         $limitItemPage = $requestData['length'];
         $data = array();
         
         $query =
         "SELECT
-        antrian.pasien_id,
-        antrian.antrian_id,
-        pasien.nama,
-        antrian.jenis_kunjungan,
+        permintaan_stok.nomor_permintaan,
+        permintaan_stok.dari_unit_id,
         unit.nama_unit,
-        antrian.tanggal_antrian
+        permintaan_stok.tanggal_permintaan
         FROM
-        antrian
-        INNER JOIN pasien ON antrian.pasien_id = pasien.pasien_id
-        INNER JOIN unit ON antrian.unit_id_tujuan = unit.unit_id
+        permintaan_stok
+        INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id
         WHERE
-        antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') AND
-        antrian.`status` = 'belum_dilayani' 
-        ORDER BY `antrian`.`tanggal_antrian` DESC
+        permintaan_stok.`status` = 'belum_dilayani'
+        GROUP BY
+        permintaan_stok.nomor_permintaan
+        ORDER BY
+        permintaan_stok.tanggal_permintaan ASC
         LIMIT $page, $limitItemPage";
         
-        $sql = $conn->query("SELECT COUNT(*) FROM antrian WHERE
-        antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') AND
-        antrian.`status` = 'belum_dilayani' ");
+        $sql = $conn->query("SELECT COUNT(*) FROM (SELECT
+        permintaan_stok.nomor_permintaan,
+        permintaan_stok.dari_unit_id,
+        unit.nama_unit,
+        permintaan_stok.tanggal_permintaan
+        FROM
+        permintaan_stok
+        INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id
+        WHERE
+        permintaan_stok.`status` = 'belum_dilayani'
+        GROUP BY
+        permintaan_stok.nomor_permintaan
+        ORDER BY
+        permintaan_stok.tanggal_permintaan ASC
+        LIMIT $page, $limitItemPage) AS notifikasi");
 
         if( !empty($requestData['search']['value']) ) {
             $query =
             "SELECT
-            antrian.pasien_id,
-            antrian.antrian_id,
-            pasien.nama,
-            antrian.jenis_kunjungan,
+            permintaan_stok.nomor_permintaan,
+            permintaan_stok.dari_unit_id,
             unit.nama_unit,
-            antrian.`status` AS status,
-            antrian.tanggal_antrian
+            permintaan_stok.tanggal_permintaan
             FROM
-            antrian
-            INNER JOIN pasien ON antrian.pasien_id = pasien.pasien_id
-            INNER JOIN unit ON antrian.unit_id_tujuan = unit.unit_id
+            permintaan_stok
+            INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id
             WHERE
-            antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
-            AND antrian.`status` = 'belum_dilayani' 
-            AND pasien.nama LIKE '%".$requestData['search']['value']."%'
-            ORDER BY `antrian`.`tanggal_antrian` DESC
+            permintaan_stok.`status` = 'belum_dilayani'
+		    AND permintaan_stok.nomor_permintaan LIKE '%".$requestData['search']['value']."%'
+			GROUP BY
+            permintaan_stok.nomor_permintaan
+            ORDER BY
+            permintaan_stok.tanggal_permintaan ASC
             LIMIT $page, $limitItemPage";
-        }
+
+            $sql = $conn->query("SELECT COUNT(*) FROM (SELECT
+            permintaan_stok.nomor_permintaan,
+            permintaan_stok.dari_unit_id,
+            unit.nama_unit,
+            permintaan_stok.tanggal_permintaan
+            FROM
+            permintaan_stok
+            INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id
+            WHERE
+            permintaan_stok.`status` = 'belum_dilayani'
+            AND permintaan_stok.nomor_permintaan LIKE '%".$requestData['search']['value']."%'
+            GROUP BY
+            permintaan_stok.nomor_permintaan
+            ORDER BY
+            permintaan_stok.tanggal_permintaan ASC
+            LIMIT $page, $limitItemPage) AS notifikasi");
+            }
         
         $result = $conn->query($query);
 
         while ($row = mysqli_fetch_assoc($result)) {
             $nestedData = array();
-            $id = $row['pasien_id'];
-            $id_antrian = $row['antrian_id'];
-            $nama = $row['nama'];
-            $unit = $row['nama_unit'];
-            
-            //$nestedData[] = $id;
-            $nestedData[] = $row['tanggal_antrian'];
-            $nestedData[] = $row['nama'];
-            $nestedData[] = $row['jenis_kunjungan'];
+            $nomorPermintaan = $row['nomor_permintaan'];
+
+            $nestedData[] = $nomorPermintaan;
             $nestedData[] = $row['nama_unit'];
-            //if (isset($row['status'])){$nestedData[] = $row['status'];}
-            $nestedData[] = "<td><button type='button' class='btn btn-primary btn-md' id='buttonPindahUnit' onclick=\"editModal($id_antrian,'$nama','$unit');\">Pindah Unit</button></td>";
+            $nestedData[] = $row['tanggal_permintaan'];
+            $nestedData[] = "<td><a href='".base_url("farmasi/permintaan/detil/3/$nomorPermintaan")."' ><button type='button' class='btn btn-primary btn-md' id='buttonPindahUnit'>Layani</button></td>";
+            $data[] = $nestedData;
+        }
+        
+        
+        $row = $sql->fetch_row();
+        $count = $row[0];
+        $conn->close();
+        $totalData = $count;
+        $datajson = array("draw" => intval( $requestData['draw'] ), "recordsTotal"=>$totalData, "recordsFiltered"=>$totalData, "data"=>$data);
+        echo json_encode($datajson);
+    }
+
+    public function ajaxStokKeluar($unit_id)
+    {   
+        $requestData = $_REQUEST;
+        $db=new DB;
+        $conn=$db->connect();
+        $page = $requestData['start'];
+        $limitItemPage = $requestData['length'];
+        $data = array();
+        
+        $query =
+        "SELECT
+        barang.nama_barang,
+        pengeluaran_barang.jumlah_pengeluaran,
+        pengeluaran_barang.tanggal_keluar,
+        unit.nama_unit
+        FROM
+        pengeluaran_barang
+        INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id
+        INNER JOIN unit ON unit.unit_id = pengeluaran_barang.untuk_unit_id
+        WHERE
+        pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+        AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') 
+        AND pengeluaran_barang.dari_unit_id = $unit_id
+        ORDER BY
+        pengeluaran_barang.tanggal_keluar DESC
+        LIMIT $page, $limitItemPage";
+        
+        $sql = $conn->query("SELECT COUNT(*) FROM pengeluaran_barang WHERE
+        pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+        AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
+        AND pengeluaran_barang.dari_unit_id = $unit_id
+        LIMIT $page, $limitItemPage");
+
+        if( !empty($requestData['search']['value']) ) {
+            $query =
+            "SELECT
+            barang.nama_barang,
+            pengeluaran_barang.jumlah_pengeluaran,
+            pengeluaran_barang.tanggal_keluar,
+            unit.nama_unit
+            FROM
+            pengeluaran_barang
+            INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id
+            INNER JOIN unit ON unit.unit_id = pengeluaran_barang.untuk_unit_id
+            WHERE
+            pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+            AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') 
+            AND pengeluaran_barang.dari_unit_id = $unit_id
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
+            ORDER BY
+            pengeluaran_barang.tanggal_keluar DESC
+            LIMIT $page, $limitItemPage";
+
+            $sql = $conn->query("SELECT COUNT(*) FROM pengeluaran_barang 
+            INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id
+            WHERE
+            pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+            AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
+            AND pengeluaran_barang.dari_unit_id = $unit_id
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
+            LIMIT $page, $limitItemPage");
+            }
+        
+        $result = $conn->query($query);
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $nestedData = array();
+            $rowDate=strtotime($row['tanggal_keluar']);
+
+            $nestedData[] = $row['nama_barang'];
+            $nestedData[] = $row['jumlah_pengeluaran'];
+            $nestedData[] = $row['nama_unit'];
+            $nestedData[] = date("H:i:s", $rowDate);
             $data[] = $nestedData;
         }
         
@@ -80,217 +185,270 @@ class Gudang{
         $count = $row[0];
         $totalData = $count;
         $datajson = array("draw" => intval( $requestData['draw'] ), "recordsTotal"=>$totalData, "recordsFiltered"=>$totalData, "data"=>$data);
-        //var_dump(json_encode($data));
         echo json_encode($datajson);
     }
 
-    public function getPasienWithStatus($sort, $page, $limitItemPage)
+    public function ajaxStokMasuk($unit_id)
+    {   
+        $requestData = $_REQUEST;
+        $db=new DB;
+        $conn=$db->connect();
+        $page = $requestData['start'];
+        $limitItemPage = $requestData['length'];
+        $data = array();
+        
+        $query =
+        "SELECT
+        barang.nama_barang,
+        pengadaan_barang.terima_dari,
+        pengadaan_barang.tanggal_masuk,
+        pengadaan_barang.jumlah_barang
+        FROM
+        pengadaan_barang
+        INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id
+        WHERE
+        pengadaan_barang.tanggal_masuk BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+        AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') 
+        AND pengadaan_barang.untuk_unit_id = $unit_id
+        ORDER BY
+        pengadaan_barang.tanggal_masuk DESC
+        LIMIT $page, $limitItemPage";
+        
+        $sql = $conn->query("SELECT COUNT(*) FROM pengadaan_barang WHERE
+        pengadaan_barang.tanggal_masuk BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+        AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
+        LIMIT $page, $limitItemPage");
+
+        if( !empty($requestData['search']['value']) ) {
+            $query =
+            "SELECT
+            barang.nama_barang,
+            pengadaan_barang.terima_dari,
+            pengadaan_barang.tanggal_masuk,
+            pengadaan_barang.jumlah_barang
+            FROM
+            pengadaan_barang
+            INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id
+            WHERE
+            pengadaan_barang.tanggal_masuk BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+            AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
+            AND pengadaan_barang.untuk_unit_id = $unit_id
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
+            ORDER BY
+            pengadaan_barang.tanggal_masuk DESC
+            LIMIT $page, $limitItemPage";
+
+            $sql = $conn->query("SELECT COUNT(*) FROM pengadaan_barang 
+            INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id
+            WHERE
+            pengadaan_barang.tanggal_masuk BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+            AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
+            AND pengadaan_barang.untuk_unit_id = $unit_id
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
+            LIMIT $page, $limitItemPage");
+        }
+        
+        $result = $conn->query($query);
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $nestedData = array();
+            $rowDate=strtotime($row['tanggal_masuk']);
+
+            $nestedData[] = $row['nama_barang'];
+            $nestedData[] = $row['jumlah_barang'];
+            $nestedData[] = $row['terima_dari'];
+            $nestedData[] = date("H:i:s", $rowDate);
+            $data[] = $nestedData;
+        }
+        
+        
+        $row = $sql->fetch_row();
+        $count = $row[0];
+        $totalData = $count;
+        $datajson = array("draw" => intval( $requestData['draw'] ), "recordsTotal"=>$totalData, "recordsFiltered"=>$totalData, "data"=>$data);
+        echo json_encode($datajson);
+    }
+
+    public function getDetil($unit_id, $nomorPermintaan)
     {   
         $db=new DB;
         $conn=$db->connect();
-        $page=($page*$limitItemPage)-$limitItemPage;
         $query =
         "SELECT
-        pasien.pasien_id,
-        pasien.nama,
-        pasien.tempat_lahir,
-        pasien.tanggal_lahir,
-        pasien.alamat,
-        pasien.jenis_kelamin,
-        pasien.golongan_darah,
-        pasien.agama,
-        pasien.nomor_RM,
-        pasien.jenis_pasien_id,
-        pasien.tanggal_daftar,
-        jenis_pasien.nama_jenis_pasien AS jenis_pasien,
-        lj_antrian.layanan AS is_dilayani,
-        lj_antrian.`status`
-        FROM
-        pasien
-        INNER JOIN jenis_pasien ON pasien.jenis_pasien_id = jenis_pasien.jenis_pasien_id
-        LEFT JOIN (
-        SELECT 
-        antrian.pasien_id,
-        antrian.`status` AS status,
-        COUNT(*) AS layanan 
-        FROM antrian WHERE antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
-        AND antrian.`status` = 'belum_dilayani'
-        GROUP BY
-        antrian.pasien_id
-        ) AS lj_antrian ON (lj_antrian.pasien_id= pasien.pasien_id)
-        ORDER BY `pasien`.`pasien_id` 
-        $sort LIMIT $page,$limitItemPage";
+        permintaan_stok.permintaan_stok_id,
+        permintaan_stok.nomor_permintaan,
+        permintaan_stok.barang_id,
+        permintaan_stok.dari_unit_id,
+        permintaan_stok.jumlah_permintaan,
+        permintaan_stok.jumlah_disetujui,
+        permintaan_stok.`status`,
+        permintaan_stok.tanggal_permintaan,
+        IFNULL(stok.jumlah,0) AS stok_tersedia,
+        barang.nama_barang,
+        satuan.nama_satuan,
+        grup_barang.nama_grup_barang,
+        unit.nama_unit
+        FROM permintaan_stok 
+        LEFT JOIN stok ON permintaan_stok.barang_id = stok.barang_id AND stok.unit_id = $unit_id
+        LEFT JOIN barang ON permintaan_stok.barang_id = barang.barang_id
+        INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
+        INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
+        INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id 
+        WHERE permintaan_stok.nomor_permintaan = '$nomorPermintaan'";
+
+        $result = $conn->query($query);
+        $data = array("data"=>$result);
+        
+        return $data;
+    }
+
+    public function prosesPermintaan($id, $idbarang, $unit_id, $untuk_unit_id, $jumlah)
+    { 
+        $db=new DB;
+        $conn=$db->connect();
+        $query =
+        "UPDATE `permintaan_stok` SET `jumlah_disetujui` = '$jumlah', `status` = 'belum_dilayani' WHERE `permintaan_stok`.`permintaan_stok_id` = $id;";
         $result = $conn->query($query);
         
-        $sql = $conn->query("SELECT COUNT(*) FROM pasien");
+        $sqlCheckTableExist = $conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$idbarang' AND unit_id = '$untuk_unit_id'");
+        $isExist = $sqlCheckTableExist->fetch_row();
+
+        if ($isExist[0]==0){
+             if($jumlah>0){
+                $query2 =
+                "INSERT INTO `stok` (`barang_id`, `unit_id`, `jumlah`) VALUES ('$idbarang', '$untuk_unit_id', '$jumlah');";
+                $result = $conn->query($query2);
+             }
+                $query1 =
+                "UPDATE `stok` SET `jumlah` = jumlah-$jumlah WHERE `stok`.`barang_id` = $idbarang AND `stok`.`unit_id` = $unit_id;";
+                $result = $conn->query($query1);
+
+            }else{
+                $query1 =
+                "UPDATE `stok` SET `jumlah` = jumlah-$jumlah WHERE `stok`.`barang_id` = $idbarang AND `stok`.`unit_id` = $unit_id; ";
+                $result = $conn->query($query1);
+
+                $query2 =
+                "UPDATE `stok` SET `jumlah` = jumlah+$jumlah WHERE `stok`.`barang_id` = $idbarang AND `stok`.`unit_id` = $untuk_unit_id; ";
+                $result = $conn->query($query2);
+        }
+
+        if($jumlah>0){
+            $query3 =
+            "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `jumlah_pengeluaran`) VALUES 
+            ('$untuk_unit_id', '$unit_id', '$idbarang', '$jumlah')";
+            $result = $conn->query($query3);
+        }
+        $conn->close();
+
+        return $result;
+    }
+
+    public function prosesPengeluaranStokFarmasi(){
+        $db=new DB;
+        $conn=$db->connect();
+        $totalTabel = $_POST['trTotal'];
+        $i=1;
+        $unit_id=3;
+
+        if($totalTabel>0){
+            $tabel_barang_id        = $_POST['tabel_barang_id'];
+            $tabel_nomor_batch      = $_POST['tabel_nomor_batch'];
+            $tabel_kadaluarsa       = $_POST['tabel_kadaluarsa'];
+            $tabel_jumlah           = $_POST['tabel_jumlah'];
+            $tabel_untuk_unit_id    = $_POST['tabel_untuk_unit_id'];
+
+            foreach($tabel_barang_id as $a => $b){
+                $barang_id      = $tabel_barang_id[$a];
+                $nomor_batch    = $tabel_nomor_batch[$a];
+                $kadaluarsa     = $tabel_kadaluarsa[$a];
+                $jumlah         = $tabel_jumlah[$a];
+                $untuk_unit_id  = $tabel_untuk_unit_id[$a];
+                /*
+                echo "Data ke: ".$i.": <br>";
+                echo "Idbarang: ". $barang_id.", ";
+                echo "nomor batch: ". $nomor_batch.", ";
+                echo "tgl kadaluarasa: ". $kadaluarsa.", ";
+                echo "jumlah: ". $jumlah.", ";
+                echo "untuk unit id: ". $untuk_unit_id.", <br>";
+                */
+                $sqlCheckTableExist = $conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$barang_id' AND unit_id = '$untuk_unit_id'");
+                $isExist = $sqlCheckTableExist->fetch_row();
+
+                if ($isExist[0]==0){
+                    if($jumlah>0){
+                        $query2 =
+                        "INSERT INTO `stok` (`barang_id`, `unit_id`, `jumlah`) VALUES ('$barang_id', '$untuk_unit_id', '$jumlah');";
+                        $result = $conn->query($query2);
+                    }
+                        $query1 =
+                        "UPDATE `stok` SET `jumlah` = jumlah-$jumlah WHERE `stok`.`barang_id` = $barang_id AND `stok`.`unit_id` = $unit_id;";
+                        $result = $conn->query($query1);
+
+                    }else{
+                        $query1 =
+                        "UPDATE `stok` SET `jumlah` = jumlah-$jumlah WHERE `stok`.`barang_id` = $barang_id AND `stok`.`unit_id` = $unit_id; ";
+                        $result = $conn->query($query1);
+
+                        $query2 =
+                        "UPDATE `stok` SET `jumlah` = jumlah+$jumlah WHERE `stok`.`barang_id` = $barang_id AND `stok`.`unit_id` = $untuk_unit_id; ";
+                        $result = $conn->query($query2);
+                }
+                if($jumlah>0){
+                $query =
+                "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `no_batch`, `jumlah_pengeluaran`) VALUES 
+                ('$untuk_unit_id', '$unit_id', '$barang_id', '$nomor_batch', '$jumlah')";
+                
+                $result = $conn->query($query);
+                }
+                $i++;
+            }
+            $conn->close();
+            return $query;
+        }else{
+            return false;
+        }
+    }
+
+    public function riwayatPengeluaranStok($unit_id, $sort, $page, $limitItemPage)
+    {   
+        $db=new DB;
+        $conn=$db->connect();
+        //$tanggalAwal = $_POST['tanggalAwal'];
+        //$tanggalAkhir = $_POST['tanggalAkhir'];
+        $tanggalAwal = "2017-06-10 13:42:03";
+        $tanggalAkhir = "2017-06-11 13:42:03";
+        $sqlRangeDate = "AND pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00')";
+        $sqlRangeDate = "AND pengeluaran_barang.tanggal_keluar BETWEEN '$tanggalAwal' AND '$tanggalAkhir' ";
+        $data = array();
+        
+        $query =
+        "SELECT
+        barang.nama_barang,
+        pengeluaran_barang.jumlah_pengeluaran,
+        pengeluaran_barang.tanggal_keluar,
+        unit.nama_unit
+        FROM
+        pengeluaran_barang
+        INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id
+        INNER JOIN unit ON unit.unit_id = pengeluaran_barang.untuk_unit_id
+        WHERE
+        pengeluaran_barang.dari_unit_id = $unit_id $sqlRangeDate
+        ORDER BY
+        pengeluaran_barang.tanggal_keluar DESC
+        LIMIT $page, $limitItemPage";
+        
+        $sql = $conn->query("SELECT COUNT(*) FROM pengeluaran_barang WHERE
+        pengeluaran_barang.dari_unit_id = $unit_id $sqlRangeDate
+        LIMIT $page, $limitItemPage");
+        
+        $result = $conn->query($query);
+        
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
         $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
-
-        return $data;
-    }
-
-    public function searchPasienWithStatus($search)
-    {   
-        $db=new DB;
-        $conn=$db->connect();
-
-        $query = 
-        "SELECT
-        pasien.pasien_id,
-        pasien.nama,
-        pasien.tempat_lahir,
-        pasien.tanggal_lahir,
-        pasien.alamat,
-        pasien.jenis_kelamin,
-        pasien.golongan_darah,
-        pasien.agama,
-        pasien.nomor_RM,
-        pasien.jenis_pasien_id,
-        pasien.tanggal_daftar,
-        jenis_pasien.nama_jenis_pasien AS jenis_pasien,
-        lj_antrian.layanan AS is_dilayani,
-        lj_antrian.`status`
-        FROM
-        pasien
-        INNER JOIN jenis_pasien ON pasien.jenis_pasien_id = jenis_pasien.jenis_pasien_id
-        LEFT JOIN (
-        SELECT 
-        antrian.pasien_id,
-        antrian.`status` AS status,
-        COUNT(*) AS layanan 
-        FROM antrian WHERE antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
-        AND antrian.`status` = 'belum_dilayani'
-        GROUP BY
-        antrian.pasien_id
-        ) AS lj_antrian ON (lj_antrian.pasien_id= pasien.pasien_id)
-        WHERE
-        pasien.nama LIKE '%$search%'
-        ORDER BY `pasien`.`pasien_id` DESC";
-
-        $result = $conn->query($query);
-        $data = array("data"=>$result);
-        
-        return $data;
-    }
-
-    public function postData()
-    {   
-        $db=new DB;
-        $conn=$db->connect();
-
-        $nama           = $_POST['nama'];
-        $tanggal_lahir  = $_POST['tanggal_lahir'];
-        $tempat_lahir   = $_POST['tempat_lahir'];
-        $alamat         = $_POST['alamat'];
-        $jenis_kelamin  = $_POST['jenis_kelamin'];
-        $golongan_darah = $_POST['golongan_darah'];
-        $agama          = $_POST['agama'];
-        $nomor_RM       = $_POST['nomor_rm'];
-        $jenis_pasien_id= $_POST['optionJenisPasien'];
-
-        $query =
-        "INSERT
-        INTO pasien(nama,tempat_lahir, tanggal_lahir, alamat,jenis_kelamin,golongan_darah, agama,nomor_RM, jenis_pasien_id)
-        VALUES ('$nama', '$tempat_lahir', '$tanggal_lahir', '$alamat', '$jenis_kelamin', '$golongan_darah', '$agama', '$nomor_RM', '$jenis_pasien_id')
-        ";
-        $result = $conn->query($query);
-        return $result;
-    }
-
-    public function editData($id)
-    {   
-        $db=new DB;
-        $conn=$db->connect();
-
-        $nama           = $_POST['nama'];
-        $tanggal_lahir  = $_POST['tanggal_lahir'];
-        $tempat_lahir   = $_POST['tempat_lahir'];
-        $alamat         = $_POST['alamat'];
-        $jenis_kelamin  = $_POST['jenis_kelamin'];
-        $golongan_darah = $_POST['golongan_darah'];
-        $agama          = $_POST['agama'];
-        $nomor_RM       = $_POST['nomor_rm'];
-        $jenis_pasien_id= $_POST['optionJenisPasien'];
-
-        $query =
-        "UPDATE `pasien` SET `nama` = '$nama', `tempat_lahir` = '$tempat_lahir', `tanggal_lahir` = '$tanggal_lahir', `alamat` = '$alamat', `jenis_kelamin` = '$jenis_kelamin', 
-        `golongan_darah` = '$golongan_darah', `agama` = '$agama', `nomor_RM` = '$nomor_RM', `jenis_pasien_id` = $jenis_pasien_id WHERE `pasien`.`pasien_id` = $id
-        ";
-        $result = $conn->query($query);
-        return $result;
-    }
-
-    public function editUnitTujuan()
-    {   
-        $db=new DB;
-        $conn=$db->connect();
-
-        $id = $_POST['idPasien'];
-        $unit = $_POST['unitsesudah'];
-        $query ="UPDATE `antrian` SET `unit_id_tujuan` = '$unit', `status` = 'belum_dilayani' WHERE `antrian`.`antrian_id` = $id;";
-        $result = $conn->query($query);
-        return $result;
-    }
-
-    public function kunjungan()
-    {   
-        $db=new DB;
-        $conn=$db->connect();
-
-        $id = $_POST['idPasien'];
-        $jenis_kunjungan = $_POST['jenis_kunjungan'];
-        $unit = $_POST['unitsesudah'];
-        $status = "belum_dilayani";
-        
-        $query =
-        "INSERT
-        INTO antrian(pasien_id, jenis_kunjungan, unit_id_tujuan, status)
-        VALUES ('$id', '$jenis_kunjungan', '$unit', '$status')
-        ";
-        $result = $conn->query($query);
-        return $result;
-    }
-
-    public function deleteData($id)
-    {
-        $db=new DB;
-        $conn=$db->connect();
-        $query ="DELETE FROM `pasien` WHERE `pasien`.`pasien_id` = $id";
-        $result = $conn->query($query);
-        return $result;
-        
-    }
-
-    public function searchData($search)
-    {   
-        $db=new DB;
-        $conn=$db->connect();
-
-        $query = 
-        "SELECT
-        antrian.antrian_id,
-        antrian.pasien_id,
-        antrian.jenis_kunjungan,
-        antrian.unit_id_tujuan,
-        antrian.`status`,
-        antrian.tanggal_antrian,
-        pasien.nama,
-        unit.nama_unit
-        FROM
-        antrian
-        INNER JOIN pasien ON antrian.pasien_id = pasien.pasien_id
-        INNER JOIN unit ON antrian.unit_id_tujuan = unit.unit_id
-        WHERE
-        antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') AND
-        pasien.nama LIKE '%$search%'
-        ORDER BY `antrian`.`antrian_id` DESC";
-
-        $result = $conn->query($query);
-        $data = array("data"=>$result);
-        
         return $data;
     }
 }

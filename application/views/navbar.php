@@ -157,9 +157,34 @@
 
             <li class="header">MENU NAVIGASI FARMASI</li>
             
-            <li class="treeview">
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "halamanutamafarmasi") == 0 ? "active" : ""); ?> ">
                 <a href="<?php echo base_url('farmasi/halamanutama'); ?>">
                     <i class="fa fa-home"></i> <span>Dashboard</span> 
+                </a>
+            </li>
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "pengeluaranfarmasi") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('farmasi/pengeluaran'); ?>">
+                    <i class="fa fa-arrow-up"></i> <span>Pengeluaraan</span> 
+                </a>
+            </li>
+            <li class="treeview">
+                <a href="<?php echo base_url('farmasi/halamanutama'); ?>">
+                    </i><i class="fa fa-cart-plus"></i> <span>Pengadaan</span> 
+                </a>
+            </li>
+            <li class="treeview">
+                <a href="<?php echo base_url('farmasi/halamanutama'); ?>">
+                    <i class="fa fa-check"></i> <span>Stok</span> 
+                </a>
+            </li>
+            <li class="treeview">
+                <a href="<?php echo base_url('farmasi/halamanutama'); ?>">
+                    <i class="fa fa-home"></i> <span>Laporan</span> 
+                </a>
+            </li>
+            <li class="treeview">
+                <a href="<?php echo base_url('farmasi/halamanutama'); ?>">
+                    <i class="fa fa-home"></i> <span>Riwayat Permintaan stok</span> 
                 </a>
             </li>
 

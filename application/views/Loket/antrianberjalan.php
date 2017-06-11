@@ -183,6 +183,7 @@ function editModal(id,nama,unit) {
             //"dom": '<"top">lt<"bottom"if><"clear">',
             "bSort": false,
             "serverSide": true,
+            "info": false,
             "ajax":{
                 url :"<?php Print( base_url('/loket/antrianberjalan/ajaxantrianberjalan/') ); ?>",
                 type: "post",

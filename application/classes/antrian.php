@@ -61,14 +61,17 @@ class Antrian{
         INNER JOIN pasien ON antrian.pasien_id = pasien.pasien_id
         INNER JOIN unit ON antrian.unit_id_tujuan = unit.unit_id
         WHERE
-        antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') AND
-        antrian.`status` = 'belum_dilayani' 
+        antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+        AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') 
+        AND antrian.`status` = 'belum_dilayani' 
         ORDER BY `antrian`.`tanggal_antrian` DESC
         LIMIT $page, $limitItemPage";
         
         $sql = $conn->query("SELECT COUNT(*) FROM antrian WHERE
-        antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') AND
-        antrian.`status` = 'belum_dilayani' ");
+        antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+        AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') 
+        AND antrian.`status` = 'belum_dilayani' 
+        LIMIT $page, $limitItemPage");
 
         if( !empty($requestData['search']['value']) ) {
             $query =
@@ -85,11 +88,20 @@ class Antrian{
             INNER JOIN pasien ON antrian.pasien_id = pasien.pasien_id
             INNER JOIN unit ON antrian.unit_id_tujuan = unit.unit_id
             WHERE
-            antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
+            antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+            AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
             AND antrian.`status` = 'belum_dilayani' 
             AND pasien.nama LIKE '%".$requestData['search']['value']."%'
             ORDER BY `antrian`.`tanggal_antrian` DESC
             LIMIT $page, $limitItemPage";
+
+            $sql = $conn->query("SELECT COUNT(*) FROM antrian 
+            INNER JOIN pasien ON antrian.pasien_id = pasien.pasien_id
+            WHERE antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
+            AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') 
+            AND antrian.`status` = 'belum_dilayani' 
+            AND pasien.nama LIKE '%".$requestData['search']['value']."%'
+            LIMIT $page, $limitItemPage");
         }
         
         $result = $conn->query($query);
