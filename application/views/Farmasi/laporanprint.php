@@ -17,7 +17,7 @@ body {
 
     switch ($choice) {
         case "Bulanan":
-            $outputPilihan = "Bulan: ".$rangemonth."Tahun ".$yearDate;
+            $outputPilihan = "Bulan: ".$rangemonth." Tahun ".$yearDate;
             break;
         case "Triwulan":
             if($rangemonth>=1 && $rangemonth<=3){

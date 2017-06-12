@@ -58,4 +58,33 @@ class Laporan extends CI_Controller
         $this->load->view('header',$title);
         $this->load->view('farmasi/laporanprint',$data);
     }
+
+    public function excel($month, $year)
+    {   
+        $gudang = new Gudang();
+        $data = $gudang->getLaporan($month, $year);
+        //$this->load->view('Tests/test_excel2',$data);
+
+        $tempArray = array();
+        $myArray = array();
+        while($row = $data['data']->fetch_object()) {
+                $tempArray = $row;
+                array_push($myArray, $tempArray);
+            }
+        $json = json_encode($myArray);
+        $arrayMu=json_decode($json,true);
+
+        $filename = 'daftarpasien.csv';
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename=$filename");
+        $output = fopen("php://output", "w");
+        $header = array_keys($arrayMu[0]);
+        fputcsv($output, $header);
+        foreach ($arrayMu as $row) {
+            fputcsv($output, $row);
+        }
+
+        fclose($output);
+
+    }
 }
