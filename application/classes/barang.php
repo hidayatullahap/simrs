@@ -15,6 +15,7 @@ class Barang{
         barang.grup_barang_id AS grup_barang_id,
         grup_barang.nama_grup_barang AS grup_barang,
         barang.satuan_id AS satuan_id,
+        barang.harga_jual AS harga_jual,
         satuan.nama_satuan AS satuan,
         barang.tanggal_pencatatan AS tanggal_pencatatan
         FROM
@@ -70,6 +71,7 @@ class Barang{
         grup_barang.nama_grup_barang AS grup_barang,
         barang.satuan_id AS satuan_id,
         satuan.nama_satuan AS satuan,
+        barang.harga_jual AS harga_jual,
         barang.tanggal_pencatatan AS tanggal_pencatatan
         FROM
         barang
@@ -91,11 +93,12 @@ class Barang{
         $nama_barang    = $_POST['nama_barang'];
         $grup_barang_id = $_POST['grup_barang_id'];
         $satuan_id      = $_POST['satuan_id'];
+        $harga_jual     = $_POST['harga_jual'];
 
         $query =
         "INSERT
-        INTO barang(nama_barang, grup_barang_id, satuan_id)
-        VALUES ('$nama_barang', '$grup_barang_id', '$satuan_id')
+        INTO barang(nama_barang, grup_barang_id, satuan_id , harga_jual)
+        VALUES ('$nama_barang', '$grup_barang_id', '$satuan_id', '$harga_jual')
         ";
         $result = $conn->query($query);
         return $result;
@@ -109,9 +112,12 @@ class Barang{
         $nama_barang    = $_POST['nama_barang'];
         $grup_barang_id = $_POST['grup_barang_id'];
         $satuan_id      = $_POST['satuan_id'];
+        $harga_jual     = $_POST['harga_jual'];
+        
 
         $query =
-        "UPDATE `barang` SET `nama_barang` = '$nama_barang', `grup_barang_id` = '$grup_barang_id', `satuan_id` = '$satuan_id' WHERE `barang`.`barang_id` = $id
+        "UPDATE `barang` SET `nama_barang` = '$nama_barang', `grup_barang_id` = '$grup_barang_id', `harga_jual` = '$harga_jual', `satuan_id` = '$satuan_id'
+         WHERE `barang`.`barang_id` = $id
         ";
         $result = $conn->query($query);
         return $result;
@@ -140,6 +146,7 @@ class Barang{
         grup_barang.nama_grup_barang AS grup_barang,
         barang.satuan_id AS satuan_id,
         satuan.nama_satuan AS satuan,
+        barang.harga_jual AS harga_jual,
         barang.tanggal_pencatatan AS tanggal_pencatatan
         FROM
         barang

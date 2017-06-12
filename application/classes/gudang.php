@@ -387,11 +387,79 @@ class Gudang{
                         $result = $conn->query($query2);
                 }
                 if($jumlah>0){
-                $query =
-                "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `no_batch`, `jumlah_pengeluaran`) VALUES 
-                ('$untuk_unit_id', '$unit_id', '$barang_id', '$nomor_batch', '$jumlah')";
+                    $query =
+                    "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `no_batch`, `jumlah_pengeluaran`) VALUES 
+                    ('$untuk_unit_id', '$unit_id', '$barang_id', '$nomor_batch', '$jumlah')";
+                    
+                    $result = $conn->query($query);
+                }
+                $i++;
+            }
+            $conn->close();
+            return $query;
+        }else{
+            return false;
+        }
+    }
+
+    public function prosesPengadaanStok($unit_id){
+        $db=new DB;
+        $conn=$db->connect();
+        $totalTabel = $_POST['trTotal'];
+        $i=1;
+
+        if($totalTabel>0){
+            $tabel_barang_id            = $_POST['tabel_barang_id'];
+            $tabel_nomor_batch          = $_POST['tabel_nomor_batch'];
+            $tabel_jumlah               = $_POST['tabel_jumlah'];
+            $tabel_harga_beli           = $_POST['tabel_harga_beli'];
+            $tabel_harga_jual           = $_POST['tabel_harga_jual'];
+            $tabel_tanggal_kadaluarsa   = $_POST['tabel_tanggal_kadaluarsa'];
+            $tabel_jenis_penerimaan_id  = $_POST['tabel_jenis_penerimaan_id'];
+            $tabel_nomor_batch          = $_POST['tabel_nomor_batch'];
+            $tabel_terima_dari          = $_POST['tabel_terima_dari'];
+            $tabel_no_faktur            = $_POST['tabel_no_faktur'];
+            $tabel_tanggal_faktur       = $_POST['tabel_tanggal_faktur'];
+            $tabel_keterangan           = $_POST['tabel_keterangan'];
+            
+            foreach($tabel_barang_id as $a => $b){
+                $terima_dari            = $tabel_terima_dari[$a];
+                $jenis_penerimaan_id    = $tabel_jenis_penerimaan_id[$a];
+                $no_faktur              = $tabel_no_faktur[$a];
+                $tanggal_faktur         = $tabel_tanggal_faktur[$a];
+                $keterangan             = $tabel_keterangan[$a];
+                $untuk_unit_id          = $unit_id;
+                $barang_id              = $tabel_barang_id[$a];
+                $nomor_batch            = $tabel_nomor_batch[$a];
+                $tanggal_kadaluarsa     = $tabel_tanggal_kadaluarsa[$a];
+                $harga_jual             = $tabel_harga_jual[$a];
+                $harga_beli             = $tabel_harga_beli[$a];
+                $jumlah_barang          = $tabel_jumlah[$a];
+
+                $sqlCheckTableExist = $conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$barang_id' AND unit_id = '$untuk_unit_id'");
+                $isExist = $sqlCheckTableExist->fetch_row();
+                //$isExist[0]==0 artinya row tidak ada 
+
+                if ($isExist[0]==0){ 
+                    if($jumlah_barang>0){
+                        $query1 =
+                        "INSERT INTO `stok` (`barang_id`, `unit_id`, `jumlah`) VALUES ('$barang_id', '$untuk_unit_id', '$jumlah_barang');";
+                        $result = $conn->query($query1);
+                    }
+                    }else{
+                        $query2 =
+                        "UPDATE `stok` SET `jumlah` = jumlah+$jumlah_barang WHERE `stok`.`barang_id` = $barang_id AND `stok`.`unit_id` = $untuk_unit_id; ";
+                        $result = $conn->query($query2);
+                }
                 
-                $result = $conn->query($query);
+                if($jumlah_barang>0){
+                    $query =
+                    "INSERT INTO `pengadaan_barang` (`terima_dari`, `jenis_penerimaan_id`, `no_faktur`, `tanggal_faktur`, `keterangan`, 
+                    `untuk_unit_id`, `barang_id`, `no_batch`, `tanggal_kadaluarsa`, `harga_jual`, `harga_beli`, `jumlah_barang`) 
+                    VALUES ('$terima_dari', '$jenis_penerimaan_id', '$no_faktur', '$tanggal_faktur', '$keterangan', '$untuk_unit_id', '$barang_id', 
+                    '$nomor_batch', '$tanggal_kadaluarsa', '$harga_jual', '$harga_beli', '$jumlah_barang');";
+                    
+                    $result = $conn->query($query);
                 }
                 $i++;
             }
@@ -459,6 +527,131 @@ class Gudang{
         
         $sql = $conn->query("SELECT COUNT(*) FROM pengeluaran_barang INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id WHERE
         pengeluaran_barang.dari_unit_id = $unit_id $sqlRangeDate $sqlSearch ");
+
+        $row = $sql->fetch_row();
+        $count = $row[0];
+        $totalData = $count;
+        $totalPages = ceil($totalData/$limitItemPage);
+        $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        return $data;
+    }
+
+    public function riwayatPengadaanStok($unit_id, $sort, $page, $limitItemPage)
+    {   
+        $db=new DB;
+        $conn=$db->connect();
+        $page=($page*$limitItemPage)-$limitItemPage;
+        
+        if (isset($_POST['tanggalAwal'])){ $tanggalAwal = $_POST['tanggalAwal']; $tanggalAwal = $tanggalAwal." 00:00:00"; $_SESSION["tanggalAwal"] = $tanggalAwal;}
+        if (isset($_POST['tanggalAkhir'])){ $tanggalAkhir = $_POST['tanggalAkhir']; $tanggalAkhir = $tanggalAkhir." 23:59:59"; $_SESSION["tanggalAkhir"] = $tanggalAkhir; }
+        if (isset($_POST['search'])){ $search = $_POST['search'];  $_SESSION["searchFarmasi"] = $search;} 
+        if (isset($_SESSION["tanggalAwal"])){ $tanggalAwal =  $_SESSION["tanggalAwal"];}
+        if (isset($_SESSION["tanggalAkhir"])){ $tanggalAkhir =  $_SESSION["tanggalAkhir"];}
+        if (isset($_SESSION["searchFarmasi"])){ $search =  $_SESSION["searchFarmasi"];}
+
+        if(!isset($tanggalAwal) && !isset($tanggalAkhir)){
+            $sqlRangeDate = "";
+        }else if(isset($tanggalAwal) && isset($tanggalAkhir)){
+            $sqlRangeDate = "AND pengadaan_barang.tanggal_masuk BETWEEN '$tanggalAwal' AND '$tanggalAkhir' ";
+        }
+        else if(!isset($tanggalAwal) || !isset($tanggalAkhir)){
+            $sqlRangeDate = "";
+        }else{
+            $sqlRangeDate = "";
+        }
+
+        if(isset($search)){
+            $sqlSearch = "AND barang.nama_barang LIKE '%$search%' ";
+        }else{
+            $sqlSearch = "";
+        }
+
+        $data = array();
+        
+        $query =
+        "SELECT
+        barang.nama_barang,
+        satuan.nama_satuan,
+        pengadaan_barang.jumlah_barang,
+        pengadaan_barang.terima_dari,
+        jenis_penerimaan.nama_jenis_penerimaan,
+        pengadaan_barang.tanggal_masuk,
+        pengadaan_barang.harga_jual,
+        pengadaan_barang.harga_beli,
+        pengadaan_barang.tanggal_kadaluarsa,
+        pengadaan_barang.no_batch,
+        pengadaan_barang.no_faktur,
+        pengadaan_barang.barang_id
+        FROM
+        pengadaan_barang
+        INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id
+        INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
+        INNER JOIN jenis_penerimaan ON pengadaan_barang.jenis_penerimaan_id = jenis_penerimaan.jenis_penerimaan_id
+        WHERE
+        pengadaan_barang.untuk_unit_id = $unit_id $sqlRangeDate $sqlSearch
+        ORDER BY
+        pengadaan_barang.tanggal_masuk DESC
+        LIMIT $page, $limitItemPage";
+        $result = $conn->query($query);
+        
+        $sql = $conn->query("SELECT COUNT(*) FROM pengadaan_barang INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id WHERE
+        pengadaan_barang.untuk_unit_id = $unit_id $sqlRangeDate $sqlSearch ");
+
+        $row = $sql->fetch_row();
+        $count = $row[0];
+        $totalData = $count;
+        $totalPages = ceil($totalData/$limitItemPage);
+        $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        return $data;
+    }
+
+    public function infoStok($unit_id, $sort, $page, $limitItemPage)
+    {   
+        $db=new DB;
+        $conn=$db->connect();
+        $page=($page*$limitItemPage)-$limitItemPage;
+        $sqlSearch = "";
+        $sqlTambahan1 = "";
+        $sqlTambahan2 = "";
+        if (isset($_SESSION["searchFarmasi"])){ $search =  $_SESSION["searchFarmasi"];}
+
+        if(isset($search)){
+            $sqlSearch = "AND barang.nama_barang LIKE '%$search%' ";
+        }
+
+        if($unit_id==3){
+            $sqlTambahan1 = ", IFNULL(lj_stok.jumlah_deporajal,'-') AS jumlah_deporajal";
+            $sqlTambahan2 = "LEFT JOIN (SELECT
+            stok.unit_id AS unit_id,
+            stok.jumlah AS jumlah_deporajal
+            FROM
+            stok
+            WHERE
+            stok.unit_id = 2
+            ) AS lj_stok ON (lj_stok.unit_id= stok.unit_id) ";
+        }
+
+        $data = array();
+        
+        $query =
+        "SELECT
+        stok.stok_id,
+        stok.barang_id,
+        barang.nama_barang,
+        stok.jumlah,
+        stok.tanggal_pencatatan,
+        stok.jumlah AS jumlah_farmasi $sqlTambahan1
+        FROM
+        stok $sqlTambahan2
+        INNER JOIN barang ON barang.barang_id = stok.barang_id
+        WHERE
+        stok.unit_id = $unit_id
+        ORDER BY
+        barang.nama_barang DESC
+        LIMIT $page, $limitItemPage";
+        $result = $conn->query($query);
+        
+        $sql = $conn->query("SELECT COUNT(*) FROM stok WHERE stok.unit_id = $unit_id $sqlSearch");
 
         $row = $sql->fetch_row();
         $count = $row[0];

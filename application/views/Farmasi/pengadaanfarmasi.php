@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/farmasi/pengeluaran'); ?>"><font color='black'><strong>Riwayat barang keluar</strong></font></a>
+            <a href="<?php echo base_url('/farmasi/pengadaan'); ?>"><font color='black'><strong>Riwayat barang keluar</strong></font></a>
         </h1>
     </section>
 
@@ -20,12 +20,12 @@
                     <div class="box-header with-border">
                         <div class="form-group row">
                             <div class="col-xs-2">
-                                <button onclick="window.location.href='<?php echo base_url('/farmasi/pengeluaran/layanan') ?>'" type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Barang Keluar</button>
+                                <button onclick="window.location.href='<?php echo base_url('/farmasi/pengadaan/layanan') ?>'" type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Barang Keluar</button>
                             </div>
 
-                            <form id="formSubmit" method="post" action="<?php echo base_url('/farmasi/pengeluaran') ?>">
+                            <form id="formSubmit" method="post" action="<?php echo base_url('/farmasi/pengadaan') ?>">
                             <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
-                            <input  type="text" class="form-control" onChange="checkTanggal();" placeholder="Cari nama barang" name="search" id="search" 
+                            <input type="text" class="form-control" onChange="checkTanggal();" placeholder="Cari nama barang" name="search" id="search" autocomplete="off"
                             value="<?php if(isset($_SESSION['searchFarmasi'])){echo $_SESSION['searchFarmasi'];} ?>">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
@@ -36,12 +36,12 @@
                                 <div class="input-group-btn">
                                         <button class="btn btn-default"><i>Filter mulai tgl</i></button>
                                 </div>
-                                <input  type="date" class="input-group form-control" id="tanggalAwal" name="tanggalAwal" 
+                                <input  type="date" class="input-group form-control" name="tanggalAwal" id="tanggalAwal" 
                                 value="<?php if(isset($_SESSION['tanggalAwal'])){echo date('Y-m-d', strtotime($_SESSION['tanggalAwal']));} ?>">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default"><i> hingga</i></button>
                                 </div>
-                                <input  type="date" class="input-group form-control" id="tanggalAkhir" name="tanggalAkhir" 
+                                <input  type="date" class="input-group form-control" name="tanggalAkhir" id="tanggalAkhir" 
                                 value="<?php if(isset($_SESSION['tanggalAkhir'])){echo date('Y-m-d', strtotime($_SESSION['tanggalAkhir']));} ?>">
                             </div>
                             </form>
@@ -53,10 +53,14 @@
                             <tr>
                                 <th><font color="white">Tanggal Keluar</th>
                                 <th><font color="white">Nama Barang</th>
+                                <th><font color="white">Satuan</th>
                                 <th><font color="white">Jumlah</th>
-                                <th><font color="white">Untuk Unit</th>
-                                <th><font color="white">Grup Barang</th>
-                                <th><font color="white">Nomor Batch</th>
+                                <th><font color="white">Dari</th>
+                                <th><font color="white">Harga Jual</th>
+                                <th><font color="white">Harga Beli</th>
+                                <th><font color="white">Kadaluarsa</th>
+                                <th><font color="white">No_batch</th>
+                                <th><font color="white">No Faktur</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -64,13 +68,18 @@
                             if ($data->num_rows>0) {
                                 foreach ($data as $field => $values) {
                                     echo "<tr>";
-                                    $date=strtotime($values['tanggal_keluar']);
+                                    $date=strtotime($values['tanggal_masuk']);
                                     echo "<td width='10%'>".date('d M Y H:i:s', $date)."</td>";
                                     echo "<td>".$values['nama_barang']."</td>";
-                                    echo "<td>".$values['jumlah_pengeluaran']."</td>";
-                                    echo "<td>".$values['nama_unit']."</td>";
-                                    echo "<td>".$values['nama_grup_barang']."</td>";
+                                    echo "<td>".$values['nama_satuan']."</td>";
+                                    echo "<td>".$values['jumlah_barang']."</td>";
+                                    echo "<td>".$values['terima_dari']."</td>";
+                                    echo "<td>".$values['harga_jual']."</td>";
+                                    echo "<td>".$values['harga_beli']."</td>";
+                                    $dateexp=strtotime($values['tanggal_kadaluarsa']);
+                                    echo "<td>".date('d M Y', $dateexp)."</td>";
                                     echo "<td>".$values['no_batch']."</td>";
+                                    echo "<td>".$values['no_faktur']."</td>";
                                     echo "</tr>";
                                 }
                             } else {
@@ -90,7 +99,7 @@
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
                         if (isset($totalPages)) {
-                            $entity->tampilkan('farmasi/pengeluaran',$currentPage, $totalPages);
+                            $entity->tampilkan('farmasi/pengadaan',$currentPage, $totalPages);
                         }
                         ?>
                     </div>
@@ -135,6 +144,7 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     $("#success-alert").slideUp(500);
 });
 </script>
+
 
 <script>
 $('#formSubmit').submit(function() {

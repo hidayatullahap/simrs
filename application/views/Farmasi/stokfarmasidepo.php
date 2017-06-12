@@ -47,6 +47,7 @@
                             </thead>
                             <tbody>
                             <?php
+                            var_dump($data);
                             if ($data->num_rows>0) {
                                 $i=1;
                                 foreach ($data as $field => $values) {
