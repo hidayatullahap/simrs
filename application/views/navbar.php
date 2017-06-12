@@ -177,14 +177,14 @@
                     <i class="fa fa-check"></i> <span>Stok</span> 
                 </a>
             </li>
-            <li class="treeview">
-                <a href="<?php echo base_url('farmasi/halamanutama'); ?>">
-                    <i class="fa fa-home"></i> <span>Laporan</span> 
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "riwayatpermintaan") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('farmasi/permintaan/riwayatpermintaan'); ?>">
+                    <i class="fa fa-home"></i> <span>Riwayat Permintaan stok</span> 
                 </a>
             </li>
-            <li class="treeview">
-                <a href="<?php echo base_url('farmasi/halamanutama'); ?>">
-                    <i class="fa fa-home"></i> <span>Riwayat Permintaan stok</span> 
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "laporanfarmasi") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('farmasi/laporan'); ?>">
+                    <i class="fa fa-home"></i> <span>Laporan</span> 
                 </a>
             </li>
 

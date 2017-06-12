@@ -187,6 +187,7 @@
                             <input id="trTotal" name="trTotal" hidden readonly>
                         </form>
                     </div>
+
                     <?php if ($this->session->flashdata('pesan')) {?>
                         <div class="alert alert-success alert-dismissible" id="success-alert">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -194,6 +195,7 @@
                             <?php echo $this->session->flashdata('metode') ?>
                         </div>
                     <?php } ?>
+
                 </div>
             </div>
         </div>

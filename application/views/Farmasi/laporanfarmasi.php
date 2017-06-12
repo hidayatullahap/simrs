@@ -2,14 +2,15 @@
     
     .paddingForm {
         padding-top: 1.5%;
-        text-align: right;
+        padding-left: 5%;
+        text-align: left;
     }
 </style>
 
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/farmasi/pengeluaran'); ?>"><font color='black'><strong>Riwayat barang keluar</strong></font></a>
+            <a href="<?php echo base_url('/farmasi/laporan'); ?>"><font color='black'><strong>Laporan</strong></font></a>
         </h1>
     </section>
 
@@ -19,30 +20,19 @@
                 <div class="box">
                     <div class="box-header with-border">
                         <div class="form-group row">
-                            <div class="col-xs-2">
-                                <button onclick="window.location.href='<?php echo base_url('/farmasi/pengeluaran/layanan') ?>'" type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Barang Keluar</button>
-                            </div>
-
-                            <form id="formSubmit" method="post" action="<?php echo base_url('/farmasi/pengeluaran') ?>">
-                            <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
-                            <input  type="text" class="form-control" onChange="checkTanggal();" placeholder="Cari nama barang" name="search" id="search" 
-                            value="<?php if(isset($_SESSION['searchFarmasi'])){echo $_SESSION['searchFarmasi'];} ?>">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                            <form id="formSubmit" method="post" action="<?php echo base_url('/farmasi/laporan/page/1') ?>">
+                            <div class="input-group col-md-4">
+                            <label class="col-md-2 paddingForm" for="golongan_darah">Range</label>
+                                <div class="col-md-3">
+                                    <select class="select2_single form-control" tabindex="-1" name="pilihanrange" id="pilihanrange" 
+                                    onchange="this.form.submit()">
+                                        <option hidden value="<?php echo $_SESSION['pilihanrange'];?>"><?php echo $_SESSION['pilihanrange'];?></option>
+                                        <option value="Bulanan">Bulanan</option>
+                                        <option value="Triwulan">Triwulan</option>
+                                        <option value="Semester">Semester</option>
+                                        <option value="Tahunan">Tahunan</option>
+                                    </select>
                                 </div>
-                            </div>
-
-                            <div class="input-group col-xs-4" style="float: right;padding-right:15px;">
-                                <div class="input-group-btn">
-                                        <button class="btn btn-default"><i>Filter mulai tgl</i></button>
-                                </div>
-                                <input  type="date" class="input-group form-control" id="tanggalAwal" name="tanggalAwal" 
-                                value="<?php if(isset($_SESSION['tanggalAwal'])){echo date('Y-m-d', strtotime($_SESSION['tanggalAwal']));} ?>">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-default"><i> hingga</i></button>
-                                </div>
-                                <input  type="date" class="input-group form-control" id="tanggalAkhir" name="tanggalAkhir" 
-                                value="<?php if(isset($_SESSION['tanggalAkhir'])){echo date('Y-m-d', strtotime($_SESSION['tanggalAkhir']));} ?>">
                             </div>
                             </form>
 
@@ -51,26 +41,53 @@
                         <table class="table table-bordered table-hover" id="tabel" cellspacing="0" width="100%">
                             <thead bgcolor="#4a4a4c">
                             <tr>
-                                <th><font color="white">Tanggal Keluar</th>
-                                <th><font color="white">Nama Barang</th>
-                                <th><font color="white">Jumlah</th>
-                                <th><font color="white">Untuk Unit</th>
-                                <th><font color="white">Grup Barang</th>
-                                <th><font color="white">Nomor Batch</th>
+                                <th><font color="white">Laporan</th>
+                                <th><font color="white">Aksi</th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php
+                            $url=base_url('/farmasi/laporan');
+                            $choice=$_SESSION['pilihanrange'];
                             if ($data->num_rows>0) {
                                 foreach ($data as $field => $values) {
                                     echo "<tr>";
-                                    $date=strtotime($values['tanggal_keluar']);
-                                    echo "<td width='10%'>".date('d M Y H:i:s', $date)."</td>";
-                                    echo "<td>".$values['nama_barang']."</td>";
-                                    echo "<td>".$values['jumlah_pengeluaran']."</td>";
-                                    echo "<td>".$values['nama_unit']."</td>";
-                                    echo "<td>".$values['nama_grup_barang']."</td>";
-                                    echo "<td>".$values['no_batch']."</td>";
+                                    $date=strtotime($values['range_waktu']);
+                                    $yearDate=date('Y', $date);
+                                    $rangemonth=intval(date('m', $date));
+
+                                    switch ($choice) {
+                                        case "Bulanan":
+                                            echo "<td>".date('F-Y', $date)."</td>";
+                                            break;
+                                        case "Triwulan":
+                                            if($rangemonth>=1 && $rangemonth<=3){
+                                                echo "<td>Kuarter 1 tahun ".$yearDate."</td>";
+                                            }else if($rangemonth>3 && $rangemonth<=6){
+                                                echo "<td>Kuarter 2 tahun ".$yearDate."</td>";
+                                            }else if($rangemonth>6 && $rangemonth<=9){
+                                                echo "<td>Kuarter 3 tahun ".$yearDate."</td>";
+                                            }else{
+                                                echo "<td>Kuarter 4 tahun ".$yearDate."</td>";
+                                            }
+                                            break;
+                                        case "Semester":
+                                            if($rangemonth>=1 && $rangemonth<=6 ){
+                                                echo "<td>Semester 1 tahun ".$yearDate."</td>";
+                                            }else{
+                                                echo "<td>Semester 2 tahun ".$yearDate."</td>";
+                                            }
+                                            break;
+                                        case "Tahunan":
+                                            echo "<td>".$yearDate."</td>";
+                                            break;
+                                        default:
+                                            echo "<td>".date('F-Y', $date)."</td>";
+                                    }
+                                    echo "<td width='30%'><button type='button' class='btn btn-default btn-sm' 
+                                    onclick=window.open('$url/print/$rangemonth/$yearDate','_blank')>Print <i class='fa fa-print'></i></button>
+                                    <button type='button' class='btn btn-default btn-sm' 
+                                    onclick=window.open('$url/print/$rangemonth/$yearDate','_blank')>Excel <i class='fa fa-file-excel-o'></i></button></td>";
                                     echo "</tr>";
                                 }
                             } else {
@@ -85,12 +102,11 @@
                         }
                     ?>
                     <div class="box-footer clearfix">
-                    <span><i>*Search box boleh kosong</i></span>
                         <?php
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
                         if (isset($totalPages)) {
-                            $entity->tampilkan('farmasi/pengeluaran',$currentPage, $totalPages);
+                            $entity->tampilkan('farmasi/laporan',$currentPage, $totalPages);
                         }
                         ?>
                     </div>

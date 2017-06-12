@@ -490,6 +490,8 @@ class Gudang{
         if(!isset($tanggalAwal) && !isset($tanggalAkhir)){
             //$sqlRangeDate = "AND pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
             //AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')";
+            //BETWEEN DATE_SUB(NOW(), INTERVAL 1 MONTH) AND   #contoh penggunaan bulanan
+            //        DATE_SUB(NOW(), INTERVAL 2 MONTH)
             $sqlRangeDate = "";
         }else if(isset($tanggalAwal) && isset($tanggalAkhir)){
             $sqlRangeDate = "AND pengeluaran_barang.tanggal_keluar BETWEEN '$tanggalAwal' AND '$tanggalAkhir' ";
@@ -548,7 +550,7 @@ class Gudang{
         if (isset($_SESSION["tanggalAwal"])){ $tanggalAwal =  $_SESSION["tanggalAwal"];}
         if (isset($_SESSION["tanggalAkhir"])){ $tanggalAkhir =  $_SESSION["tanggalAkhir"];}
         if (isset($_SESSION["searchFarmasi"])){ $search =  $_SESSION["searchFarmasi"];}
-
+        
         if(!isset($tanggalAwal) && !isset($tanggalAkhir)){
             $sqlRangeDate = "";
         }else if(isset($tanggalAwal) && isset($tanggalAkhir)){
@@ -605,6 +607,68 @@ class Gudang{
         return $data;
     }
 
+    public function riwayatPermintaanStok($sort, $page, $limitItemPage)
+    {   
+        $db=new DB;
+        $conn=$db->connect();
+        $page=($page*$limitItemPage)-$limitItemPage;
+        
+        if (isset($_POST['tanggalAwal'])){ $tanggalAwal = $_POST['tanggalAwal']; $tanggalAwal = $tanggalAwal." 00:00:00"; $_SESSION["tanggalAwal"] = $tanggalAwal;}
+        if (isset($_POST['tanggalAkhir'])){ $tanggalAkhir = $_POST['tanggalAkhir']; $tanggalAkhir = $tanggalAkhir." 23:59:59"; $_SESSION["tanggalAkhir"] = $tanggalAkhir; }
+        if (isset($_POST['search'])){ $search = $_POST['search'];  $_SESSION["searchFarmasi"] = $search;} 
+        if (isset($_SESSION["tanggalAwal"])){ $tanggalAwal =  $_SESSION["tanggalAwal"];}
+        if (isset($_SESSION["tanggalAkhir"])){ $tanggalAkhir =  $_SESSION["tanggalAkhir"];}
+        if (isset($_SESSION["searchFarmasi"])){ $search =  $_SESSION["searchFarmasi"];}
+        
+        if(!isset($tanggalAwal) && !isset($tanggalAkhir)){
+            $sqlRangeDate = "";
+        }else if(isset($tanggalAwal) && isset($tanggalAkhir)){
+            $sqlRangeDate = "AND permintaan_stok.tanggal_permintaan BETWEEN '$tanggalAwal' AND '$tanggalAkhir' ";
+        }
+        else if(!isset($tanggalAwal) || !isset($tanggalAkhir)){
+            $sqlRangeDate = "";
+        }else{
+            $sqlRangeDate = "";
+        }
+
+        if(isset($search)){
+            $sqlSearch = $search;
+        }else{
+            $sqlSearch = "";
+        }
+
+        $data = array();
+        
+        $query =
+        "SELECT
+        permintaan_stok.nomor_permintaan,
+        permintaan_stok.`status`,
+        permintaan_stok.tanggal_permintaan,
+        unit.nama_unit
+        FROM
+        permintaan_stok
+        INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id
+        WHERE
+        permintaan_stok.nomor_permintaan LIKE '%$sqlSearch%' $sqlRangeDate 
+        GROUP BY
+        permintaan_stok.nomor_permintaan
+        ORDER BY
+        permintaan_stok.tanggal_permintaan DESC
+        LIMIT $page, $limitItemPage";
+        $result = $conn->query($query);
+        
+        $sql = $conn->query("Select Count(*) From(SELECT COUNT(*) FROM permintaan_stok WHERE
+        permintaan_stok.nomor_permintaan LIKE '%$sqlSearch%' $sqlRangeDate 
+        GROUP BY permintaan_stok.nomor_permintaan ) As total ");
+
+        $row = $sql->fetch_row();
+        $count = $row[0];
+        $totalData = $count;
+        $totalPages = ceil($totalData/$limitItemPage);
+        $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        return $data;
+    }
+
     public function infoStok($unit_id, $sort, $page, $limitItemPage)
     {   
         $db=new DB;
@@ -613,14 +677,14 @@ class Gudang{
         $sqlSearch = "";
         $sqlTambahan1 = "";
         $sqlTambahan2 = "";
-        if (isset($_SESSION["searchFarmasi"])){ $search =  $_SESSION["searchFarmasi"];}
+        if (isset($_POST["search"])){ $search =  $_POST["search"];}
 
         if(isset($search)){
             $sqlSearch = "AND barang.nama_barang LIKE '%$search%' ";
         }
 
         if($unit_id==3){
-            $sqlTambahan1 = ", IFNULL(lj_stok.jumlah_deporajal,'-') AS jumlah_deporajal";
+            $sqlTambahan1 = ", IFNULL(lj_stok.jumlah_deporajal,'0') AS jumlah_deporajal";
             $sqlTambahan2 = "LEFT JOIN (SELECT
             stok.unit_id AS unit_id,
             stok.jumlah AS jumlah_deporajal
@@ -640,24 +704,132 @@ class Gudang{
         barang.nama_barang,
         stok.jumlah,
         stok.tanggal_pencatatan,
-        stok.jumlah AS jumlah_farmasi $sqlTambahan1
+        stok.jumlah AS jumlah_farmasi,
+        grup_barang.nama_grup_barang,
+        satuan.nama_satuan $sqlTambahan1
         FROM
         stok $sqlTambahan2
         INNER JOIN barang ON barang.barang_id = stok.barang_id
+        INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
+        INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
         WHERE
-        stok.unit_id = $unit_id
+        stok.unit_id = $unit_id $sqlSearch
         ORDER BY
         barang.nama_barang DESC
         LIMIT $page, $limitItemPage";
         $result = $conn->query($query);
         
-        $sql = $conn->query("SELECT COUNT(*) FROM stok WHERE stok.unit_id = $unit_id $sqlSearch");
-
+        $sql = $conn->query("SELECT COUNT(*) FROM stok INNER JOIN barang ON barang.barang_id = stok.barang_id WHERE stok.unit_id = $unit_id  $sqlSearch");
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
         $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        return $data;
+    }
+
+    public function getLaporanRange($range, $sort, $page, $limitItemPage)
+    {   
+
+        switch ($range) {
+            case "Bulanan":
+                $sqlRangeWaktu="YEAR(pengeluaran_barang.tanggal_keluar), MONTH(pengeluaran_barang.tanggal_keluar) ";
+                break;
+            case "Triwulan":
+                $sqlRangeWaktu="YEAR(pengeluaran_barang.tanggal_keluar), QUARTER(pengeluaran_barang.tanggal_keluar) ";
+                break;
+            case "Semester":
+                $sqlRangeWaktu="YEAR(pengeluaran_barang.tanggal_keluar), QUARTER(pengeluaran_barang.tanggal_keluar)=1 OR QUARTER(pengeluaran_barang.tanggal_keluar)=2 ";
+                break;
+            case "Tahunan":
+                $sqlRangeWaktu="YEAR(pengeluaran_barang.tanggal_keluar) ";
+                break;
+            default:
+                $sqlRangeWaktu="YEAR(pengeluaran_barang.tanggal_keluar), MONTH(pengeluaran_barang.tanggal_keluar) ";
+        }
+
+        $db=new DB;
+        $conn=$db->connect();
+        $page=($page*$limitItemPage)-$limitItemPage;
+        
+        $data = array();
+        
+        $query =
+        "SELECT
+        pengeluaran_barang.tanggal_keluar AS range_waktu
+        FROM
+        pengeluaran_barang
+        GROUP BY
+        $sqlRangeWaktu 
+        ORDER BY
+        pengeluaran_barang.tanggal_keluar DESC
+        LIMIT $page, $limitItemPage";
+        $result = $conn->query($query);
+        $sql = $conn->query("SELECT Count(*) From(SELECT pengeluaran_barang.tanggal_keluar AS range_waktu FROM pengeluaran_barang GROUP BY $sqlRangeWaktu) As total");
+        $row = $sql->fetch_row();
+        $count = $row[0];
+        $totalData = $count;
+        $totalPages = ceil($totalData/$limitItemPage);
+        $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        return $data;
+    }
+
+    public function getLaporan($month, $year)
+    {  
+        $db=new DB;
+        $conn=$db->connect();
+        $data = array();
+        
+        $query =
+        "SELECT
+        barang.barang_id,
+        barang.nama_barang,
+        IFNULL(lj_pengeluaran.jumlah_barang_keluar,'0')  AS jumlah_barang_keluar,
+        IFNULL(lj_pemasukan_barang.jumlah_barang_masuk,'0') AS jumlah_barang_masuk,
+        IFNULL(lj_stok.jumlah,'0') as stok_sekarang
+        FROM
+        barang
+        LEFT JOIN (
+        SELECT
+        pengeluaran_barang.barang_id,
+        SUM(pengeluaran_barang.jumlah_pengeluaran) AS jumlah_barang_keluar
+        FROM
+        pengeluaran_barang
+        WHERE
+        pengeluaran_barang.dari_unit_id = 3
+        AND MONTH(pengeluaran_barang.tanggal_keluar) = 6 AND YEAR(pengeluaran_barang.tanggal_keluar) = 2017
+        GROUP BY
+        pengeluaran_barang.barang_id
+        ) lj_pengeluaran ON (lj_pengeluaran.barang_id = barang.barang_id)
+
+        LEFT JOIN (
+        SELECT
+        pengadaan_barang.barang_id,
+        SUM(pengadaan_barang.jumlah_barang) AS jumlah_barang_masuk
+        FROM
+        pengadaan_barang
+        WHERE
+        pengadaan_barang.untuk_unit_id = 3
+        AND MONTH(pengadaan_barang.tanggal_masuk) = 6 AND YEAR(pengadaan_barang.tanggal_masuk) = 2017
+        GROUP BY
+        pengadaan_barang.barang_id
+        ) lj_pemasukan_barang ON (lj_pemasukan_barang.barang_id = barang.barang_id)
+        LEFT JOIN (
+        SELECT
+        stok.barang_id AS barang_id,
+        stok.jumlah AS jumlah
+        FROM
+        stok
+        WHERE
+        stok.unit_id = 3
+        )lj_stok ON (lj_stok.barang_id = barang.barang_id)
+        GROUP BY
+        barang.nama_barang
+        ORDER BY
+        barang.nama_barang ASC
+        ";
+        $result = $conn->query($query);
+        $data = array("data"=>$result);
         return $data;
     }
 }

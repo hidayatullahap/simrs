@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/farmasi/pengeluaran'); ?>"><font color='black'><strong>Riwayat barang keluar</strong></font></a>
+            <a href="<?php echo base_url('/farmasi/permintaan/riwayatPermintaan'); ?>"><font color='black'><strong>Riwayat permintaan barang</strong></font></a>
         </h1>
     </section>
 
@@ -19,13 +19,10 @@
                 <div class="box">
                     <div class="box-header with-border">
                         <div class="form-group row">
-                            <div class="col-xs-2">
-                                <button onclick="window.location.href='<?php echo base_url('/farmasi/pengeluaran/layanan') ?>'" type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Barang Keluar</button>
-                            </div>
 
-                            <form id="formSubmit" method="post" action="<?php echo base_url('/farmasi/pengeluaran') ?>">
+                            <form id="formSubmit" method="post" action="<?php echo base_url('/farmasi/permintaan/riwayatPermintaan') ?>">
                             <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
-                            <input  type="text" class="form-control" onChange="checkTanggal();" placeholder="Cari nama barang" name="search" id="search" 
+                            <input  type="text" class="form-control" onChange="checkTanggal();" placeholder="Cari nomor permintaan" name="search" id="search" 
                             value="<?php if(isset($_SESSION['searchFarmasi'])){echo $_SESSION['searchFarmasi'];} ?>">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
@@ -52,25 +49,26 @@
                             <thead bgcolor="#4a4a4c">
                             <tr>
                                 <th><font color="white">Tanggal Keluar</th>
-                                <th><font color="white">Nama Barang</th>
-                                <th><font color="white">Jumlah</th>
-                                <th><font color="white">Untuk Unit</th>
-                                <th><font color="white">Grup Barang</th>
-                                <th><font color="white">Nomor Batch</th>
+                                <th><font color="white">Nomor Permintaan</th>
+                                <th><font color="white">Dari Unit</th>
+                                <th><font color="white">Status</th>
+                                <th><font color="white">Aksi</th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php
+                            $url=base_url('/farmasi/permintaan/detilitem');
                             if ($data->num_rows>0) {
                                 foreach ($data as $field => $values) {
                                     echo "<tr>";
-                                    $date=strtotime($values['tanggal_keluar']);
+                                    $date=strtotime($values['tanggal_permintaan']);
                                     echo "<td width='10%'>".date('d M Y H:i:s', $date)."</td>";
-                                    echo "<td>".$values['nama_barang']."</td>";
-                                    echo "<td>".$values['jumlah_pengeluaran']."</td>";
+                                    echo "<td>".$values['nomor_permintaan']."</td>";
+                                    $nomorPermintaan=$values['nomor_permintaan'];
                                     echo "<td>".$values['nama_unit']."</td>";
-                                    echo "<td>".$values['nama_grup_barang']."</td>";
-                                    echo "<td>".$values['no_batch']."</td>";
+                                    echo "<td>".$values['status']."</td>";
+                                    echo "<td width='5%'><button type='button' class='btn btn-primary btn-sm' 
+                                    onclick='window.location.href=\"$url/$nomorPermintaan\"'>Detil</button></td>";
                                     echo "</tr>";
                                 }
                             } else {
@@ -85,12 +83,12 @@
                         }
                     ?>
                     <div class="box-footer clearfix">
-                    <span><i>*Search box boleh kosong</i></span>
+                    <span><i>*Hapus 'filter mulai tanggal' untuk mendapatkan semua hasil</i></span>
                         <?php
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
                         if (isset($totalPages)) {
-                            $entity->tampilkan('farmasi/pengeluaran',$currentPage, $totalPages);
+                            $entity->tampilkan('farmasi/permintaan/riwayatpermintaan',$currentPage, $totalPages);
                         }
                         ?>
                     </div>

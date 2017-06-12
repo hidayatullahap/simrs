@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/farmasi/pengadaan'); ?>"><font color='black'><strong>Riwayat barang keluar</strong></font></a>
+            <a href="<?php echo base_url('/farmasi/pengadaan'); ?>"><font color='black'><strong>Riwayat barang Masuk</strong></font></a>
         </h1>
     </section>
 
@@ -20,7 +20,9 @@
                     <div class="box-header with-border">
                         <div class="form-group row">
                             <div class="col-xs-2">
-                                <button onclick="window.location.href='<?php echo base_url('/farmasi/pengadaan/layanan') ?>'" type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Barang Keluar</button>
+                                <button onclick="window.location.href='<?php echo base_url('/farmasi/pengadaan/layanan') ?>'" 
+                                type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">
+                                Tambah Barang Masuk </button>
                             </div>
 
                             <form id="formSubmit" method="post" action="<?php echo base_url('/farmasi/pengadaan') ?>">
@@ -94,7 +96,7 @@
                         }
                     ?>
                     <div class="box-footer clearfix">
-                    <span><i>*Hapus 'filter mulai tanggal' untuk mendapatkan semua hasil</i></span>
+                    <span><i>*Search box boleh kosong</i></span>
                         <?php
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
