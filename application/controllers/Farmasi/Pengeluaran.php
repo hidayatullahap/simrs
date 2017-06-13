@@ -42,7 +42,7 @@ class Pengeluaran extends CI_Controller
                     redirect('/farmasi/pengeluaran', 'refresh');
                 }else{
                     $this->pesan("Pengeluaran barang berhasil", $return);
-                    redirect('/farmasi/pengeluaran', 'refresh');
+                   redirect('/farmasi/pengeluaran', 'refresh');
             }
         }
     }

@@ -328,8 +328,8 @@ class Gudang{
 
         if($jumlah>0){
             $query3 =
-            "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `jumlah_pengeluaran`) VALUES 
-            ('$untuk_unit_id', '$unit_id', '$idbarang', '$jumlah')";
+            "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `jumlah_pengeluaran`, `nama_penerima`) VALUES 
+            ('$untuk_unit_id', '$unit_id', '$idbarang', '$jumlah','otomatis dari sistem')";
             $result = $conn->query($query3);
         }
         $conn->close();
@@ -349,6 +349,7 @@ class Gudang{
             $tabel_kadaluarsa       = $_POST['tabel_kadaluarsa'];
             $tabel_jumlah           = $_POST['tabel_jumlah'];
             $tabel_untuk_unit_id    = $_POST['tabel_untuk_unit_id'];
+            $tabel_nama_penerima    = $_POST['tabel_nama_penerima'];
 
             foreach($tabel_barang_id as $a => $b){
                 $barang_id      = $tabel_barang_id[$a];
@@ -356,6 +357,8 @@ class Gudang{
                 $kadaluarsa     = $tabel_kadaluarsa[$a];
                 $jumlah         = $tabel_jumlah[$a];
                 $untuk_unit_id  = $tabel_untuk_unit_id[$a];
+                $nama_penerima  = $tabel_nama_penerima[$a];
+                
                 /*
                 echo "Data ke: ".$i.": <br>";
                 echo "Idbarang: ". $barang_id.", ";
@@ -388,8 +391,8 @@ class Gudang{
                 }
                 if($jumlah>0){
                     $query =
-                    "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `no_batch`, `jumlah_pengeluaran`) VALUES 
-                    ('$untuk_unit_id', '$unit_id', '$barang_id', '$nomor_batch', '$jumlah')";
+                    "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `no_batch` ,`jumlah_pengeluaran`, `nama_penerima`) VALUES 
+                    ('$untuk_unit_id', '$unit_id', '$barang_id', '$nomor_batch', '$jumlah','$nama_penerima')";
                     
                     $result = $conn->query($query);
                 }
@@ -514,7 +517,8 @@ class Gudang{
         pengeluaran_barang.tanggal_keluar,
         unit.nama_unit,
         grup_barang.nama_grup_barang,
-        pengeluaran_barang.no_batch
+        pengeluaran_barang.no_batch,
+        pengeluaran_barang.nama_penerima
         FROM
         pengeluaran_barang
         INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id
@@ -774,8 +778,46 @@ class Gudang{
         return $data;
     }
 
-    public function getLaporan($month, $year)
+    public function getLaporan($range, $month, $year, $unit_id)
     {  
+        switch ($range) {
+            case "Bulanan":
+                $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year AND MONTH(pengeluaran_barang.tanggal_keluar)=$month ";
+                $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)=$yearAND MONTH(pengadaan_barang.tanggal_masuk)=$month ";
+                break;
+            case "Triwulan":
+                if($month>=1 && $month<=3){
+                    $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year AND QUARTER(pengeluaran_barang.tanggal_keluar)=1 ";
+                    $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)    =$year AND QUARTER(pengadaan_barang.tanggal_masuk)=1 ";
+                }else if($month>3 && $month<=6){
+                    $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year AND QUARTER(pengeluaran_barang.tanggal_keluar)=2 ";
+                    $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)    =$year AND QUARTER(pengadaan_barang.tanggal_masuk)=2 ";
+                }else if($month>6 && $month<=9){
+                    $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year AND QUARTER(pengeluaran_barang.tanggal_keluar)=3 ";
+                    $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)    =$year AND QUARTER(pengadaan_barang.tanggal_masuk)=3 ";
+                }else{
+                    $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year AND QUARTER(pengeluaran_barang.tanggal_keluar)=4 ";
+                    $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)    =$year AND QUARTER(pengadaan_barang.tanggal_masuk)=4 ";
+                }
+                break;
+            case "Semester":
+                if($month>=1 && $month<=6 ){
+                    $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year AND QUARTER(pengeluaran_barang.tanggal_keluar)=1 OR QUARTER(pengeluaran_barang.tanggal_keluar)=2 ";
+                    $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)    =$year AND QUARTER(pengadaan_barang.tanggal_masuk)=1 OR QUARTER(pengadaan_barang.tanggal_masuk)=2 ";
+                }else{
+                    $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year AND QUARTER(pengeluaran_barang.tanggal_keluar)=3 OR QUARTER(pengeluaran_barang.tanggal_keluar)=4 ";
+                    $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)    =$year AND QUARTER(pengadaan_barang.tanggal_masuk)=3 OR QUARTER(pengadaan_barang.tanggal_masuk)=4 ";
+                }
+                break;
+            case "Tahunan":
+                $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year ";
+                $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)=$year ";
+                break;
+            default:
+                $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year, MONTH(pengeluaran_barang.tanggal_keluar)=$month ";
+                $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)=$year, MONTH(pengadaan_barang.tanggal_masuk)=$month ";
+        }
+
         $db=new DB;
         $conn=$db->connect();
         $data = array();
@@ -784,20 +826,27 @@ class Gudang{
         "SELECT
         barang.barang_id,
         barang.nama_barang,
-        IFNULL(lj_pengeluaran.jumlah_barang_keluar,'0')  AS jumlah_barang_keluar,
-        IFNULL(lj_pemasukan_barang.jumlah_barang_masuk,'0') AS jumlah_barang_masuk,
-        IFNULL(lj_stok.jumlah,'0') as stok_sekarang
+        satuan.nama_satuan,
+        barang.harga_jual AS harga_jual,
+        IFNULL(lj_pengeluaran.jumlah_barang_keluar,'-')  AS jumlah_barang_keluar,
+        IFNULL(lj_pengeluaran.jumlah_pengeluaran_rp,'0') as jumlah_pengeluaran_in_rp,
+        IFNULL(lj_pemasukan_barang.jumlah_barang_masuk,'-') AS jumlah_barang_masuk,
+        IFNULL(lj_pemasukan_barang.jumlah_pengadaan_rp,'0') as jumlah_pengadaan_in_rp,
+        IFNULL(lj_stok.jumlah,'-') as stok_sekarang,
+        IFNULL(lj_stok.jumlah_stok_rp,'0') as jumlah_stok_in_rp
         FROM
         barang
         LEFT JOIN (
         SELECT
         pengeluaran_barang.barang_id,
-        SUM(pengeluaran_barang.jumlah_pengeluaran) AS jumlah_barang_keluar
+        SUM(pengeluaran_barang.jumlah_pengeluaran) AS jumlah_barang_keluar,
+        (pengeluaran_barang.jumlah_pengeluaran*barang.harga_jual) AS jumlah_pengeluaran_rp
         FROM
         pengeluaran_barang
+        INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id
         WHERE
-        pengeluaran_barang.dari_unit_id = 3
-        AND MONTH(pengeluaran_barang.tanggal_keluar) = 6 AND YEAR(pengeluaran_barang.tanggal_keluar) = 2017
+        pengeluaran_barang.dari_unit_id = $unit_id
+        $sqlRangeWaktuKeluar 
         GROUP BY
         pengeluaran_barang.barang_id
         ) lj_pengeluaran ON (lj_pengeluaran.barang_id = barang.barang_id)
@@ -805,28 +854,30 @@ class Gudang{
         LEFT JOIN (
         SELECT
         pengadaan_barang.barang_id,
-        SUM(pengadaan_barang.jumlah_barang) AS jumlah_barang_masuk
+        SUM(pengadaan_barang.jumlah_barang) AS jumlah_barang_masuk,
+        (pengadaan_barang.jumlah_barang*barang.harga_jual) AS jumlah_pengadaan_rp
         FROM
         pengadaan_barang
+        INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id
         WHERE
-        pengadaan_barang.untuk_unit_id = 3
-        AND MONTH(pengadaan_barang.tanggal_masuk) = 6 AND YEAR(pengadaan_barang.tanggal_masuk) = 2017
+        pengadaan_barang.untuk_unit_id = $unit_id
+        $sqlRangeWaktuMasuk  
         GROUP BY
-        pengadaan_barang.barang_id
-        ) lj_pemasukan_barang ON (lj_pemasukan_barang.barang_id = barang.barang_id)
+        pengadaan_barang.barang_id) lj_pemasukan_barang ON (lj_pemasukan_barang.barang_id = barang.barang_id)
         LEFT JOIN (
         SELECT
         stok.barang_id AS barang_id,
-        stok.jumlah AS jumlah
+        stok.jumlah AS jumlah,
+        (barang.harga_jual*stok.jumlah) AS jumlah_stok_rp
         FROM
         stok
+        INNER JOIN barang ON stok.barang_id = barang.barang_id
         WHERE
-        stok.unit_id = 3
+        stok.unit_id = $unit_id
         )lj_stok ON (lj_stok.barang_id = barang.barang_id)
+        INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
         GROUP BY
         barang.nama_barang
-        ORDER BY
-        barang.nama_barang ASC
         ";
         $result = $conn->query($query);
         $data = array("data"=>$result);

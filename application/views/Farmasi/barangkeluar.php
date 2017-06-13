@@ -75,7 +75,21 @@
                 <div class="box">
                     <div class="box-header with-border">
                             <div class="modal-body" style="text-align: right; ">
-                                <input hidden name="idPasien" id="idPasien"></input>
+                                <label class="col-md-5 control-label paddingForm">Nama Penerima</label>
+                                <div class="col-md-3">
+                                    <?php
+                                    $data = array(
+                                        'name' => 'nama_penerima',
+                                        'autocomplete' => 'off',
+                                        'required' => 'required',
+                                        'id' => 'nama_penerima',
+                                        'type' => 'text',
+                                        'class' => 'form-control'
+                                    );
+                                    echo form_input($data);
+                                    ?>
+                                </div><br><br>
+
                                 <div class="item form-group">
                                     <label class="col-md-5 control-label paddingForm" >Untuk Unit</label>
                                     <div class="col-md-3">
@@ -153,6 +167,7 @@
                                         );
                                         echo form_input($data);
                                         ?>
+                                    <i>*masukan nama barang/unit di menu kelola bila tidak ada</i>
                                     </div><br><br>
                                 </div>
                             </div>
@@ -172,6 +187,7 @@
                                         <th class="cell_sim">Kadaluarsa</th>
                                         <th class="cell_sim">Jumlah</th>
                                         <th class="cell_sim">Untuk Unit ID</th>
+                                        <th class="cell_sim">Nama Penerima</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -232,13 +248,13 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     var jumlah = document.getElementById('jumlah');
     var tabelPengeluaran = document.getElementById('tabelPengeluaran');
     var kolom_barang_id = document.getElementById('barang_id');
+    var nama_penerima = document.getElementById('nama_penerima');
     var trTot = document.getElementById("trTotal");
     var grup_barang_temp;
     var nama_barang_temp;
     var barang_id_temp;
 
     function clearFields(){
-
         nomor_batch.value = "";
         jumlah.value = "";
     }
@@ -262,6 +278,7 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
         var cell6 = row.insertCell(5);
         var cell7 = row.insertCell(6);
         var cell8 = row.insertCell(7);
+        var cell9 = row.insertCell(8);
 
         cell1.innerHTML = "<span class=\"table-remove glyphicon glyphicon-remove\" onclick=\"hapusBaris(this)\"></span>";
         cell2.innerHTML = "<input hidden name=\"tabel_barang_id[]\" value=\"" + barang_id_temp + "\" class=\"full-width rata_tengah\" readonly>"+ barang_id_temp;
@@ -277,6 +294,8 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
         cell7.innerHTML = "<input hidden name=\"tabel_jumlah[]\" value=\"" + jumlah.value + "\" class=\"full-width\" readonly>"+ jumlah.value;
         td++;
         cell8.innerHTML = "<input hidden name=\"tabel_untuk_unit_id[]\" value=\"" + untuk_unit_id.value + "\" class=\"full-width rata_tengah\" readonly>"+ untuk_unit_id.value;
+        td++;
+        cell9.innerHTML = "<input hidden name=\"tabel_nama_penerima[]\" value=\"" + nama_penerima.value + "\" class=\"full-width rata_tengah\" readonly>"+ nama_penerima.value;
 
         trTot.value = tr;
         tr++;
@@ -333,6 +352,7 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
                 stok = daftarSearchData.all()['Stok'];
                 if(stok<1){
                     alert("Stok tidak tersedia");
+                    return false;
                 }else{
                     barang_id_temp = daftarSearchData.all()['id Barang'];
                     nama_barang_temp = daftarSearchData.all()['Nama'];

@@ -17,7 +17,8 @@ class Barang{
         barang.satuan_id AS satuan_id,
         barang.harga_jual AS harga_jual,
         satuan.nama_satuan AS satuan,
-        barang.tanggal_pencatatan AS tanggal_pencatatan
+        barang.tanggal_pencatatan AS tanggal_pencatatan,
+        barang.merek_model_ukuran
         FROM
         barang
         INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
@@ -72,7 +73,8 @@ class Barang{
         barang.satuan_id AS satuan_id,
         satuan.nama_satuan AS satuan,
         barang.harga_jual AS harga_jual,
-        barang.tanggal_pencatatan AS tanggal_pencatatan
+        barang.tanggal_pencatatan AS tanggal_pencatatan,
+        barang.merek_model_ukuran
         FROM
         barang
         INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
@@ -94,11 +96,12 @@ class Barang{
         $grup_barang_id = $_POST['grup_barang_id'];
         $satuan_id      = $_POST['satuan_id'];
         $harga_jual     = $_POST['harga_jual'];
+        $merek_model_ukuran     = $_POST['merek_model_ukuran'];
 
         $query =
         "INSERT
-        INTO barang(nama_barang, grup_barang_id, satuan_id , harga_jual)
-        VALUES ('$nama_barang', '$grup_barang_id', '$satuan_id', '$harga_jual')
+        INTO barang(nama_barang, grup_barang_id, satuan_id , merek_model_ukuran, harga_jual)
+        VALUES ('$nama_barang', '$grup_barang_id', '$satuan_id', '$merek_model_ukuran','$harga_jual')
         ";
         $result = $conn->query($query);
         return $result;
@@ -113,10 +116,11 @@ class Barang{
         $grup_barang_id = $_POST['grup_barang_id'];
         $satuan_id      = $_POST['satuan_id'];
         $harga_jual     = $_POST['harga_jual'];
-        
+        $merek_model_ukuran     = $_POST['merek_model_ukuran'];
 
         $query =
-        "UPDATE `barang` SET `nama_barang` = '$nama_barang', `grup_barang_id` = '$grup_barang_id', `harga_jual` = '$harga_jual', `satuan_id` = '$satuan_id'
+        "UPDATE `barang` SET `nama_barang` = '$nama_barang', `grup_barang_id` = '$grup_barang_id', `harga_jual` = '$harga_jual', `satuan_id` = '$satuan_id',
+        `merek_model_ukuran` = '$merek_model_ukuran'
          WHERE `barang`.`barang_id` = $id
         ";
         $result = $conn->query($query);

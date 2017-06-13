@@ -57,6 +57,7 @@
                                 <th><font color="white">Untuk Unit</th>
                                 <th><font color="white">Grup Barang</th>
                                 <th><font color="white">Nomor Batch</th>
+                                <th><font color="white">Nama Penerima</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -71,6 +72,7 @@
                                     echo "<td>".$values['nama_unit']."</td>";
                                     echo "<td>".$values['nama_grup_barang']."</td>";
                                     echo "<td>".$values['no_batch']."</td>";
+                                    echo "<td>".$values['nama_penerima']."</td>";
                                     echo "</tr>";
                                 }
                             } else {

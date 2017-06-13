@@ -39,6 +39,7 @@
                                 <th><font color="white">Barang ID</th>
                                 <th><font color="white">Nama Barang</th>
                                 <th><font color="white">Grup Barang</th>
+                                <th><font color="white">Merek/Model/Ukuran</th>
                                 <th><font color="white">Satuan</th>
                                 <th><font color="white">Harga Jual</th>
                                 <th><font color="white">Tanggal Pencatatan</th>
@@ -54,6 +55,7 @@
                                     echo "<td width='5%'>".$values['barang_id']."</td>";
                                     echo "<td>".$values['nama_barang']."</td>";
                                     echo "<td>".$values['grup_barang']."</td>";
+                                    echo "<td>".$values['merek_model_ukuran']."</td>";
                                     echo "<td>".$values['satuan']."</td>";
                                     echo "<td>".$values['harga_jual']."</td>";
 
@@ -147,6 +149,22 @@
                                                 'type' => 'text',
                                                 'class' => 'form-control col-md-7 col-xs-12',
                                                 'placeholder' => 'Isikan harga barang',
+                                            );
+                                            echo form_input($data);
+                                            ?>
+                                        </div><br><br>
+
+                                        <label class="col-md-3 control-label paddingForm" for="merek_model_ukuran">Merek/model/ukuran</label>
+                                        <div class="col-md-6">
+                                            <?php
+                                            $data = array(
+                                                'name' => 'merek_model_ukuran',
+                                                'autocomplete' => 'off',
+                                                'required' => 'required',
+                                                'id' => 'merek_model_ukuran',
+                                                'type' => 'text',
+                                                'class' => 'form-control col-md-7 col-xs-12',
+                                                'placeholder' => 'Isikan merek/model/ukuran',
                                             );
                                             echo form_input($data);
                                             ?>
@@ -253,9 +271,9 @@ function editModal(row) {
     
     document.getElementById("nama_barang").value           = document.getElementById("tabel").rows[row].cells[1].innerHTML;
     document.getElementById("grup_barang_id").innerHTML = document.getElementById("tabel").rows[row].cells[2].innerHTML;
-    document.getElementById("satuan_id").innerHTML   = document.getElementById("tabel").rows[row].cells[3].innerHTML;
-    document.getElementById("harga_jual").value   = document.getElementById("tabel").rows[row].cells[4].innerHTML;
-
+    document.getElementById("satuan_id").innerHTML   = document.getElementById("tabel").rows[row].cells[4].innerHTML;
+    document.getElementById("merek_model_ukuran").value   = document.getElementById("tabel").rows[row].cells[3].innerHTML;
+    document.getElementById("harga_jual").value   = document.getElementById("tabel").rows[row].cells[5].innerHTML;
     document.getElementById("headerModal").innerHTML = "Edit Barang";
     document.getElementById("submitModal").innerHTML = "Simpan Perubahan";
     document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolabarang/editdata') ?>"+"/"+id;

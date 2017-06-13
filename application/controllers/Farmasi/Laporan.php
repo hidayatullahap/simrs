@@ -22,15 +22,16 @@ class Laporan extends CI_Controller
     }
 
     public function page($page)
-    {   
+    {       
+        $range="Bulanan";
         if(isset($_POST['pilihanrange'])){
-                $_SESSION['pilihanrange']=$_POST['pilihanrange'];
-                $range = $_SESSION['pilihanrange'];
+            $_SESSION['pilihanrange']=$_POST['pilihanrange'];
+            $range = $_SESSION['pilihanrange'];
             }else if(isset($_SESSION['pilihanrange'])){
                 $range = $_SESSION['pilihanrange'];
             }else{ 
                 $_SESSION['pilihanrange'] = "Bulanan";
-            }
+        }
 
         $this->session->set_userdata('navbar_status', 'laporanfarmasi');
         $gudang = new Gudang();
@@ -52,17 +53,39 @@ class Laporan extends CI_Controller
     }
     public function print($month, $year)
     {   
+        $range="Bulanan";
+        if(isset($_POST['pilihanrange'])){
+            $_SESSION['pilihanrange']=$_POST['pilihanrange'];
+            $range = $_SESSION['pilihanrange'];
+            }else if(isset($_SESSION['pilihanrange'])){
+                $range = $_SESSION['pilihanrange'];
+            }else{ 
+                $_SESSION['pilihanrange'] = "Bulanan";
+        }
+
+        $unit_id = 3;
         $title['title']="Print";
         $gudang = new Gudang();
-        $data = $gudang->getLaporan($month, $year);
+        $data = $gudang->getLaporan($range, $month, $year, $unit_id);
         $this->load->view('header',$title);
         $this->load->view('farmasi/laporanprint',$data);
     }
 
     public function excel($month, $year)
     {   
+        $range="Bulanan";
+        if(isset($_POST['pilihanrange'])){
+            $_SESSION['pilihanrange']=$_POST['pilihanrange'];
+            $range = $_SESSION['pilihanrange'];
+            }else if(isset($_SESSION['pilihanrange'])){
+                $range = $_SESSION['pilihanrange'];
+            }else{ 
+                $_SESSION['pilihanrange'] = "Bulanan";
+        }
+
+        $unit_id = 3;
         $gudang = new Gudang();
-        $data = $gudang->getLaporan($month, $year);
+        $data = $gudang->getLaporan($range, $month, $year, $unit_id);
         //$this->load->view('Tests/test_excel2',$data);
 
         $tempArray = array();

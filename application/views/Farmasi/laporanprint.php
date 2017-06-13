@@ -1,11 +1,11 @@
 <style>
 @page {
     size: A4;
-    margin: 27mm 16mm 27mm 16mm;
+    margin: 15mm 16mm 24mm 16mm;
 }
 body {
-    height: 842px;
-    width: 595px;
+    height: 1000px;
+    width: 800px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -17,7 +17,7 @@ body {
 
     switch ($choice) {
         case "Bulanan":
-            $outputPilihan = "Bulan: ".$rangemonth." Tahun ".$yearDate;
+            $outputPilihan = "Bulan: ".date('F',$rangemonth)." Tahun ".$yearDate;
             break;
         case "Triwulan":
             if($rangemonth>=1 && $rangemonth<=3){
@@ -51,9 +51,14 @@ body {
     <thead>
         <tr>
             <th>Nama Barang</th>
+            <th>Satuan</th>
+            <th>Harga Barang</th>
             <th>Jumlah Barang Keluar</th>
-            <th>Jumlah Barang Masuk</th>
+            <th>Total Barang Keluar</th>
+            <th>Jumlah Barang Keluar</th>
+            <th>Total Barang Masuk</th>
             <th>Stok Sekarang</th>
+            <th>Total Stok Sekarang</th>
         </tr>
     </thead>
     <tbody>
@@ -61,9 +66,14 @@ body {
         foreach ($data as $field => $value) {
             echo "<tr>";
             echo "<td>".$value['nama_barang']."</td>";
+            echo "<td>".$value['nama_satuan']."</td>";
+            echo "<td>Rp. ".number_format($value['harga_jual'],0,',','.')."</td>";
             echo "<td>".$value['jumlah_barang_keluar']."</td>";
-            echo "<td>".$value['jumlah_barang_masuk']."</td>";
+            echo "<td>Rp. ".number_format($value['jumlah_pengeluaran_in_rp'],0,',','.')."</td>";
+            echo "<td>".$value['jumlah_barang_keluar']."</td>";
+            echo "<td>Rp. ".number_format($value['jumlah_pengadaan_in_rp'],0,',','.')."</td>";
             echo "<td>".$value['stok_sekarang']."</td>";
+            echo "<td>Rp. ".number_format($value['jumlah_stok_in_rp'],0,',','.')."</td>";
             echo "</tr>";
         }
       ?>
