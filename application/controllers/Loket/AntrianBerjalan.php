@@ -27,12 +27,8 @@ class AntrianBerjalan extends CI_Controller
 
     public function page($page=null)
     {   
-        $antrian = new Antrian();
         $master = new MasterTabel();
 
-        if(!isset($page)){
-            $page=1;
-        }
         $title['title']="Antrian Berjalan";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
@@ -43,7 +39,6 @@ class AntrianBerjalan extends CI_Controller
         if(!isset($sort)){ 
             $sort = $this->default_setting->pagination('SORT'); 
         }
-        $data = $antrian->AntrianHariIni($sort, $page, $limit);
         $data['daftarUnit'] = $master->getData("unit");
         $this->load->view('header',$title);
         $this->load->view('navbar');

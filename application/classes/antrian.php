@@ -39,13 +39,20 @@ class Antrian{
         return $data;
     }
 
-    public function ajaxAntrianHariIni()
+    public function ajaxAntrianHariIni($unit_id=null)
     {   
         $db=new DB;
         $conn=$db->connect();
         $requestData = $_REQUEST;
         $page = $requestData['start'];
         $limitItemPage = $requestData['length'];
+
+        if(isset($unit_id)){
+            $unitSQL="AND antrian.unit_id_tujuan = $unit_id ";
+        }else{
+            $unitSQL="";
+        }
+
         $data = array();
         
         $query =
@@ -64,14 +71,14 @@ class Antrian{
         antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
         AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') 
         AND antrian.`status` = 'belum_dilayani' 
+        $unitSQL
         ORDER BY `antrian`.`tanggal_antrian` DESC
         LIMIT $page, $limitItemPage";
         
         $sql = $conn->query("SELECT COUNT(*) FROM antrian WHERE
         antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
         AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') 
-        AND antrian.`status` = 'belum_dilayani' 
-        LIMIT $page, $limitItemPage");
+        AND antrian.`status` = 'belum_dilayani'");
 
         if( !empty($requestData['search']['value']) ) {
             $query =
@@ -119,7 +126,12 @@ class Antrian{
             $nestedData[] = $row['jenis_kunjungan'];
             $nestedData[] = $row['nama_unit'];
             //if (isset($row['status'])){$nestedData[] = $row['status'];}
-            $nestedData[] = "<td><button type='button' class='btn btn-primary btn-md' id='buttonPindahUnit' onclick=\"editModal($id_antrian,'$nama','$unit');\">Pindah Unit</button></td>";
+            if(isset($unit_id)){
+                $nestedData[] = "<td><a href='".base_url("depo/antrianberjalandepo/layananobatkeluar/".$row['pasien_id'])."' ><button type='button' class='btn btn-primary btn-sm'>Layani</button></a></td>";
+            }else{
+                $nestedData[] = "<td><button type='button' class='btn btn-primary btn-md' id='buttonPindahUnit' onclick=\"editModal($id_antrian,'$nama','$unit');\">Pindah Unit</button></td>";
+            }
+            
             $data[] = $nestedData;
         }
         

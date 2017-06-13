@@ -2,7 +2,7 @@
 require_once CLASSES_DIR  . 'dbconnection.php';
 
 class Gudang{
-
+    
     public function ajaxPermintaanMasuk()
     {   
         $requestData = $_REQUEST;
@@ -300,7 +300,7 @@ class Gudang{
         $db=new DB;
         $conn=$db->connect();
         $query =
-        "UPDATE `permintaan_stok` SET `jumlah_disetujui` = '$jumlah', `status` = 'belum_dilayani' WHERE `permintaan_stok`.`permintaan_stok_id` = $id;";
+        "UPDATE `permintaan_stok` SET `jumlah_disetujui` = '$jumlah', `status` = 'sudah_dilayani' WHERE `permintaan_stok`.`permintaan_stok_id` = $id;";
         $result = $conn->query($query);
         
         $sqlCheckTableExist = $conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$idbarang' AND unit_id = '$untuk_unit_id'");
