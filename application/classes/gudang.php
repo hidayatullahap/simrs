@@ -783,7 +783,7 @@ class Gudang{
         switch ($range) {
             case "Bulanan":
                 $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year AND MONTH(pengeluaran_barang.tanggal_keluar)=$month ";
-                $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)=$yearAND MONTH(pengadaan_barang.tanggal_masuk)=$month ";
+                $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)=$year AND MONTH(pengadaan_barang.tanggal_masuk)=$month ";
                 break;
             case "Triwulan":
                 if($month>=1 && $month<=3){
@@ -814,8 +814,8 @@ class Gudang{
                 $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)=$year ";
                 break;
             default:
-                $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year, MONTH(pengeluaran_barang.tanggal_keluar)=$month ";
-                $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)=$year, MONTH(pengadaan_barang.tanggal_masuk)=$month ";
+                $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year AND MONTH(pengeluaran_barang.tanggal_keluar)=$month ";
+                $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)=$year AND MONTH(pengadaan_barang.tanggal_masuk)=$month ";
         }
 
         $db=new DB;
