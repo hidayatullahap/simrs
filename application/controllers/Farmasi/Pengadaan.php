@@ -37,11 +37,15 @@ class Pengadaan extends CI_Controller
             $gudang=new Gudang();
             $unit_id=3;
             $return = $gudang->prosesPengadaanStok($unit_id);
+            //var_dump($return);
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", $return);
                     redirect('/farmasi/pengadaan', 'refresh');
-                }else{
+                }else if($return==true){
                     $this->pesan("Pengadaan barang berhasil", $return);
+                    redirect('/farmasi/pengadaan', 'refresh');
+                }else{
+                    $this->pesan("Error server", $return);
                     redirect('/farmasi/pengadaan', 'refresh');
             }
         }

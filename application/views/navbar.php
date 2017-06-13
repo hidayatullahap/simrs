@@ -1,6 +1,6 @@
 <style>
     html {
-        background: url(<?php echo base_url("assets/images/background_login.jpg");?>) no-repeat center center fixed;
+        background: url(<?php echo base_url("assets/images/background_login3.jpg");?>) no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -138,12 +138,6 @@
             
             <li class="header">MENU NAVIGASI</li>
             
-            <li class="treeview">
-                <a href="<?php echo base_url('dashboard'); ?>">
-                    <i class="fa fa-home"></i> <span>Dashboard</span> 
-                </a>
-            </li>
-
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "daftarpasien") == 0 ? "active" : ""); ?>">
                 <a href="<?php echo base_url('loket/layananpasien'); ?>">
                     <i class="fa fa-users"></i> <span>Layanan Pasien</span> 
@@ -179,12 +173,45 @@
             </li>
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "riwayatpermintaan") == 0 ? "active" : ""); ?>">
                 <a href="<?php echo base_url('farmasi/permintaan/riwayatpermintaan'); ?>">
-                    <i class="fa fa-home"></i> <span>Riwayat Permintaan stok</span> 
+                    <i class="fa fa-history"></i> <span>Riwayat Permintaan stok</span> 
                 </a>
             </li>
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "laporanfarmasi") == 0 ? "active" : ""); ?>">
                 <a href="<?php echo base_url('farmasi/laporan'); ?>">
-                    <i class="fa fa-home"></i> <span>Laporan</span> 
+                    <i class="fa fa-file"></i> <span>Laporan</span> 
+                </a>
+            </li>
+
+            <li class="header">MENU NAVIGASI INVENTARIS</li>
+            
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "halamanutamafarmasi") == 0 ? "active" : ""); ?> ">
+                <a href="<?php echo base_url('farmasi/halamanutama'); ?>">
+                    <i class="fa fa-home"></i> <span>Dashboard</span> 
+                </a>
+            </li>
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "pengeluaranfarmasi") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('farmasi/pengeluaran'); ?>">
+                    <i class="fa fa-arrow-up"></i> <span>Pengeluaraan</span> 
+                </a>
+            </li>
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "pengadaanfarmasi") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('farmasi/pengadaan'); ?>">
+                    <i class="fa fa-cart-plus"></i> <span>Pengadaan</span> 
+                </a>
+            </li>
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "infostok") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('farmasi/infostok'); ?>">
+                    <i class="fa fa-check"></i> <span>Stok</span> 
+                </a>
+            </li>
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "riwayatpermintaan") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('farmasi/permintaan/riwayatpermintaan'); ?>">
+                    <i class="fa fa-history"></i> <span>Riwayat Permintaan stok</span> 
+                </a>
+            </li>
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "laporanfarmasi") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('farmasi/laporan'); ?>">
+                    <i class="fa fa-file"></i> <span>Laporan</span> 
                 </a>
             </li>
 

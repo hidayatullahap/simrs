@@ -40,9 +40,12 @@ class Pengeluaran extends CI_Controller
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", $return);
                     redirect('/farmasi/pengeluaran', 'refresh');
-                }else{
+                }else if($return==true){
                     $this->pesan("Pengeluaran barang berhasil", $return);
-                   redirect('/farmasi/pengeluaran', 'refresh');
+                    redirect('/farmasi/pengeluaran', 'refresh');
+                }else{
+                    $this->pesan("Error server", $return);
+                    redirect('/farmasi/pengeluaran', 'refresh');
             }
         }
     }

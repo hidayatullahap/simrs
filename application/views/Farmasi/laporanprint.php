@@ -15,9 +15,12 @@ body {
     $yearDate=$this->uri->segment(5);
     $rangemonth=$this->uri->segment(4);
 
+    $strDate = "$yearDate-$rangemonth-01 00:00:00";
+    $strDate=strtotime($strDate);
+
     switch ($choice) {
         case "Bulanan":
-            $outputPilihan = "Bulan: ".date('F',$rangemonth)." Tahun ".$yearDate;
+            $outputPilihan = "Bulan: ".date('F',$strDate)." Tahun ".$yearDate;
             break;
         case "Triwulan":
             if($rangemonth>=1 && $rangemonth<=3){
@@ -55,7 +58,7 @@ body {
             <th>Harga Barang</th>
             <th>Jumlah Barang Keluar</th>
             <th>Total Barang Keluar</th>
-            <th>Jumlah Barang Keluar</th>
+            <th>Jumlah Barang Masuk</th>
             <th>Total Barang Masuk</th>
             <th>Stok Sekarang</th>
             <th>Total Stok Sekarang</th>
@@ -70,7 +73,7 @@ body {
             echo "<td>Rp. ".number_format($value['harga_jual'],0,',','.')."</td>";
             echo "<td>".$value['jumlah_barang_keluar']."</td>";
             echo "<td>Rp. ".number_format($value['jumlah_pengeluaran_in_rp'],0,',','.')."</td>";
-            echo "<td>".$value['jumlah_barang_keluar']."</td>";
+            echo "<td>".$value['jumlah_barang_masuk']."</td>";
             echo "<td>Rp. ".number_format($value['jumlah_pengadaan_in_rp'],0,',','.')."</td>";
             echo "<td>".$value['stok_sekarang']."</td>";
             echo "<td>Rp. ".number_format($value['jumlah_stok_in_rp'],0,',','.')."</td>";

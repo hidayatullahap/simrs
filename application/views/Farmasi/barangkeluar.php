@@ -64,7 +64,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <b> Pengeluaran Barang </b><br>
+            <a href="<?php echo base_url('/farmasi/pengeluaran'); ?>"><b> Pengeluaran Barang </b></a><br>
 
         </h1>
     </section>

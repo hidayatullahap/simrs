@@ -53,14 +53,11 @@ class Laporan extends CI_Controller
     }
     public function print($month, $year)
     {   
-        $range="Bulanan";
-        if(isset($_POST['pilihanrange'])){
-            $_SESSION['pilihanrange']=$_POST['pilihanrange'];
-            $range = $_SESSION['pilihanrange'];
-            }else if(isset($_SESSION['pilihanrange'])){
-                $range = $_SESSION['pilihanrange'];
+        
+        if(isset($_SESSION['pilihanrange'])){
+            $range=$_SESSION['pilihanrange'];
             }else{ 
-                $_SESSION['pilihanrange'] = "Bulanan";
+               $range="Bulanan";
         }
 
         $unit_id = 3;
@@ -73,14 +70,10 @@ class Laporan extends CI_Controller
 
     public function excel($month, $year)
     {   
-        $range="Bulanan";
-        if(isset($_POST['pilihanrange'])){
-            $_SESSION['pilihanrange']=$_POST['pilihanrange'];
-            $range = $_SESSION['pilihanrange'];
-            }else if(isset($_SESSION['pilihanrange'])){
-                $range = $_SESSION['pilihanrange'];
+        if(isset($_SESSION['pilihanrange'])){
+            $range=$_SESSION['pilihanrange'];
             }else{ 
-                $_SESSION['pilihanrange'] = "Bulanan";
+               $range="Bulanan";
         }
 
         $unit_id = 3;

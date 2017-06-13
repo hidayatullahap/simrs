@@ -342,6 +342,7 @@ class Gudang{
         $conn=$db->connect();
         $totalTabel = $_POST['trTotal'];
         $i=1;
+        
 
         if($totalTabel>0){
             $tabel_barang_id        = $_POST['tabel_barang_id'];
@@ -352,6 +353,7 @@ class Gudang{
             $tabel_nama_penerima    = $_POST['tabel_nama_penerima'];
 
             foreach($tabel_barang_id as $a => $b){
+
                 $barang_id      = $tabel_barang_id[$a];
                 $nomor_batch    = $tabel_nomor_batch[$a];
                 $kadaluarsa     = $tabel_kadaluarsa[$a];
@@ -399,7 +401,11 @@ class Gudang{
                 $i++;
             }
             $conn->close();
-            return $query;
+            if($result){
+                return true;
+            }else{
+                return 'error';
+            }
         }else{
             return false;
         }
@@ -444,11 +450,11 @@ class Gudang{
                 //$isExist[0]==0 artinya row tidak ada 
 
                 if ($isExist[0]==0){ 
-                    if($jumlah_barang>0){
-                        $query1 =
-                        "INSERT INTO `stok` (`barang_id`, `unit_id`, `jumlah`) VALUES ('$barang_id', '$untuk_unit_id', '$jumlah_barang');";
-                        $result = $conn->query($query1);
-                    }
+                        if($jumlah_barang>0){
+                            $query1 =
+                            "INSERT INTO `stok` (`barang_id`, `unit_id`, `jumlah`) VALUES ('$barang_id', '$untuk_unit_id', '$jumlah_barang');";
+                            $result = $conn->query($query1);
+                        }
                     }else{
                         $query2 =
                         "UPDATE `stok` SET `jumlah` = jumlah+$jumlah_barang WHERE `stok`.`barang_id` = $barang_id AND `stok`.`unit_id` = $untuk_unit_id; ";
@@ -467,7 +473,12 @@ class Gudang{
                 $i++;
             }
             $conn->close();
-            return $query;
+
+            if($result){
+                return true;
+            }else{
+                return 'error';
+            }
         }else{
             return false;
         }

@@ -67,7 +67,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <b> Pengadaan Barang </b><br>
+            <a href="<?php echo base_url('/farmasi/pengadaan'); ?>"><b> Pengadaan Barang </b></a><br>
 
         </h1>
     </section>
@@ -366,8 +366,9 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     function tambahDataKeTabel(idTabel) {
         if(jumlah.value == ""){ alert("Kolom jumlah tidak boleh kosong!"); }
         if(kolom_barang_id.value == ""){ alert("Nama barang tidak boleh kosong!"); }
+        if(jenis_penerimaan_id.value == ""){ alert("Jenis penerimaan tidak boleh kosong!"); }
 
-        if(jumlah.value && kolom_barang_id.value){
+        if(jumlah.value && kolom_barang_id.value && jenis_penerimaan_id.value){
         tampilkanTabel.style.display = "block";
         var table = document.getElementById(idTabel);
         var row = table.insertRow(1);
@@ -464,7 +465,7 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
             },
             onchange: function () {
                 stok = daftarSearchData.all()['Stok'];
-                if(stok<1){
+                if(stok<0){
                     alert("Stok tidak tersedia");
                 }else{
                     barang_id_temp = daftarSearchData.all()['id Barang'];
