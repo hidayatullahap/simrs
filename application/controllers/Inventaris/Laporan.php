@@ -5,7 +5,7 @@ require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'gudang.php';
 class Laporan extends CI_Controller
 {   
-    private $unit_id = 3;
+    private $unit_id = 4;
     function __construct()
     {
         parent::__construct();
@@ -34,7 +34,7 @@ class Laporan extends CI_Controller
                 $_SESSION['pilihanrange'] = "Bulanan";
         }
 
-        $this->session->set_userdata('navbar_status', 'laporanfarmasi');
+        $this->session->set_userdata('navbar_status', 'laporaninventaris');
         $gudang = new Gudang();
         $title['title']="Riwayat Permintaan Masuk";
 
@@ -49,7 +49,7 @@ class Laporan extends CI_Controller
         //$data = $gudang->riwayatPermintaanStok($sort, $page, $limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/farmasi/laporanfarmasi', $data);
+        $this->load->view('/inventaris/laporanlist', $data);
         $this->load->view('footer');
     }
     public function print($month, $year)
@@ -60,6 +60,7 @@ class Laporan extends CI_Controller
             }else{ 
                $range="Bulanan";
         }
+
         $title['title']="Print";
         $gudang = new Gudang();
         $data = $gudang->getLaporan($range, $month, $year, $this->unit_id);
@@ -74,7 +75,6 @@ class Laporan extends CI_Controller
             }else{ 
                $range="Bulanan";
         }
-
         $gudang = new Gudang();
         $data = $gudang->getLaporan($range, $month, $year, $this->unit_id);
         //$this->load->view('Tests/test_excel2',$data);

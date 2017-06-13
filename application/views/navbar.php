@@ -46,6 +46,39 @@
         50% { color: #3c8dbc; }
         100% { color: #0dc143; }
     }
+    .scrollable {
+        height: 100%;
+        overflow: auto;
+    }
+    .scrollable{
+        scrollbar-face-color: #367CD2;
+        scrollbar-shadow-color: #FFFFFF;
+        scrollbar-highlight-color: #FFFFFF;
+        scrollbar-3dlight-color: #FFFFFF;
+        scrollbar-darkshadow-color: #FFFFFF;
+        scrollbar-track-color: #FFFFFF;
+        scrollbar-arrow-color: #FFFFFF;
+    }
+
+    /* Let's get this party started */
+    .scrollable::-webkit-scrollbar {
+        width: 12px;
+    }
+    
+    /* Track */
+    .scrollable::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+    }
+    
+    /* Handle */
+    .scrollable::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        background: rgba(74, 74, 76, 0.4); 
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,1); 
+    }
 </style>
 <!--<body class="skin-green">-->
 <body <?php if(!empty($navbar_collapse_menu)) { echo "class=\"skin-green sidebar-collapse sidebar-open sidebar-mini\""; } else { ?> class="skin-green sidebar-mini" <?php } ?>>
@@ -120,7 +153,7 @@
     </nav>
 </header>
         
-<aside class="main-sidebar">
+<aside class="main-sidebar scrollable" id="scroll">
     <section class="sidebar">
         <div class="user-panel">
             <div class="pull-left image">
@@ -184,33 +217,28 @@
 
             <li class="header">MENU NAVIGASI INVENTARIS</li>
             
-            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "halamanutamafarmasi") == 0 ? "active" : ""); ?> ">
-                <a href="<?php echo base_url('farmasi/halamanutama'); ?>">
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "halamanutamainventaris") == 0 ? "active" : ""); ?> ">
+                <a href="<?php echo base_url('inventaris/halamanutama'); ?>">
                     <i class="fa fa-home"></i> <span>Dashboard</span> 
                 </a>
             </li>
-            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "pengeluaranfarmasi") == 0 ? "active" : ""); ?>">
-                <a href="<?php echo base_url('farmasi/pengeluaran'); ?>">
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "pengeluaraninventaris") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('inventaris/pengeluaran'); ?>">
                     <i class="fa fa-arrow-up"></i> <span>Pengeluaraan</span> 
                 </a>
             </li>
-            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "pengadaanfarmasi") == 0 ? "active" : ""); ?>">
-                <a href="<?php echo base_url('farmasi/pengadaan'); ?>">
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "pengadaaninventaris") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('inventaris/pengadaan'); ?>">
                     <i class="fa fa-cart-plus"></i> <span>Pengadaan</span> 
                 </a>
             </li>
-            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "infostok") == 0 ? "active" : ""); ?>">
-                <a href="<?php echo base_url('farmasi/infostok'); ?>">
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "infostokinventaris") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('inventaris/infostok'); ?>">
                     <i class="fa fa-check"></i> <span>Stok</span> 
                 </a>
             </li>
-            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "riwayatpermintaan") == 0 ? "active" : ""); ?>">
-                <a href="<?php echo base_url('farmasi/permintaan/riwayatpermintaan'); ?>">
-                    <i class="fa fa-history"></i> <span>Riwayat Permintaan stok</span> 
-                </a>
-            </li>
-            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "laporanfarmasi") == 0 ? "active" : ""); ?>">
-                <a href="<?php echo base_url('farmasi/laporan'); ?>">
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "laporaninventaris") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('inventaris/laporan'); ?>">
                     <i class="fa fa-file"></i> <span>Laporan</span> 
                 </a>
             </li>
@@ -246,3 +274,24 @@
         </ul>
     </section>
 </aside>
+<script src="<?php echo base_url();?>datatables/media/js/jquery.js"></script>
+
+<script>
+    (function () {
+      if (Boolean(sessionStorage.getItem('sidebar-toggle-collapsed'))) {
+        var body = document.getElementsByTagName('body')[0];
+        body.className = body.className + ' sidebar-collapse';
+      }
+    })();
+  </script>
+  <script>
+    // Click handler can be added latter, after jQuery is loaded...
+    $('.sidebar-toggle').click(function(event) {
+      event.preventDefault();
+      if (Boolean(sessionStorage.getItem('sidebar-toggle-collapsed'))) {
+        sessionStorage.setItem('sidebar-toggle-collapsed', '');
+      } else {
+        sessionStorage.setItem('sidebar-toggle-collapsed', '1');
+      }
+    });
+</script>

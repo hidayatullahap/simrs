@@ -743,7 +743,7 @@ class Gudang{
         return $data;
     }
 
-    public function getLaporanRange($range, $sort, $page, $limitItemPage)
+    public function getLaporanRange($range, $sort, $page, $limitItemPage, $unit_id)
     {   
 
         switch ($range) {
@@ -774,13 +774,15 @@ class Gudang{
         pengeluaran_barang.tanggal_keluar AS range_waktu
         FROM
         pengeluaran_barang
+        WHERE pengeluaran_barang.dari_unit_id = $unit_id
         GROUP BY
         $sqlRangeWaktu 
         ORDER BY
         pengeluaran_barang.tanggal_keluar DESC
         LIMIT $page, $limitItemPage";
         $result = $conn->query($query);
-        $sql = $conn->query("SELECT Count(*) From(SELECT pengeluaran_barang.tanggal_keluar AS range_waktu FROM pengeluaran_barang GROUP BY $sqlRangeWaktu) As total");
+        $sql = $conn->query("SELECT Count(*) From(SELECT pengeluaran_barang.tanggal_keluar AS range_waktu FROM pengeluaran_barang WHERE pengeluaran_barang.dari_unit_id = $unit_id 
+        GROUP BY $sqlRangeWaktu) As total");
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;
