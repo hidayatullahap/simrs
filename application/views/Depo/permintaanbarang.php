@@ -61,7 +61,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/farmasi/pengeluaran'); ?>"><b> Pengeluaran Barang </b></a><br>
+            <a href="<?php echo base_url('/depo/permintaandepo'); ?>"><b> Permintaan Barang </b></a><br>
 
         </h1>
     </section>
@@ -72,40 +72,7 @@
                 <div class="box">
                     <div class="box-header with-border">
                             <div class="modal-body" style="text-align: right; ">
-                                <label class="col-md-5 control-label paddingForm">Nama Penerima</label>
-                                <div class="col-md-3">
-                                    <?php
-                                    $data = array(
-                                        'name' => 'nama_penerima',
-                                        'autocomplete' => 'off',
-                                        'required' => 'required',
-                                        'id' => 'nama_penerima',
-                                        'type' => 'text',
-                                        'class' => 'form-control'
-                                    );
-                                    echo form_input($data);
-                                    ?>
-                                </div><br><br>
-
-                                <div class="item form-group">
-                                    <label class="col-md-5 control-label paddingForm" >Untuk Unit</label>
-                                    <div class="col-md-3">
-                                    <select class="form-control" name="untuk_unit_id" id="untuk_unit_id">
-                                        <option hidden value="" >Pilih jenis unit</option>
-                                            <?php
-                                            foreach ($daftarUnit['data'] as $field => $values) {
-                                                if ($values['unit_id']!=3) {
-                                                    echo "<option value=";
-                                                    echo $values['unit_id'];
-                                                    echo ">";
-                                                    echo $values['nama_unit'];
-                                                    echo "</option>";
-                                                }
-                                            }
-                                            ?>
-                                    </select>
-                                    </div><br><br>
-                                    
+                                <div>
                                     <label class="col-md-5 control-label paddingForm" for="barang_id">Nama Barang</label>
                                     <div class="col-md-3">
                                         <?php
@@ -121,20 +88,6 @@
                                         ?>
                                     </div><br><br>
 
-                                    <label class="col-md-5 control-label paddingForm">Nomor Batch</label>
-                                    <div class="col-md-3">
-                                        <?php
-                                        $data = array(
-                                            'name' => 'nomor_batch',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'nomor_batch',
-                                            'type' => 'text',
-                                            'class' => 'form-control'
-                                        );
-                                        echo form_input($data);
-                                        ?>
-                                    </div><br><br>
                                     <label class="col-md-5 control-label paddingForm">Jumlah</label>
                                     <div class="col-md-3">
                                         <?php
@@ -148,13 +101,13 @@
                                         );
                                         echo form_input($data);
                                         ?><i>*masukan nama barang/unit di menu kelola bila tidak ada</i>
-                                    </div><br><br>
+                                    </div><br><br><br>
                                 </div>
                             </div>
                             <div class="col-md-5 col-sm-offset-5">
                                 <button class="btn btn-default btn-md" onclick="tambahDataKeTabel('dataObat')"><i class="fa fa-plus"> Tambah item</i></button>
                             </div><br><br>
-                            <form method="post" action="<?php echo base_url('/farmasi/pengeluaran/tambahPengeluaranStok')?>">
+                            <form method="post" action="<?php echo base_url('depo/permintaandepo/tambahpermintaandepo')?>">
                             <div class="form-group" style="display: none;" id="tampilkanTabel">
                                 <table style="margin-left: 10px; margin-top: 20px; text-align: center;" border="1" class="" id="dataObat"  width="99%" >
                                     <thead>
@@ -163,10 +116,7 @@
                                         <th class="cell_sim">ID Barang</th>
                                         <th class="cell_sim">Nama Barang</th>
                                         <th class="cell_sim">Grup Barang</th>
-                                        <th class="cell_sim">Nomor Batch</th>
                                         <th class="cell_sim">Jumlah</th>
-                                        <th class="cell_sim">Untuk Unit ID</th>
-                                        <th class="cell_sim">Nama Penerima</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -190,7 +140,7 @@
                             <?php echo $this->session->flashdata('metode') ?>
                         </div>
                     <?php } ?>
-
+                    
                 </div>
             </div>
         </div>
@@ -218,15 +168,9 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
 </script>
 
 <script>
-    var e = document.getElementById('untuk_unit_id');
-    //var untuk_unit_id_value = e.value;
-    //var untuk_unit_id_text = e.options[e.selectedIndex].text;
-    
-    var nomor_batch = document.getElementById('nomor_batch');
     var jumlah = document.getElementById('jumlah');
     var tabelPengeluaran = document.getElementById('tabelPengeluaran');
     var kolom_barang_id = document.getElementById('barang_id');
-    var nama_penerima = document.getElementById('nama_penerima');
     var trTot = document.getElementById("trTotal");
     var grup_barang_temp;
     var nama_barang_temp;
@@ -240,11 +184,10 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     var tr = 1;
     var td = 1;
     function tambahDataKeTabel(idTabel) {
-        if(e.value == ""){ alert("Unit tujuan tidak boleh kosong!"); }
         if(jumlah.value == ""){ alert("Kolom jumlah tidak boleh kosong!"); }
         if(kolom_barang_id.value == ""){ alert("Nama barang tidak boleh kosong!"); }
 
-        if(e.value && jumlah.value && kolom_barang_id.value){
+        if(jumlah.value && kolom_barang_id.value){
         tampilkanTabel.style.display = "block";
         var table = document.getElementById(idTabel);
         var row = table.insertRow(1);
@@ -253,9 +196,6 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
         var cell3 = row.insertCell(2);
         var cell4 = row.insertCell(3);
         var cell5 = row.insertCell(4);
-        var cell6 = row.insertCell(5);
-        var cell7 = row.insertCell(6);
-        var cell8 = row.insertCell(7);
 
         cell1.innerHTML = "<span class=\"table-remove glyphicon glyphicon-remove\" onclick=\"hapusBaris(this)\"></span>";
         cell2.innerHTML = "<input hidden name=\"tabel_barang_id[]\" value=\"" + barang_id_temp + "\" class=\"full-width rata_tengah\" readonly>"+ barang_id_temp;
@@ -264,13 +204,7 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
         td++;
         cell4.innerHTML = "<input hidden value=\"" + nama_barang_temp + "\" class=\"full-width\" readonly>"+ nama_barang_temp;
         td++;
-        cell5.innerHTML = "<input hidden name=\"tabel_nomor_batch[]\" value=\"" + nomor_batch.value + "\" class=\"full-width\" readonly>"+ nomor_batch.value;
-        td++;
-        cell6.innerHTML = "<input hidden name=\"tabel_jumlah[]\" value=\"" + jumlah.value + "\" class=\"full-width\" readonly>"+ jumlah.value;
-        td++;
-        cell7.innerHTML = "<input hidden name=\"tabel_untuk_unit_id[]\" value=\"" + untuk_unit_id.value + "\" class=\"full-width rata_tengah\" readonly>"+ untuk_unit_id.value;
-        td++;
-        cell8.innerHTML = "<input hidden name=\"tabel_nama_penerima[]\" value=\"" + nama_penerima.value + "\" class=\"full-width rata_tengah\" readonly>"+ nama_penerima.value;
+        cell5.innerHTML = "<input hidden name=\"tabel_jumlah[]\" value=\"" + jumlah.value + "\" class=\"full-width\" readonly>"+ jumlah.value;
 
         trTot.value = tr;
         tr++;
@@ -325,9 +259,8 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
             },
             onchange: function () {
                 stok = daftarSearchData.all()['Stok'];
-                if(stok<1){
+                if(stok<0){
                     alert("Stok tidak tersedia");
-                    return false;
                 }else{
                     barang_id_temp = daftarSearchData.all()['id Barang'];
                     nama_barang_temp = daftarSearchData.all()['Nama'];

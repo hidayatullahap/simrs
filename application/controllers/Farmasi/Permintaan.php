@@ -51,29 +51,6 @@ class Permintaan extends CI_Controller
         $this->load->view('/farmasi/detilitempermintaan', $data);
         $this->load->view('footer');
     }
-
-    public function riwayatPermintaan()
-    {   
-        $_SESSION["tanggalAwal"]=null;
-        $_SESSION["tanggalAkhir"]=null;
-        $_SESSION["searchFarmasi"]=null;
-        $this->session->set_userdata('navbar_status', 'riwayatpermintaan');
-        $gudang = new Gudang();
-        $title['title']="Riwayat Permintaan Masuk";
-
-        $limit = $_COOKIE["pageLimit"];
-        $sort = $_COOKIE["pageSort"];
-
-        if(!isset($page)){ $page = 1; }
-        if(!isset($limit)){ $limit = $this->default_setting->pagination('LIMIT'); }
-        if(!isset($sort)){ $sort = $this->default_setting->pagination('SORT');  }
-
-        $data = $gudang->riwayatPermintaanStok($sort, $page, $limit);
-        $this->load->view('header',$title);
-        $this->load->view('navbar');
-        $this->load->view('/farmasi/permintaanfarmasi', $data);
-        $this->load->view('footer');
-    }
     
     public function proses($jumlahItem)
     {   

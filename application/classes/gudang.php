@@ -2,12 +2,18 @@
 require_once CLASSES_DIR  . 'dbconnection.php';
 
 class Gudang{
+    private $db;
+    private $conn;
+
+    public function __construct() {
+        $this->db = new DB();
+        $this->conn = $this->db->connect();
+    }
     
     public function ajaxPermintaanMasuk()
     {   
         $requestData = $_REQUEST;
-        $db=new DB;
-        $conn=$db->connect();
+        
         $page = $requestData['start'];
         $limitItemPage = $requestData['length'];
         $data = array();
@@ -29,7 +35,7 @@ class Gudang{
         permintaan_stok.tanggal_permintaan ASC
         LIMIT $page, $limitItemPage";
         
-        $sql = $conn->query("SELECT COUNT(*) FROM (SELECT
+        $sql = $this->conn->query("SELECT COUNT(*) FROM (SELECT
         permintaan_stok.nomor_permintaan,
         permintaan_stok.dari_unit_id,
         unit.nama_unit,
@@ -63,7 +69,7 @@ class Gudang{
             permintaan_stok.tanggal_permintaan ASC
             LIMIT $page, $limitItemPage";
 
-            $sql = $conn->query("SELECT COUNT(*) FROM (SELECT
+            $sql = $this->conn->query("SELECT COUNT(*) FROM (SELECT
             permintaan_stok.nomor_permintaan,
             permintaan_stok.dari_unit_id,
             unit.nama_unit,
@@ -80,7 +86,7 @@ class Gudang{
             permintaan_stok.tanggal_permintaan ASC) AS notifikasi");
             }
         
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
 
         while ($row = mysqli_fetch_assoc($result)) {
             $nestedData = array();
@@ -96,7 +102,7 @@ class Gudang{
         
         $row = $sql->fetch_row();
         $count = $row[0];
-        $conn->close();
+        $this->conn->close();
         $totalData = $count;
         $datajson = array("draw" => intval( $requestData['draw'] ), "recordsTotal"=>$totalData, "recordsFiltered"=>$totalData, "data"=>$data);
         echo json_encode($datajson);
@@ -105,8 +111,6 @@ class Gudang{
     public function ajaxStokKeluar($unit_id)
     {   
         $requestData = $_REQUEST;
-        $db=new DB;
-        $conn=$db->connect();
         $page = $requestData['start'];
         $limitItemPage = $requestData['length'];
         $data = array();
@@ -129,7 +133,7 @@ class Gudang{
         pengeluaran_barang.tanggal_keluar DESC
         LIMIT $page, $limitItemPage";
         
-        $sql = $conn->query("SELECT COUNT(*) FROM pengeluaran_barang WHERE
+        $sql = $this->conn->query("SELECT COUNT(*) FROM pengeluaran_barang WHERE
         pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
         AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
         AND pengeluaran_barang.dari_unit_id = $unit_id");
@@ -154,7 +158,7 @@ class Gudang{
             pengeluaran_barang.tanggal_keluar DESC
             LIMIT $page, $limitItemPage";
 
-            $sql = $conn->query("SELECT COUNT(*) FROM pengeluaran_barang 
+            $sql = $this->conn->query("SELECT COUNT(*) FROM pengeluaran_barang 
             INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id
             WHERE
             pengeluaran_barang.tanggal_keluar BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
@@ -163,7 +167,7 @@ class Gudang{
             AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'");
             }
         
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
 
         while ($row = mysqli_fetch_assoc($result)) {
             $nestedData = array();
@@ -187,8 +191,6 @@ class Gudang{
     public function ajaxStokMasuk($unit_id)
     {   
         $requestData = $_REQUEST;
-        $db=new DB;
-        $conn=$db->connect();
         $page = $requestData['start'];
         $limitItemPage = $requestData['length'];
         $data = array();
@@ -210,7 +212,7 @@ class Gudang{
         pengadaan_barang.tanggal_masuk DESC
         LIMIT $page, $limitItemPage";
         
-        $sql = $conn->query("SELECT COUNT(*) FROM pengadaan_barang WHERE
+        $sql = $this->conn->query("SELECT COUNT(*) FROM pengadaan_barang WHERE
         pengadaan_barang.tanggal_masuk BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
         AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')");
 
@@ -233,7 +235,7 @@ class Gudang{
             pengadaan_barang.tanggal_masuk DESC
             LIMIT $page, $limitItemPage";
 
-            $sql = $conn->query("SELECT COUNT(*) FROM pengadaan_barang 
+            $sql = $this->conn->query("SELECT COUNT(*) FROM pengadaan_barang 
             INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id
             WHERE
             pengadaan_barang.tanggal_masuk BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
@@ -242,7 +244,7 @@ class Gudang{
             AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'");
         }
         
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
 
         while ($row = mysqli_fetch_assoc($result)) {
             $nestedData = array();
@@ -265,8 +267,6 @@ class Gudang{
 
     public function getDetil($unit_id, $nomorPermintaan)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $query =
         "SELECT
         permintaan_stok.permintaan_stok_id,
@@ -289,7 +289,7 @@ class Gudang{
         INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
         INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id 
         WHERE permintaan_stok.nomor_permintaan = '$nomorPermintaan'";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         $data = array("data"=>$result);
         
         return $data;
@@ -297,57 +297,46 @@ class Gudang{
 
     public function prosesPermintaan($id, $idbarang, $unit_id, $untuk_unit_id, $jumlah)
     { 
-        $db=new DB;
-        $conn=$db->connect();
         $query =
-        "UPDATE `permintaan_stok` SET `jumlah_disetujui` = '$jumlah', `status` = 'sudah_dilayani' WHERE `permintaan_stok`.`permintaan_stok_id` = $id;";
-        $result = $conn->query($query);
+        "UPDATE `permintaan_stok` SET `jumlah_disetujui` = '$jumlah', `status` = 'belum_dilayani' WHERE `permintaan_stok`.`permintaan_stok_id` = $id;";
+        $result = $this->conn->query($query);
         
-        $sqlCheckTableExist = $conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$idbarang' AND unit_id = '$untuk_unit_id'");
+        $sqlCheckTableExist = $this->conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$idbarang' AND unit_id = '$untuk_unit_id'");
         $isExist = $sqlCheckTableExist->fetch_row();
-
         if ($isExist[0]==0){
              if($jumlah>0){
                 $query2 =
                 "INSERT INTO `stok` (`barang_id`, `unit_id`, `jumlah`) VALUES ('$idbarang', '$untuk_unit_id', '$jumlah');";
-                $result = $conn->query($query2);
+                $result = $this->conn->query($query2);
              }
                 $query1 =
                 "UPDATE `stok` SET `jumlah` = jumlah-$jumlah WHERE `stok`.`barang_id` = $idbarang AND `stok`.`unit_id` = $unit_id;";
-                $result = $conn->query($query1);
-
+                $result = $this->conn->query($query1);
             }else{
                 $query1 =
                 "UPDATE `stok` SET `jumlah` = jumlah-$jumlah WHERE `stok`.`barang_id` = $idbarang AND `stok`.`unit_id` = $unit_id; ";
-                $result = $conn->query($query1);
-
+                $result = $this->conn->query($query1);
                 $query2 =
                 "UPDATE `stok` SET `jumlah` = jumlah+$jumlah WHERE `stok`.`barang_id` = $idbarang AND `stok`.`unit_id` = $untuk_unit_id; ";
-                $result = $conn->query($query2);
+                $result = $this->conn->query($query2);
         }
-
         if($jumlah>0){
             $query3 =
-            "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `jumlah_pengeluaran`, `nama_penerima`) VALUES 
-            ('$untuk_unit_id', '$unit_id', '$idbarang', '$jumlah','otomatis dari sistem')";
-            $result = $conn->query($query3);
+            "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `jumlah_pengeluaran`) VALUES 
+            ('$untuk_unit_id', '$unit_id', '$idbarang', '$jumlah')";
+            $result = $this->conn->query($query3);
         }
-        $conn->close();
-
         return $result;
     }
 
-    public function prosesPengeluaranStok($unit_id){
-        $db=new DB;
-        $conn=$db->connect();
+    public function prosesPengeluaranStok($unit_id)
+    {
         $totalTabel = $_POST['trTotal'];
-        $i=1;
         
-
+        $i=1;
         if($totalTabel>0){
             $tabel_barang_id        = $_POST['tabel_barang_id'];
             $tabel_nomor_batch      = $_POST['tabel_nomor_batch'];
-            $tabel_kadaluarsa       = $_POST['tabel_kadaluarsa'];
             $tabel_jumlah           = $_POST['tabel_jumlah'];
             $tabel_untuk_unit_id    = $_POST['tabel_untuk_unit_id'];
             $tabel_nama_penerima    = $_POST['tabel_nama_penerima'];
@@ -356,7 +345,6 @@ class Gudang{
 
                 $barang_id      = $tabel_barang_id[$a];
                 $nomor_batch    = $tabel_nomor_batch[$a];
-                $kadaluarsa     = $tabel_kadaluarsa[$a];
                 $jumlah         = $tabel_jumlah[$a];
                 $untuk_unit_id  = $tabel_untuk_unit_id[$a];
                 $nama_penerima  = $tabel_nama_penerima[$a];
@@ -369,38 +357,38 @@ class Gudang{
                 echo "jumlah: ". $jumlah.", ";
                 echo "untuk unit id: ". $untuk_unit_id.", <br>";
                 */
-                $sqlCheckTableExist = $conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$barang_id' AND unit_id = '$untuk_unit_id'");
+                $sqlCheckTableExist = $this->conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$barang_id' AND unit_id = '$untuk_unit_id'");
                 $isExist = $sqlCheckTableExist->fetch_row();
 
                 if ($isExist[0]==0){
                     if($jumlah>0){
                         $query2 =
                         "INSERT INTO `stok` (`barang_id`, `unit_id`, `jumlah`) VALUES ('$barang_id', '$untuk_unit_id', '$jumlah');";
-                        $result = $conn->query($query2);
+                        $result = $this->conn->query($query2);
                     }
                         $query1 =
                         "UPDATE `stok` SET `jumlah` = jumlah-$jumlah WHERE `stok`.`barang_id` = $barang_id AND `stok`.`unit_id` = $unit_id;";
-                        $result = $conn->query($query1);
+                        $result = $this->conn->query($query1);
 
                     }else{
                         $query1 =
                         "UPDATE `stok` SET `jumlah` = jumlah-$jumlah WHERE `stok`.`barang_id` = $barang_id AND `stok`.`unit_id` = $unit_id; ";
-                        $result = $conn->query($query1);
+                        $result = $this->conn->query($query1);
 
                         $query2 =
                         "UPDATE `stok` SET `jumlah` = jumlah+$jumlah WHERE `stok`.`barang_id` = $barang_id AND `stok`.`unit_id` = $untuk_unit_id; ";
-                        $result = $conn->query($query2);
+                        $result = $this->conn->query($query2);
                 }
                 if($jumlah>0){
                     $query =
                     "INSERT INTO `pengeluaran_barang` (`untuk_unit_id`, `dari_unit_id`, `barang_id`, `no_batch` ,`jumlah_pengeluaran`, `nama_penerima`) VALUES 
                     ('$untuk_unit_id', '$unit_id', '$barang_id', '$nomor_batch', '$jumlah','$nama_penerima')";
                     
-                    $result = $conn->query($query);
+                    $result = $this->conn->query($query);
                 }
                 $i++;
             }
-            $conn->close();
+            $this->conn->close();
             if($result){
                 return true;
             }else{
@@ -412,8 +400,6 @@ class Gudang{
     }
 
     public function prosesPengadaanStok($unit_id){
-        $db=new DB;
-        $conn=$db->connect();
         $totalTabel = $_POST['trTotal'];
         $i=1;
 
@@ -445,7 +431,7 @@ class Gudang{
                 $harga_beli             = $tabel_harga_beli[$a];
                 $jumlah_barang          = $tabel_jumlah[$a];
 
-                $sqlCheckTableExist = $conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$barang_id' AND unit_id = '$untuk_unit_id'");
+                $sqlCheckTableExist = $this->conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$barang_id' AND unit_id = '$untuk_unit_id'");
                 $isExist = $sqlCheckTableExist->fetch_row();
                 //$isExist[0]==0 artinya row tidak ada 
 
@@ -453,12 +439,12 @@ class Gudang{
                         if($jumlah_barang>0){
                             $query1 =
                             "INSERT INTO `stok` (`barang_id`, `unit_id`, `jumlah`) VALUES ('$barang_id', '$untuk_unit_id', '$jumlah_barang');";
-                            $result = $conn->query($query1);
+                            $result = $this->conn->query($query1);
                         }
                     }else{
                         $query2 =
                         "UPDATE `stok` SET `jumlah` = jumlah+$jumlah_barang WHERE `stok`.`barang_id` = $barang_id AND `stok`.`unit_id` = $untuk_unit_id; ";
-                        $result = $conn->query($query2);
+                        $result = $this->conn->query($query2);
                 }
                 
                 if($jumlah_barang>0){
@@ -468,11 +454,11 @@ class Gudang{
                     VALUES ('$terima_dari', '$jenis_penerimaan_id', '$no_faktur', '$tanggal_faktur', '$keterangan', '$untuk_unit_id', '$barang_id', 
                     '$nomor_batch', '$tanggal_kadaluarsa', '$harga_jual', '$harga_beli', '$jumlah_barang');";
                     
-                    $result = $conn->query($query);
+                    $result = $this->conn->query($query);
                 }
                 $i++;
             }
-            $conn->close();
+            $this->conn->close();
 
             if($result){
                 return true;
@@ -486,8 +472,6 @@ class Gudang{
 
     public function riwayatPengeluaranStok($unit_id, $sort, $page, $limitItemPage)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         
         if (isset($_POST['tanggalAwal'])){ $tanggalAwal = $_POST['tanggalAwal']; $tanggalAwal = $tanggalAwal." 00:00:00"; $_SESSION["tanggalAwal"] = $tanggalAwal;}
@@ -540,9 +524,9 @@ class Gudang{
         ORDER BY
         pengeluaran_barang.tanggal_keluar DESC
         LIMIT $page, $limitItemPage";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         
-        $sql = $conn->query("SELECT COUNT(*) FROM pengeluaran_barang INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id WHERE
+        $sql = $this->conn->query("SELECT COUNT(*) FROM pengeluaran_barang INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id WHERE
         pengeluaran_barang.dari_unit_id = $unit_id $sqlRangeDate $sqlSearch ");
 
         $row = $sql->fetch_row();
@@ -555,8 +539,6 @@ class Gudang{
 
     public function riwayatPengadaanStok($unit_id, $sort, $page, $limitItemPage)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         
         if (isset($_POST['tanggalAwal'])){ $tanggalAwal = $_POST['tanggalAwal']; $tanggalAwal = $tanggalAwal." 00:00:00"; $_SESSION["tanggalAwal"] = $tanggalAwal;}
@@ -609,9 +591,9 @@ class Gudang{
         ORDER BY
         pengadaan_barang.tanggal_masuk DESC
         LIMIT $page, $limitItemPage";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         
-        $sql = $conn->query("SELECT COUNT(*) FROM pengadaan_barang INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id WHERE
+        $sql = $this->conn->query("SELECT COUNT(*) FROM pengadaan_barang INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id WHERE
         pengadaan_barang.untuk_unit_id = $unit_id $sqlRangeDate $sqlSearch ");
 
         $row = $sql->fetch_row();
@@ -622,10 +604,8 @@ class Gudang{
         return $data;
     }
 
-    public function riwayatPermintaanStok($sort, $page, $limitItemPage)
+    public function riwayatPermintaanStok($sort, $page, $limitItemPage, $status)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         
         if (isset($_POST['tanggalAwal'])){ $tanggalAwal = $_POST['tanggalAwal']; $tanggalAwal = $tanggalAwal." 00:00:00"; $_SESSION["tanggalAwal"] = $tanggalAwal;}
@@ -664,16 +644,18 @@ class Gudang{
         permintaan_stok
         INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id
         WHERE
-        permintaan_stok.nomor_permintaan LIKE '%$sqlSearch%' $sqlRangeDate 
+        permintaan_stok.nomor_permintaan LIKE '%$sqlSearch%' 
+        AND permintaan_stok.status LIKE '%$status%'
+        $sqlRangeDate 
         GROUP BY
         permintaan_stok.nomor_permintaan
         ORDER BY
         permintaan_stok.tanggal_permintaan DESC
         LIMIT $page, $limitItemPage";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         
-        $sql = $conn->query("Select Count(*) From(SELECT COUNT(*) FROM permintaan_stok WHERE
-        permintaan_stok.nomor_permintaan LIKE '%$sqlSearch%' $sqlRangeDate 
+        $sql = $this->conn->query("Select Count(*) From(SELECT COUNT(*) FROM permintaan_stok WHERE
+        permintaan_stok.nomor_permintaan LIKE '%$sqlSearch%' AND permintaan_stok.status LIKE '%$status%' $sqlRangeDate 
         GROUP BY permintaan_stok.nomor_permintaan ) As total ");
 
         $row = $sql->fetch_row();
@@ -686,8 +668,6 @@ class Gudang{
 
     public function infoStok($unit_id, $sort, $page, $limitItemPage)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         $sqlSearch = "";
         $sqlTambahan1 = "";
@@ -701,13 +681,14 @@ class Gudang{
         if($unit_id==3){
             $sqlTambahan1 = ", IFNULL(lj_stok.jumlah_deporajal,'0') AS jumlah_deporajal";
             $sqlTambahan2 = "LEFT JOIN (SELECT
+			stok.barang_id,
             stok.unit_id AS unit_id,
             stok.jumlah AS jumlah_deporajal
             FROM
             stok
             WHERE
             stok.unit_id = 2
-            ) AS lj_stok ON (lj_stok.unit_id= stok.unit_id) ";
+            ) AS lj_stok ON (lj_stok.barang_id = stok.barang_id) ";
         }
 
         $data = array();
@@ -732,9 +713,9 @@ class Gudang{
         ORDER BY
         barang.nama_barang DESC
         LIMIT $page, $limitItemPage";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         
-        $sql = $conn->query("SELECT COUNT(*) FROM stok INNER JOIN barang ON barang.barang_id = stok.barang_id WHERE stok.unit_id = $unit_id  $sqlSearch");
+        $sql = $this->conn->query("SELECT COUNT(*) FROM stok INNER JOIN barang ON barang.barang_id = stok.barang_id WHERE stok.unit_id = $unit_id  $sqlSearch");
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;
@@ -745,7 +726,6 @@ class Gudang{
 
     public function getLaporanRange($range, $sort, $page, $limitItemPage, $unit_id)
     {   
-
         switch ($range) {
             case "Bulanan":
                 $sqlRangeWaktu="YEAR(pengeluaran_barang.tanggal_keluar), MONTH(pengeluaran_barang.tanggal_keluar) ";
@@ -763,8 +743,6 @@ class Gudang{
                 $sqlRangeWaktu="YEAR(pengeluaran_barang.tanggal_keluar), MONTH(pengeluaran_barang.tanggal_keluar) ";
         }
 
-        $db=new DB;
-        $conn=$db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         
         $data = array();
@@ -780,8 +758,8 @@ class Gudang{
         ORDER BY
         pengeluaran_barang.tanggal_keluar DESC
         LIMIT $page, $limitItemPage";
-        $result = $conn->query($query);
-        $sql = $conn->query("SELECT Count(*) From(SELECT pengeluaran_barang.tanggal_keluar AS range_waktu FROM pengeluaran_barang WHERE pengeluaran_barang.dari_unit_id = $unit_id 
+        $result = $this->conn->query($query);
+        $sql = $this->conn->query("SELECT Count(*) From(SELECT pengeluaran_barang.tanggal_keluar AS range_waktu FROM pengeluaran_barang WHERE pengeluaran_barang.dari_unit_id = $unit_id 
         GROUP BY $sqlRangeWaktu) As total");
         $row = $sql->fetch_row();
         $count = $row[0];
@@ -830,9 +808,7 @@ class Gudang{
                 $sqlRangeWaktuKeluar="AND YEAR(pengeluaran_barang.tanggal_keluar)=$year AND MONTH(pengeluaran_barang.tanggal_keluar)=$month ";
                 $sqlRangeWaktuMasuk="AND YEAR(pengadaan_barang.tanggal_masuk)=$year AND MONTH(pengadaan_barang.tanggal_masuk)=$month ";
         }
-
-        $db=new DB;
-        $conn=$db->connect();
+        
         $data = array();
         
         $query =
@@ -892,9 +868,10 @@ class Gudang{
         GROUP BY
         barang.nama_barang
         ";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         $data = array("data"=>$result);
         return $data;
     }
+    
 }
 ?>

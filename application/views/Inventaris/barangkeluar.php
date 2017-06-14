@@ -41,9 +41,6 @@
     .kolomBatch {
         width: 18%;
     }
-    .kolomKadaluarsa {
-        width: 10%;
-    }
     .kolomHarga {
         width: 10.5%;
     }
@@ -109,6 +106,21 @@
                                     </select>
                                     </div><br><br>
 
+                                    <label class="col-md-5 control-label paddingForm" for="barang_id">Nama Barang</label>
+                                    <div class="col-md-3">
+                                        <?php
+                                        $data = array(
+                                            'name' => 'barang_id',
+                                            'autocomplete' => 'off',
+                                            'required' => 'required',
+                                            'id' => 'barang_id',
+                                            'type' => 'text',
+                                            'class' => 'form-control'
+                                        );
+                                        echo form_input($data);
+                                        ?>
+                                    </div><br><br>
+
                                     <label class="col-md-5 control-label paddingForm">Nomor Batch</label>
                                     <div class="col-md-3">
                                         <?php
@@ -118,21 +130,6 @@
                                             'required' => 'required',
                                             'id' => 'nomor_batch',
                                             'type' => 'text',
-                                            'class' => 'form-control'
-                                        );
-                                        echo form_input($data);
-                                        ?>
-                                    </div><br><br>
-
-                                    <label class="col-md-5 control-label paddingForm" >Tanggal Kadaluarsa</label>
-                                    <div class="col-md-3">
-                                        <?php
-                                        $data = array(
-                                            'name' => 'tanggal_kadaluarsa',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'tanggal_kadaluarsa',
-                                            'type' => 'date',
                                             'class' => 'form-control'
                                         );
                                         echo form_input($data);
@@ -151,23 +148,7 @@
                                             'class' => 'form-control'
                                         );
                                         echo form_input($data);
-                                        ?>
-                                    </div><br><br>
-
-                                    <label class="col-md-5 control-label paddingForm" for="barang_id">Nama Barang</label>
-                                    <div class="col-md-3">
-                                        <?php
-                                        $data = array(
-                                            'name' => 'barang_id',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'barang_id',
-                                            'type' => 'text',
-                                            'class' => 'form-control'
-                                        );
-                                        echo form_input($data);
-                                        ?>
-                                    <i>*masukan nama barang/unit di menu kelola bila tidak ada</i>
+                                        ?><i>*masukan nama barang/unit di menu kelola bila tidak ada</i>
                                     </div><br><br>
                                 </div>
                             </div>
@@ -184,7 +165,6 @@
                                         <th class="cell_sim">Nama Barang</th>
                                         <th class="cell_sim">Grup Barang</th>
                                         <th class="cell_sim">Nomor Batch</th>
-                                        <th class="cell_sim">Kadaluarsa</th>
                                         <th class="cell_sim">Jumlah</th>
                                         <th class="cell_sim">Untuk Unit ID</th>
                                         <th class="cell_sim">Nama Penerima</th>
@@ -244,7 +224,6 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     //var untuk_unit_id_text = e.options[e.selectedIndex].text;
     
     var nomor_batch = document.getElementById('nomor_batch');
-    var tanggal_kadaluarsa = document.getElementById('tanggal_kadaluarsa');
     var jumlah = document.getElementById('jumlah');
     var tabelPengeluaran = document.getElementById('tabelPengeluaran');
     var kolom_barang_id = document.getElementById('barang_id');
@@ -278,7 +257,6 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
         var cell6 = row.insertCell(5);
         var cell7 = row.insertCell(6);
         var cell8 = row.insertCell(7);
-        var cell9 = row.insertCell(8);
 
         cell1.innerHTML = "<span class=\"table-remove glyphicon glyphicon-remove\" onclick=\"hapusBaris(this)\"></span>";
         cell2.innerHTML = "<input hidden name=\"tabel_barang_id[]\" value=\"" + barang_id_temp + "\" class=\"full-width rata_tengah\" readonly>"+ barang_id_temp;
@@ -289,13 +267,11 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
         td++;
         cell5.innerHTML = "<input hidden name=\"tabel_nomor_batch[]\" value=\"" + nomor_batch.value + "\" class=\"full-width\" readonly>"+ nomor_batch.value;
         td++;
-        cell6.innerHTML = "<input hidden name=\"tabel_kadaluarsa[]\" value=\"" + tanggal_kadaluarsa.value + "\" class=\"full-width\" readonly>"+ tanggal_kadaluarsa.value;
+        cell6.innerHTML = "<input hidden name=\"tabel_jumlah[]\" value=\"" + jumlah.value + "\" class=\"full-width\" readonly>"+ jumlah.value;
         td++;
-        cell7.innerHTML = "<input hidden name=\"tabel_jumlah[]\" value=\"" + jumlah.value + "\" class=\"full-width\" readonly>"+ jumlah.value;
+        cell7.innerHTML = "<input hidden name=\"tabel_untuk_unit_id[]\" value=\"" + untuk_unit_id.value + "\" class=\"full-width rata_tengah\" readonly>"+ untuk_unit_id.value;
         td++;
-        cell8.innerHTML = "<input hidden name=\"tabel_untuk_unit_id[]\" value=\"" + untuk_unit_id.value + "\" class=\"full-width rata_tengah\" readonly>"+ untuk_unit_id.value;
-        td++;
-        cell9.innerHTML = "<input hidden name=\"tabel_nama_penerima[]\" value=\"" + nama_penerima.value + "\" class=\"full-width rata_tengah\" readonly>"+ nama_penerima.value;
+        cell8.innerHTML = "<input hidden name=\"tabel_nama_penerima[]\" value=\"" + nama_penerima.value + "\" class=\"full-width rata_tengah\" readonly>"+ nama_penerima.value;
 
         trTot.value = tr;
         tr++;

@@ -109,7 +109,7 @@
                                                 'id' => 'nip',
                                                 'type' => 'text',
                                                 'class' => 'form-control col-md-7 col-xs-12',
-                                                'placeholder' => 'Isikan nip Pengguna',
+                                                'placeholder' => 'Isikan NIP Pengguna',
                                             );
                                             echo form_input($data);
                                             ?>
@@ -124,7 +124,7 @@
                                                 'id' => 'role',
                                                 'type' => 'text',
                                                 'class' => 'form-control col-md-7 col-xs-12',
-                                                'placeholder' => 'Isikan nama Pengguna',
+                                                'placeholder' => 'Isikan role pengguna',
                                             );
                                             echo form_input($data);
                                             ?>
@@ -145,7 +145,7 @@
                                             echo form_input($data);
                                             ?>
                                         </div><br><br>
-                                        <b id="formGroupPassword">
+                                        <div id="formGroupPassword">
                                         <label class="col-md-3 control-label paddingForm" for="password">Password</label>
                                         <div class="col-md-6">
                                             <?php
@@ -159,7 +159,7 @@
                                             );
                                             echo form_input($data);
                                             ?>
-                                        </div></b>
+                                        </div></div>
                                         
                                     </div>
                                 </div><br><br>

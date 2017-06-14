@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/inventaris/infostok'); ?>"><font color='black'><strong>Informasi stok farmasi dan depo</strong></font></a>
+            <a href="<?php echo base_url('/kelola/kelolabarang'); ?>"><font color='black'><strong>Cari Barang</strong></font></a>
         </h1>
     </section>
 
@@ -20,9 +20,15 @@
                 <div class="box">
                     <div class="box-header with-border">
                         <div class="form-group row">
-                            <form method="post" action="<?php echo base_url('inventaris/infostok') ?>">
-                            <div class="input-group col-xs-2" style="float: left;padding-left:15px;">
-                            <input  type="text" class="form-control" autocomplete="off" placeholder="Cari nama Barang" name="search" id="search">
+                            <form id="formSubmit" method="post" action="<?php echo base_url('inventaris/caribarang') ?>">
+                            <div class="input-group col-xs-4" style="float: left;padding-left:15px;">
+                                <input placeholder="cari nama unit" type="text" class="input-group form-control" id="search_nama_unit" name="search_nama_unit" 
+                                value="<?php if(isset($_SESSION['search_nama_unit'])){echo $_SESSION['search_nama_unit'];} ?>">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default" type="button"><i> dan/atau</i></button>
+                                </div>
+                                <input placeholder="cari nama barang" type="text" class="input-group form-control" id="search_nama_barang" name="search_nama_barang" 
+                                value="<?php if(isset($_SESSION['search_nama_barang'])){echo $_SESSION['search_nama_barang'];} ?>">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                                 </div>
@@ -33,11 +39,13 @@
                         <table class="table table-bordered table-hover" id="tabel" cellspacing="0" width="100%">
                             <thead bgcolor="#4a4a4c">
                             <tr>
-                                <th><font color="white">Barang ID</th>
+                                <th><font color="white">Unit</th>
                                 <th><font color="white">Nama Barang</th>
-                                <th><font color="white">Jumlah Stok Inventaris</th>
                                 <th><font color="white">Satuan</th>
                                 <th><font color="white">Grup Barang</th>
+                                <th><font color="white">Merek/Model/Ukuran</th>
+                                <th><font color="white">Jumlah Item</th>
+                                
                             </tr>
                             </thead>
                             <tbody>
@@ -46,11 +54,17 @@
                                 $i=1;
                                 foreach ($data as $field => $values) {
                                     echo "<tr>";
-                                    echo "<td width='5%'>".$values['barang_id']."</td>";
+                                    echo "<td>".$values['nama_unit']."</td>";
                                     echo "<td>".$values['nama_barang']."</td>";
-                                    echo "<td>".$values['jumlah_farmasi']."</td>";
                                     echo "<td>".$values['nama_satuan']."</td>";
                                     echo "<td>".$values['nama_grup_barang']."</td>";
+                                    echo "<td>".$values['merek_model_ukuran']."</td>";
+                                    if($values['jumlah']<1){
+                                        echo "<td width='15%'> Barang kosong / tidak ada</td>";
+                                    }else{
+                                        echo "<td width='15%'>".number_format($values['jumlah'],0,",",".")."</td>";
+                                    }
+                                    echo "</tr>";
                                     $i++;
                                 }
                             } else {
@@ -63,12 +77,13 @@
                         echo "<p style='font-family:Calibri; font-size:85%;'>Showing page: ".$currentPage." with total data: ".$totalData."</p>";
                         }
                     ?>
+
                     <div class="box-footer clearfix">
                         <?php
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
                         if (isset($totalPages)) {
-                            $entity->tampilkan('inventaris/infostok',$currentPage, $totalPages);
+                            $entity->tampilkan('inventaris/caribarang',$currentPage, $totalPages);
                         }
                         ?>
                     </div>
@@ -105,13 +120,7 @@
 <script src="<?php echo base_url('assets/js/AdminLTE/app.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/js/plugins/slimScroll/jquery.slimscroll.min.js'); ?>"></script>
 <script src="<?php echo base_url("assets/js/plugins/Parsley.js-2.5.1/dist/parsley.js"); ?>"></script>
-
-<script>
-$("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
-    $("#success-alert").slideUp(500);
-});
-</script>
-
+<script src="<?php echo base_url('tAutocomplete/tautocomplete.js'); ?>" type="text/javascript"></script>
 
 </body>
 </html>

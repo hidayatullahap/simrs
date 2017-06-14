@@ -2,11 +2,16 @@
 require_once CLASSES_DIR  . 'dbconnection.php';
 
 class Pengguna{
+    private $db;
+    private $conn;
 
+    public function __construct() {
+        $this->db = new DB();
+        $this->conn = $this->db->connect();
+    }
+    
     public function getData($sort, $page, $limitItemPage)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         $query =
         "SELECT
@@ -19,9 +24,9 @@ class Pengguna{
         pengguna
         ORDER BY `pengguna`.`pengguna_id` 
         $sort LIMIT $page,$limitItemPage";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         
-        $sql = $conn->query("SELECT COUNT(*) FROM barang");
+        $sql = $this->conn->query("SELECT COUNT(*) FROM barang");
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;
@@ -33,8 +38,6 @@ class Pengguna{
 
     public function getOne($id)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $query =
         "SELECT
         pengguna.pengguna_id,
@@ -46,7 +49,7 @@ class Pengguna{
         pengguna
         WHERE
         pengguna.pengguna_id = $id";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         $data = array("data"=>$result);
         
         return $data;
@@ -54,8 +57,6 @@ class Pengguna{
 
     public function checkCredential($username, $password)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $query =
         "SELECT
         pengguna.nama,
@@ -67,7 +68,7 @@ class Pengguna{
         pengguna.username = '$username' AND
         pengguna.password ='$password'
         ";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         $data = array("data"=>$result);
         
         return $data;
@@ -78,15 +79,17 @@ class Pengguna{
         return $checksession;
     }
 
+    function checkRole($role){
+        $checkRole = isset($_SESSION['pengguna_peran']);
+        return $checkRole;
+    }
+
     function logout(){
         session_destroy();
     }
 
     public function postData()
     {   
-        $db=new DB;
-        $conn=$db->connect();
-
         $nama           = $_POST['nama'];
         $nip            = $_POST['nip'];
         $username       = $_POST['username'];
@@ -98,15 +101,12 @@ class Pengguna{
         INTO pengguna(nama, nip, username, password, role)
         VALUES ('$nama', '$nip', '$username', '$password', '$role')
         ";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         return $result;
     }
 
     public function editData($id)
     {   
-        $db=new DB;
-        $conn=$db->connect();
-
         $nama           = $_POST['nama'];
         $nip            = $_POST['nip'];
         $username       = $_POST['username'];
@@ -115,25 +115,20 @@ class Pengguna{
         $query =
         "UPDATE `pengguna` SET `nama` = '$nama', `nip` = '$nip', `username` = '$username', `role` = '$role' WHERE `pengguna`.`pengguna_id` = $id
         ";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         return $result;
     }
 
     public function deleteData($id)
     {
-        $db=new DB;
-        $conn=$db->connect();
         $query ="DELETE FROM `pengguna` WHERE `pengguna`.`pengguna_id` = $id";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         return $result;
         
     }
 
     public function searchData($search)
     {   
-        $db=new DB;
-        $conn=$db->connect();
-
         $query = 
         "SELECT
         pengguna.pengguna_id,
@@ -147,7 +142,7 @@ class Pengguna{
         pengguna.nama LIKE '%$search%'
         ORDER BY `pengguna`.`pengguna_id` ASC";
 
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         $data = array("data"=>$result);
         
         return $data;

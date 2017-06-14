@@ -41,9 +41,6 @@
     .kolomBatch {
         width: 18%;
     }
-    .kolomKadaluarsa {
-        width: 10%;
-    }
     .kolomHarga {
         width: 10.5%;
     }
@@ -60,14 +57,11 @@
         padding-top: 0.3%;
         text-align: right;
     }
-    hr.style4 {
-        border-top: 1px dotted #8c8b8b;
-    }
 </style>
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('depo/antrianberjalandepo'); ?>"><b> Obat Keluar </b></a><br>
+            <a href="<?php echo base_url('/farmasi/pengeluaran'); ?>"><b> Pengeluaran Barang </b></a><br>
 
         </h1>
     </section>
@@ -78,172 +72,160 @@
                 <div class="box">
                     <div class="box-header with-border">
                             <div class="modal-body" style="text-align: right; ">
-                                <div class="item form-group">
-                                    <div style="text-align: center;">
-                                        <h2><i>Informasi Penerimaan</i></h2>
+                                <div style="text-align: center;">
+                                        <h2><i>Informasi Pasien</i></h2>
                                         <br>
                                     </div>
+                                    
 
-                                    <label class="col-md-5 control-label paddingForm" >Jenis Penerimaan</label>
-                                    <div class="col-md-3">
-                                    <select class="form-control" name="jenis_penerimaan_id" id="jenis_penerimaan_id">
-                                        <option hidden value="" >Pilih jenis penerimaan</option>
-                                            <?php
-                                            foreach ($daftarJenisPenerimaan['data'] as $field => $values) {
-                                                if ($values['jenis_penerimaan_id']!=3) {           //--------------GANTI IF ROLE = ID
-                                                    echo "<option value=";
-                                                    echo $values['jenis_penerimaan_id'];
-                                                    echo ">";
-                                                    echo $values['nama_jenis_penerimaan'];
-                                                    echo "</option>";
-                                                }
-                                            }
-                                            ?>
-                                    </select>
-                                    </div><br><br>
+                                    <?php
+                                    if ($data->num_rows>0) {
+                                        foreach ($data as $field => $values) {?>
 
-                                    <label class="col-md-5 control-label paddingForm">Terima Dari</label>
+                                    <label class="col-md-5 control-label paddingForm">Nomor Rekam Medis</label>
                                     <div class="col-md-3">
                                         <?php
+                                        $value=$values['nomor_RM'];
                                         $data = array(
-                                            'name' => 'terima_dari',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'terima_dari',
+                                            'readonly'=> 'readonly',
                                             'type' => 'text',
-                                            'class' => 'form-control'
-                                        );
-                                        echo form_input($data);
-                                        ?>
-                                    </div><br><br>
-
-                                    <label class="col-md-5 control-label paddingForm">Nomor Faktur</label>
-                                    <div class="col-md-3">
-                                        <?php
-                                        $data = array(
-                                            'name' => 'no_faktur',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'no_faktur',
-                                            'type' => 'text',
-                                            'class' => 'form-control'
-                                        );
-                                        echo form_input($data);
-                                        ?>
-                                    </div><br><br>
-
-                                    <label class="col-md-5 control-label paddingForm">Tanggal Faktur</label>
-                                    <div class="col-md-3">
-                                        <?php
-                                        $data = array(
-                                            'name' => 'tanggal_faktur',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'tanggal_faktur',
-                                            'type' => 'date',
-                                            'class' => 'form-control'
-                                        );
-                                        echo form_input($data);
-                                        ?>
-                                    </div><br><br>
-
-                                    <label class="col-md-5 control-label paddingForm">Keterangan</label>
-                                    <div class="col-md-3">
-                                        <?php
-                                        $data = array(
-                                            'name' => 'keterangan',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'keterangan',
-                                            'type' => 'text',
-                                            'class' => 'form-control'
-                                        );
-                                        echo form_input($data);
-                                        ?>
-                                    </div><br><br>
-
-                                    <hr class="style4">
-
-                                    <div style="text-align: center;">
-                                        <h2><i>Informasi Barang</i></h2>
-                                        <br>
-                                    </div>
-
-                                    <label class="col-md-5 control-label paddingForm">Harga Beli</label>
-                                    <div class="col-md-3">
-                                        <?php
-                                        $data = array(
-                                            'name' => 'harga_beli',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'harga_beli',
-                                            'type' => 'number',
-                                            'class' => 'form-control'
+                                            'class' => 'form-control',
+                                            'value' => $value
                                         );
                                         echo form_input($data);
                                         ?>
                                     </div><br><br>
                                     
-                                    <label class="col-md-5 control-label paddingForm">Harga Jual</label>
+                                    <label class="col-md-5 control-label paddingForm">Nama Pasien</label>
                                     <div class="col-md-3">
                                         <?php
+                                        $value=$values['nama'];
                                         $data = array(
-                                            'name' => 'harga_jual',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'harga_jual',
-                                            'type' => 'number',
-                                            'class' => 'form-control'
-                                        );
-                                        echo form_input($data);
-                                        ?>
-                                    </div><br><br>
-
-                                    <label class="col-md-5 control-label paddingForm">Nomor Batch</label>
-                                    <div class="col-md-3">
-                                        <?php
-                                        $data = array(
-                                            'name' => 'nomor_batch',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'nomor_batch',
+                                            'name'=> 'nama_pasien',
+                                            'id'=> 'nama_pasien',
+                                            'readonly'=> 'readonly',
                                             'type' => 'text',
-                                            'class' => 'form-control'
+                                            'class' => 'form-control',
+                                            'value' => $value
                                         );
                                         echo form_input($data);
                                         ?>
                                     </div><br><br>
 
-                                    <label class="col-md-5 control-label paddingForm" >Tanggal Kadaluarsa</label>
+                                    <label class="col-md-5 control-label paddingForm">Jenis Pasien</label>
                                     <div class="col-md-3">
                                         <?php
+                                        $value=$values['nomor_RM'];
                                         $data = array(
-                                            'name' => 'tanggal_kadaluarsa',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'tanggal_kadaluarsa',
-                                            'type' => 'date',
-                                            'class' => 'form-control'
+                                            'readonly'=> 'readonly',
+                                            'type' => 'text',
+                                            'class' => 'form-control',
+                                            'value' => $value
                                         );
                                         echo form_input($data);
                                         ?>
                                     </div><br><br>
 
-                                    <label class="col-md-5 control-label paddingForm">Jumlah</label>
+                                    <div></div>
+                                    <label class="col-md-5 control-label paddingForm">Tanggal Lahir</label>
+                                    <div class="col-md-1">
+                                        <?php
+                                        $value=$values['tanggal_lahir'];
+                                        $data = array(
+                                            'readonly'=> 'readonly',
+                                            'type' => 'text',
+                                            'class' => 'form-control',
+                                            'value' => $value
+                                        );
+                                        echo form_input($data);
+                                        ?>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <?php
+                                        $time1 = strtotime($values['tanggal_lahir']);
+
+                                        $month1 = date("m", $time1);
+                                        $year1 = date("Y", $time1);
+
+                                        $time2 = strtotime(date('Y-m-d'));
+                                        $month2 = date("m", $time2);
+                                        $year2 = date("Y", $time2);
+
+                                        $diffMonth = $month2 - $month1;
+                                        $diffYear = $year2 - $year1;
+
+                                        if ($diffMonth < 0) {
+                                            $diffYear -= 1;
+                                            $diffMonth += 12;
+                                        }
+
+                                        $usia = "Usia: $diffYear tahun $diffMonth bulan";
+
+                                        $data = array(
+                                            'readonly'=> 'readonly',
+                                            'type' => 'text',
+                                            'class' => 'form-control',
+                                            'value' => $usia
+                                        );
+                                        echo form_input($data);
+                                        ?>
+                                    </div><br><br>
+
+                                    <label class="col-md-5 control-label paddingForm">Alamat</label>
                                     <div class="col-md-3">
                                         <?php
+                                        $value=$values['alamat'];
                                         $data = array(
-                                            'name' => 'jumlah',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'jumlah',
-                                            'type' => 'number',
-                                            'class' => 'form-control'
+                                            'readonly'=> 'readonly',
+                                            'type' => 'text',
+                                            'class' => 'form-control',
+                                            'value' => $value
                                         );
                                         echo form_input($data);
                                         ?>
                                     </div><br><br>
 
+                                    <label class="col-md-5 control-label paddingForm">Jenis Kelamin</label>
+                                    <div class="col-md-3">
+                                        <?php
+                                        $value=$values['jenis_kelamin'];
+                                        $data = array(
+                                            'readonly'=> 'readonly',
+                                            'type' => 'text',
+                                            'class' => 'form-control',
+                                            'value' => $value
+                                        );
+                                        echo form_input($data);
+                                        ?>
+                                    </div><br><br>
+
+                                    <label class="col-md-5 control-label paddingForm">Golongan darah</label>
+                                    <div class="col-md-3">
+                                        <?php
+                                        $value=$values['golongan_darah'];
+                                        $data = array(
+                                            'readonly'=> 'readonly',
+                                            'type' => 'text',
+                                            'class' => 'form-control',
+                                            'value' => $value
+                                        );
+                                        echo form_input($data);
+                                        ?>
+                                    </div><br><br>
+
+                                    <?php    
+                                        }
+                                    }
+                                    ?>
+
+                                    <hr class="style4">
+
+                                    <div style="text-align: center;">
+                                        <h2><i>Informasi Resep</i></h2>
+                                        <br>
+                                    </div>
+
+                                    
                                     <label class="col-md-5 control-label paddingForm" for="barang_id">Nama Barang</label>
                                     <div class="col-md-3">
                                         <?php
@@ -256,14 +238,74 @@
                                             'class' => 'form-control'
                                         );
                                         echo form_input($data);
-                                        ?><i>*masukan nama barang di menu kelola bila tidak ada</i>
+                                        ?>
+                                    </div><br><br>
+
+                                    <label class="col-md-5 control-label paddingForm">Aturan Pakai</label>
+                                    <div class="col-md-3">
+                                        <?php
+                                        $data = array(
+                                            'name' => 'aturan_pakai',
+                                            'autocomplete' => 'off',
+                                            'placeholder' => 'misal 3 x 1 . . . ',
+                                            'id' => 'aturan_pakai',
+                                            'type' => 'text',
+                                            'class' => 'form-control'
+                                        );
+                                        echo form_input($data);
+                                        ?>
+                                    </div><br><br>
+
+                                    <label class="col-md-5 control-label paddingForm">Keterangan Tambahan</label>
+                                    <div class="col-md-3">
+                                        <?php
+                                        $data = array(
+                                            'name' => 'keterangan',
+                                            'autocomplete' => 'off',
+                                            'placeholder' => 'isi bila perlu . . . ',
+                                            'id' => 'keterangan',
+                                            'type' => 'text',
+                                            'class' => 'form-control'
+                                        );
+                                        echo form_input($data);
+                                        ?>
+                                    </div><br><br>
+
+                                    <label class="col-md-5 control-label paddingForm">Nomor Batch</label>
+                                    <div class="col-md-3">
+                                        <?php
+                                        $data = array(
+                                            'name' => 'nomor_batch',
+                                            'autocomplete' => 'off',
+                                            'placeholder' => 'isi nomor batch . . . ',
+                                            'id' => 'nomor_batch',
+                                            'type' => 'text',
+                                            'class' => 'form-control'
+                                        );
+                                        echo form_input($data);
+                                        ?>
+                                    </div><br><br>
+                                    
+                                    <label class="col-md-5 control-label paddingForm">Jumlah</label>
+                                    <div class="col-md-3">
+                                        <?php
+                                        $data = array(
+                                            'name' => 'jumlah',
+                                            'autocomplete' => 'off',
+                                            'id' => 'jumlah',
+                                            'type' => 'number',
+                                            'class' => 'form-control'
+                                        );
+                                        echo form_input($data);
+                                        ?>
+                                        <i>*masukan nama barang di menu kelola bila tidak ada</i>
                                     </div><br><br>
                                 </div>
                             </div>
                             <div class="col-md-5 col-sm-offset-5">
                                 <button class="btn btn-default btn-md" onclick="tambahDataKeTabel('dataObat')"><i class="fa fa-plus"> Tambah item</i></button>
                             </div><br><br>
-                            <form method="post" action="<?php echo base_url('/farmasi/pengadaan/tambahPengadaanStok')?>">
+                            <form method="post" action="<?php echo base_url('depo/antrianberjalandepo/prosesobatkeluar')."/".$this->uri->segment(4)?>">
                             <div class="form-group" style="display: none;" id="tampilkanTabel">
                                 <table style="margin-left: 10px; margin-top: 20px; text-align: center;" border="1" class="" id="dataObat"  width="99%" >
                                     <thead>
@@ -272,16 +314,11 @@
                                         <th class="cell_sim">ID Barang</th>
                                         <th class="cell_sim">Nama Barang</th>
                                         <th class="cell_sim">Jumlah</th>
-                                        <th class="cell_sim">Harga Beli</th>
-                                        <th class="cell_sim">Harga Jual</th>
-                                        <th class="cell_sim">Kadaluarsa</th>
-                                        <th class="cell_sim">Jenis Penerimaan</th>
+                                        <th class="cell_sim">Aturan Pakai</th>
+                                        <th class="cell_sim">Keterangan Tambahan</th>
                                         <th class="cell_sim">Nomor Batch</th>
-                                        <th class="cell_sim">Terima Dari</th>
-                                        <th class="cell_sim">No Faktur</th>
-                                        <th class="cell_sim">Tgl Faktur</th>
-                                        <th class="cell_sim">Keterangan</th>
-                                        
+                                        <th class="cell_sim">Untuk Pasien</th>
+                                        <th class="cell_sim">Harga Barang</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -296,9 +333,12 @@
                             <button formnovalidate class="btn btn-danger" name="batal" value="batal" type="submit"><i class="glyphicon glyphicon-remove"> Batal</i></button>
                             <button class="btn btn-success" type="submit" name="simpan" value="simpan"><i class="fa fa-arrow-right"> Proses</i></button>
                             <input id="trTotal" name="trTotal" hidden readonly>
+                            
+                                <h3><i>Total Tagihan: </i><input readonly value="0" name="totaltagihan" id="totalTagihan"></input></h3>
+                                <br>
                             </div>
                         </form>
-                    </div>
+
                     <?php if ($this->session->flashdata('pesan')) {?>
                         <div class="alert alert-success alert-dismissible" id="success-alert">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -306,6 +346,7 @@
                             <?php echo $this->session->flashdata('metode') ?>
                         </div>
                     <?php } ?>
+
                 </div>
             </div>
         </div>
@@ -325,6 +366,7 @@
 <script src="<?php echo base_url('assets/js/plugins/slimScroll/jquery.slimscroll.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo base_url('assets/js/plugins/chartjs/Chart.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo base_url('tAutocomplete/tautocomplete.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo base_url('assets/js/jquery-ui-1.12.1.custom/jquery-ui.min.js'); ?>" type="text/javascript"></script>
 
 <script>
 $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
@@ -333,42 +375,36 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
 </script>
 
 <script>
-    var nomor_batch = document.getElementById('nomor_batch');
-    var tanggal_kadaluarsa = document.getElementById('tanggal_kadaluarsa');
     var jumlah = document.getElementById('jumlah');
-    var tabelPengeluaran = document.getElementById('tabelPengeluaran');
     var kolom_barang_id = document.getElementById('barang_id');
-
-    var jenis_penerimaan_id = document.getElementById('jenis_penerimaan_id');
-    var terima_dari = document.getElementById('terima_dari');
-    var no_faktur = document.getElementById('no_faktur');
-    var tanggal_faktur = document.getElementById('tanggal_faktur');
+    var aturan_pakai = document.getElementById('aturan_pakai');
     var keterangan = document.getElementById('keterangan');
-    var harga_beli = document.getElementById('harga_beli');
-    var harga_jual = document.getElementById('harga_jual');
+    var nomor_batch = document.getElementById('nomor_batch');
+    var nama_pasien = document.getElementById('nama_pasien');
+    var totalShow = document.getElementById('totalTagihan');
+    var temp=0;
+    var tempValue=0;
 
     var trTot = document.getElementById("trTotal");
 
-    var grup_barang_temp;
     var nama_barang_temp;
     var barang_id_temp;
+    var harga_barang_temp;
 
     function clearFields(){
-        harga_beli.value = "";
-        harga_jual.value = "";
-        tanggal_kadaluarsa.value = "";
-        nomor_batch.value = "";
+        aturan_pakai.value = "";
+        keterangan.value = "";
         jumlah.value = "";
+        nomor_batch.value = "";
     }
 
     var tr = 1;
     var td = 1;
     function tambahDataKeTabel(idTabel) {
-        if(jumlah.value == ""){ alert("Kolom jumlah tidak boleh kosong!"); }
+        if(jumlah.value == ""){ alert("Kolom jumlah tidak boleh kosong!"); }else if(jumlah.value <0){ alert("Angka tidak boleh negatif!"); }
         if(kolom_barang_id.value == ""){ alert("Nama barang tidak boleh kosong!"); }
-        if(jenis_penerimaan_id.value == ""){ alert("Jenis penerimaan tidak boleh kosong!"); }
 
-        if(jumlah.value && kolom_barang_id.value && jenis_penerimaan_id.value){
+        if(jumlah.value>0 && kolom_barang_id.value){
         tampilkanTabel.style.display = "block";
         var table = document.getElementById(idTabel);
         var row = table.insertRow(1);
@@ -381,10 +417,6 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
         var cell7 = row.insertCell(6);
         var cell8 = row.insertCell(7);
         var cell9 = row.insertCell(8);
-        var cell10 = row.insertCell(9);
-        var cell11 = row.insertCell(10);
-        var cell12 = row.insertCell(11);
-        var cell13 = row.insertCell(12);
         
         cell1.innerHTML = "<span class=\"table-remove glyphicon glyphicon-remove\" onclick=\"hapusBaris(this)\"></span>";
         cell2.innerHTML = "<input hidden name=\"tabel_barang_id[]\" value=\"" + barang_id_temp + "\" class=\"full-width rata_tengah\" readonly>"+ barang_id_temp;
@@ -393,28 +425,26 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
         td++;
         cell4.innerHTML = "<input hidden name=\"tabel_jumlah[]\" value=\"" + jumlah.value + "\" class=\"full-width\" readonly>"+ jumlah.value;
         td++;
-        cell5.innerHTML = "<input hidden name=\"tabel_harga_beli[]\" value=\"" + harga_beli.value + "\" class=\"full-width\" readonly>"+ harga_beli.value;
+        cell5.innerHTML = "<input hidden name=\"tabel_aturan_pakai[]\" value=\"" + aturan_pakai.value + "\" class=\"full-width\" readonly>"+ aturan_pakai.value;
         td++;
-        cell6.innerHTML = "<input hidden name=\"tabel_harga_jual[]\" value=\"" + harga_jual.value + "\" class=\"full-width\" readonly>"+ harga_jual.value;
+        cell6.innerHTML = "<input hidden name=\"tabel_keterangan[]\" value=\"" + keterangan.value + "\" class=\"full-width\" readonly>"+ keterangan.value;
         td++;
-        cell7.innerHTML = "<input hidden name=\"tabel_tanggal_kadaluarsa[]\" value=\"" + tanggal_kadaluarsa.value + "\" class=\"full-width\" readonly>"+ tanggal_kadaluarsa.value;
+        cell7.innerHTML = "<input hidden name=\"tabel_nomor_batch[]\" value=\"" + nomor_batch.value + "\" class=\"full-width\" readonly>"+ nomor_batch.value;
         td++;
-        cell8.innerHTML = "<input hidden name=\"tabel_jenis_penerimaan_id[]\" value=\"" + jenis_penerimaan_id.value + "\" class=\"full-width\" readonly>"+ jenis_penerimaan_id.value;
+        cell8.innerHTML = "<input hidden name=\"tabel_nama_pasien[]\" value=\"" + nama_pasien.value + "\" class=\"full-width\" readonly>"+ nama_pasien.value;
         td++;
-        cell9.innerHTML = "<input hidden name=\"tabel_nomor_batch[]\" value=\"" + nomor_batch.value + "\" class=\"full-width\" readonly>"+ nomor_batch.value;
-        cell10.innerHTML = "<input hidden name=\"tabel_terima_dari[]\" value=\"" + terima_dari.value + "\" class=\"full-width\" readonly>"+ terima_dari.value;
-        td++;
-        cell11.innerHTML = "<input hidden name=\"tabel_no_faktur[]\" value=\"" + no_faktur.value + "\" class=\"full-width\" readonly>"+ no_faktur.value;
-        td++;
-        cell12.innerHTML = "<input hidden name=\"tabel_tanggal_faktur[]\" value=\"" + tanggal_faktur.value + "\" class=\"full-width\" readonly>"+ tanggal_faktur.value;
-        td++;
-        cell13.innerHTML = "<input hidden name=\"tabel_keterangan[]\" value=\"" + keterangan.value + "\" class=\"full-width\" readonly>"+ keterangan.value ;
-            
+        cell9.innerHTML = "<input hidden name=\"tabel_harga_barang[]\" value=\"" + harga_barang_temp + "\" class=\"full-width\" readonly>"+ harga_barang_temp;
+        tempValue = parseInt(harga_barang_temp)*parseInt(jumlah.value);;
+        temp=temp+tempValue;
+        totalShow.value = temp;
+
         trTot.value = tr;
         tr++;
         td = 1;
         clearFields();
         }
+        
+        
     }
 
     function hapusBaris(r) {
@@ -425,12 +455,25 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
 
 <?php
     $arrayDaftarBarang=[];
-    $arrayDaftarJenisPenerimaan=[];
+    $arrayDaftarAturanPakai=[];
 
     foreach ($daftarBarang['data'] as $field => $values) {
         $arrayDaftarBarang[]=$values;
     }
+    foreach ($daftarAturanPakai['data'] as $field => $values) {
+        $arrayDaftarAturanPakai[]=$values['nama_aturan_pakai'];
+    }
+    
 ?>
+<script>
+$( function() {
+    var aturan_pakai = <?php echo json_encode($arrayDaftarAturanPakai);?>;
+    $( "#aturan_pakai" ).autocomplete({
+      source: aturan_pakai
+    });
+  });
+</script>
+
 <script>
     $(document).ready(function() {
         var daftarObat = <?php echo json_encode($arrayDaftarBarang);?>;
@@ -440,7 +483,7 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
             placeholder: "Ketik kata kunci. . .",
             norecord: "data tidak ditemukan",
             highlight: "",
-            columns: ['id Barang', 'Nama', 'Stok', 'Grup', 'satuan'],
+            columns: ['id Barang', 'Nama', 'Stok', 'Grup', 'satuan','Harga'],
             data: function () {
                 try {
                     var data = daftarObat;
@@ -465,12 +508,13 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
             },
             onchange: function () {
                 stok = daftarSearchData.all()['Stok'];
-                if(stok<0){
+                if(stok<1){
                     alert("Stok tidak tersedia");
+                    return false;
                 }else{
                     barang_id_temp = daftarSearchData.all()['id Barang'];
                     nama_barang_temp = daftarSearchData.all()['Nama'];
-                    grup_barang_temp = daftarSearchData.all()['Grup'];
+                    harga_barang_temp = daftarSearchData.all()['Harga'];
                 }
             }
         });

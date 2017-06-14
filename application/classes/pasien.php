@@ -2,11 +2,16 @@
 require_once CLASSES_DIR  . 'dbconnection.php';
 
 class Pasien{
+    private $db;
+    private $conn;
 
+    public function __construct() {
+        $this->db = new DB();
+        $this->conn = $this->db->connect();
+    }
+    
     public function getData($sort, $page, $limitItemPage)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         $query =
         "SELECT
@@ -27,9 +32,9 @@ class Pasien{
         INNER JOIN jenis_pasien ON pasien.jenis_pasien_id = jenis_pasien.jenis_pasien_id
         ORDER BY `pasien`.`pasien_id` 
         $sort LIMIT $page,$limitItemPage";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         
-        $sql = $conn->query("SELECT COUNT(*) FROM pasien");
+        $sql = $this->conn->query("SELECT COUNT(*) FROM pasien");
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;
@@ -41,8 +46,6 @@ class Pasien{
 
     public function getOne($id)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $query =
         "SELECT
         pasien.pasien_id AS pasien_id,
@@ -62,7 +65,7 @@ class Pasien{
         INNER JOIN jenis_pasien ON pasien.jenis_pasien_id = jenis_pasien.jenis_pasien_id
         WHERE
         pasien.pasien_id = $id";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         $data = array("data"=>$result);
         
         return $data;
@@ -70,9 +73,6 @@ class Pasien{
 
     public function postData()
     {   
-        $db=new DB;
-        $conn=$db->connect();
-
         $nama           = $_POST['nama'];
         $tanggal_lahir  = $_POST['tanggal_lahir'];
         $tempat_lahir   = $_POST['tempat_lahir'];
@@ -88,15 +88,12 @@ class Pasien{
         INTO pasien(nama,tempat_lahir, tanggal_lahir, alamat,jenis_kelamin,golongan_darah, agama,nomor_RM, jenis_pasien_id)
         VALUES ('$nama', '$tempat_lahir', '$tanggal_lahir', '$alamat', '$jenis_kelamin', '$golongan_darah', '$agama', '$nomor_RM', '$jenis_pasien_id')
         ";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         return $result;
     }
 
     public function editData($id)
     {   
-        $db=new DB;
-        $conn=$db->connect();
-
         $nama           = $_POST['nama'];
         $tanggal_lahir  = $_POST['tanggal_lahir'];
         $tempat_lahir   = $_POST['tempat_lahir'];
@@ -125,25 +122,20 @@ class Pasien{
         "UPDATE `pasien` SET `nama` = '$nama', `tempat_lahir` = '$tempat_lahir', `tanggal_lahir` = '$tanggal_lahir', `alamat` = '$alamat', `jenis_kelamin` = '$jenis_kelamin', 
         `golongan_darah` = '$golongan_darah', `agama` = '$agama', `nomor_RM` = '$nomor_RM', `jenis_pasien_id` = $jenis_pasien_id WHERE `pasien`.`pasien_id` = $id
         ";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         return $result;
     }
 
     public function deleteData($id)
     {
-        $db=new DB;
-        $conn=$db->connect();
         $query ="DELETE FROM `pasien` WHERE `pasien`.`pasien_id` = $id";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         return $result;
         
     }
 
     public function searchData($search)
     {   
-        $db=new DB;
-        $conn=$db->connect();
-
         $query = 
         "SELECT
         pasien.pasien_id AS pasien_id,
@@ -165,7 +157,7 @@ class Pasien{
         pasien.nama LIKE '%$search%'
         ORDER BY `pasien`.`pasien_id` ASC";
 
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         $data = array("data"=>$result);
         
         return $data;

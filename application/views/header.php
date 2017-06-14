@@ -30,5 +30,6 @@
         <link href="<?php echo base_url('assets/js/plugins/datepicker/css/prettify.css'); ?>" rel="stylesheet" type="text/css" />
         <link href="<?php echo base_url('assets/js/plugins/datepicker/datepicker3.css'); ?>" rel="stylesheet" type="text/css" />
         <link href="<?php echo base_url('assets/js/plugins/daterangepicker/daterangepicker-bs3.css'); ?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo base_url('assets/js/jquery-ui-1.12.1.custom/jquery-ui.min.css'); ?>" rel="stylesheet" type="text/css" />
     </head>
     

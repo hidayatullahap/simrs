@@ -34,12 +34,12 @@
 
                             <div class="input-group col-xs-4" style="float: right;padding-right:15px;">
                                 <div class="input-group-btn">
-                                        <button class="btn btn-default"><i>Filter mulai tgl</i></button>
+                                        <button class="btn btn-default" type="button"><i>Filter mulai tgl</i></button>
                                 </div>
                                 <input  type="date" class="input-group form-control" id="tanggalAwal" name="tanggalAwal" 
                                 value="<?php if(isset($_SESSION['tanggalAwal'])){echo date('Y-m-d', strtotime($_SESSION['tanggalAwal']));} ?>">
                                 <div class="input-group-btn">
-                                    <button class="btn btn-default"><i> hingga</i></button>
+                                    <button class="btn btn-default" type="button"><i> hingga</i></button>
                                 </div>
                                 <input  type="date" class="input-group form-control" id="tanggalAkhir" name="tanggalAkhir" 
                                 value="<?php if(isset($_SESSION['tanggalAkhir'])){echo date('Y-m-d', strtotime($_SESSION['tanggalAkhir']));} ?>">

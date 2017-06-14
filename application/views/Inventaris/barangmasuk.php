@@ -169,6 +169,21 @@
                                         <br>
                                     </div>
 
+                                    <label class="col-md-5 control-label paddingForm" for="barang_id">Nama Barang</label>
+                                    <div class="col-md-3">
+                                        <?php
+                                        $data = array(
+                                            'name' => 'barang_id',
+                                            'autocomplete' => 'off',
+                                            'required' => 'required',
+                                            'id' => 'barang_id',
+                                            'type' => 'text',
+                                            'class' => 'form-control'
+                                        );
+                                        echo form_input($data);
+                                        ?>
+                                    </div><br><br>
+
                                     <label class="col-md-5 control-label paddingForm">Harga Beli</label>
                                     <div class="col-md-3">
                                         <?php
@@ -238,21 +253,6 @@
                                             'required' => 'required',
                                             'id' => 'jumlah',
                                             'type' => 'number',
-                                            'class' => 'form-control'
-                                        );
-                                        echo form_input($data);
-                                        ?>
-                                    </div><br><br>
-
-                                    <label class="col-md-5 control-label paddingForm" for="barang_id">Nama Barang</label>
-                                    <div class="col-md-3">
-                                        <?php
-                                        $data = array(
-                                            'name' => 'barang_id',
-                                            'autocomplete' => 'off',
-                                            'required' => 'required',
-                                            'id' => 'barang_id',
-                                            'type' => 'text',
                                             'class' => 'form-control'
                                         );
                                         echo form_input($data);

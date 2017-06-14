@@ -2,11 +2,16 @@
 require_once CLASSES_DIR  . 'dbconnection.php';
 
 class Antrian{
+    private $db;
+    private $conn;
+
+    public function __construct() {
+        $this->db = new DB();
+        $this->conn = $this->db->connect();
+    }
 
     public function AntrianHariIni($sort, $page, $limitItemPage)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         $query =
         "SELECT
@@ -26,9 +31,9 @@ class Antrian{
         antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')
         ORDER BY `antrian`.`tanggal_antrian` 
         $sort LIMIT $page,$limitItemPage";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         
-        $sql = $conn->query("SELECT COUNT(*) FROM antrian WHERE
+        $sql = $this->conn->query("SELECT COUNT(*) FROM antrian WHERE
         antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59')");
         $row = $sql->fetch_row();
         $count = $row[0];
@@ -41,8 +46,6 @@ class Antrian{
 
     public function ajaxAntrianHariIni($unit_id=null)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $requestData = $_REQUEST;
         $page = $requestData['start'];
         $limitItemPage = $requestData['length'];
@@ -54,7 +57,6 @@ class Antrian{
         }
 
         $data = array();
-        
         $query =
         "SELECT
         antrian.pasien_id,
@@ -75,7 +77,7 @@ class Antrian{
         ORDER BY `antrian`.`tanggal_antrian` DESC
         LIMIT $page, $limitItemPage";
         
-        $sql = $conn->query("SELECT COUNT(*) FROM antrian WHERE
+        $sql = $this->conn->query("SELECT COUNT(*) FROM antrian WHERE
         antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
         AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') 
         AND antrian.`status` = 'belum_dilayani'");
@@ -102,7 +104,7 @@ class Antrian{
             ORDER BY `antrian`.`tanggal_antrian` DESC
             LIMIT $page, $limitItemPage";
 
-            $sql = $conn->query("SELECT COUNT(*) FROM antrian 
+            $sql = $this->conn->query("SELECT COUNT(*) FROM antrian 
             INNER JOIN pasien ON antrian.pasien_id = pasien.pasien_id
             WHERE antrian.tanggal_antrian BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 00:00:00') 
             AND DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 0 DAY), '%Y-%m-%d 23:59:59') 
@@ -111,7 +113,7 @@ class Antrian{
             LIMIT $page, $limitItemPage");
         }
         
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
 
         while ($row = mysqli_fetch_assoc($result)) {
             $nestedData = array();
@@ -146,8 +148,6 @@ class Antrian{
 
     public function getPasienWithStatus($sort, $page, $limitItemPage)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         $query =
         "SELECT
@@ -180,9 +180,9 @@ class Antrian{
         ) AS lj_antrian ON (lj_antrian.pasien_id= pasien.pasien_id)
         ORDER BY `pasien`.`pasien_id` 
         $sort LIMIT $page,$limitItemPage";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         
-        $sql = $conn->query("SELECT COUNT(*) FROM pasien");
+        $sql = $this->conn->query("SELECT COUNT(*) FROM pasien");
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;
@@ -194,8 +194,6 @@ class Antrian{
 
     public function searchPasienWithStatus($search)
     {   
-        $db=new DB;
-        $conn=$db->connect();
         $data = array();
         
         $query = 
@@ -231,7 +229,7 @@ class Antrian{
         pasien.nama LIKE '%$search%'
         ORDER BY `pasien`.`pasien_id` DESC";
 
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         $data = array("data"=>$result);
         
         return $data;
@@ -239,32 +237,23 @@ class Antrian{
 
     public function editUnitTujuan()
     {   
-        $db=new DB;
-        $conn=$db->connect();
-
         $id = $_POST['idPasien'];
         $unit = $_POST['unitsesudah'];
         $query ="UPDATE `antrian` SET `unit_id_tujuan` = '$unit', `status` = 'belum_dilayani' WHERE `antrian`.`antrian_id` = $id;";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         return $result;
     }
 
     public function statusSudahDilayani()
     {   
-        $db=new DB;
-        $conn=$db->connect();
-
         $id = $_POST['id'];
         $query ="UPDATE `antrian` SET `status` = 'sudah_dilayani' WHERE `antrian`.`antrian_id` = $id;";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         return $result;
     }
 
     public function kunjungan()
     {   
-        $db=new DB;
-        $conn=$db->connect();
-
         $id = $_POST['idPasien'];
         $jenis_kunjungan = $_POST['jenis_kunjungan'];
         $unit = $_POST['unitsesudah'];
@@ -275,7 +264,7 @@ class Antrian{
         INTO antrian(pasien_id, jenis_kunjungan, unit_id_tujuan, status)
         VALUES ('$id', '$jenis_kunjungan', '$unit', '$status')
         ";
-        $result = $conn->query($query);
+        $result = $this->conn->query($query);
         return $result;
     }
 }

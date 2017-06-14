@@ -205,7 +205,7 @@
                 </a>
             </li>
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "riwayatpermintaan") == 0 ? "active" : ""); ?>">
-                <a href="<?php echo base_url('farmasi/permintaan/riwayatpermintaan'); ?>">
+                <a href="<?php echo base_url('farmasi/riwayatpermintaanfarmasi'); ?>">
                     <i class="fa fa-history"></i> <span>Riwayat Permintaan stok</span> 
                 </a>
             </li>
@@ -237,6 +237,11 @@
                     <i class="fa fa-check"></i> <span>Stok</span> 
                 </a>
             </li>
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "caribarang") == 0 ? "active" : ""); ?>">
+                <a href="<?php echo base_url('inventaris/caribarang'); ?>">
+                    <i class="fa fa-search"></i> <span>Cari Barang</span> 
+                </a>
+            </li>
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "laporaninventaris") == 0 ? "active" : ""); ?>">
                 <a href="<?php echo base_url('inventaris/laporan'); ?>">
                     <i class="fa fa-file"></i> <span>Laporan</span> 
@@ -249,24 +254,19 @@
                     <i class="fa fa-home"></i> <span>Antrian Berjalan</span> 
                 </a>
             </li>
-            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "obatkeluar") == 0 ? "active" : ""); ?> ">
-                <a href="<?php echo base_url('inventaris/halamanutama'); ?>">
-                    <i class="fa fa-history"></i> <span>Riwayat Obat Keluar</span> 
-                </a>
-            </li>
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "permintaanstok") == 0 ? "active" : ""); ?> ">
-                <a href="<?php echo base_url('inventaris/halamanutama'); ?>">
-                    <i class="fa fa-home"></i> <span>Permintaan Stok</span> 
-                </a>
-            </li>
-            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "kelolatabel") == 0 ? "active" : ""); ?> ">
-                <a href="<?php echo base_url('inventaris/halamanutama'); ?>">
-                    <i class="fa fa-home"></i> <span>Kelola Tabel</span> 
+                <a href="<?php echo base_url('depo/permintaandepo'); ?>">
+                    <i class="fa fa-arrow-down"></i> <span>Permintaan Stok</span> 
                 </a>
             </li>
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "resepkeluar") == 0 ? "active" : ""); ?> ">
-                <a href="<?php echo base_url('inventaris/halamanutama'); ?>">
-                    <i class="fa fa-home"></i> <span>Resep Keluar</span> 
+                <a href="<?php echo base_url('depo/resepkeluar'); ?>">
+                    <i class="fa fa-history"></i> <span>Riwayat Resep Keluar</span> 
+                </a>
+            </li>
+            <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "obatkeluardepo") == 0 ? "active" : ""); ?> ">
+                <a href="<?php echo base_url('depo/obatkeluar'); ?>">
+                    <i class="fa fa-history"></i> <span>Riwayat Obat Keluar</span> 
                 </a>
             </li>
             <li class="header">Pengaturan</li>
