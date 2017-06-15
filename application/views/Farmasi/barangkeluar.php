@@ -78,6 +78,7 @@
                                     $data = array(
                                         'name' => 'nama_penerima',
                                         'autocomplete' => 'off',
+                                        'placeholder' => 'Nama penerima barang',
                                         'required' => 'required',
                                         'id' => 'nama_penerima',
                                         'type' => 'text',
@@ -126,6 +127,7 @@
                                         <?php
                                         $data = array(
                                             'name' => 'nomor_batch',
+                                            'placeholder' => 'Nomor Batch barang',
                                             'autocomplete' => 'off',
                                             'required' => 'required',
                                             'id' => 'nomor_batch',
@@ -141,6 +143,7 @@
                                         $data = array(
                                             'name' => 'jumlah',
                                             'autocomplete' => 'off',
+                                            'placeholder' => 'Jumlah yang akan dikeluarkan',
                                             'required' => 'required',
                                             'id' => 'jumlah',
                                             'type' => 'number',

@@ -209,4 +209,40 @@ class Depo{
             return false;
         }
     }
+
+    public function printResep($nomorTransaksi)
+    {   
+        $data = array();
+        
+        $query =
+        "SELECT
+        resep.jumlah,
+        resep.tanggal_resep,
+        barang.nama_barang,
+        satuan.nama_satuan,
+        barang.harga_jual,
+        (barang.harga_jual*resep.jumlah) AS total,
+        transaksi_obat.pasien_id,
+        transaksi_obat.nomor_transaksi,
+        pasien.nama,
+        pasien.nomor_RM,
+        jenis_pasien.nama_jenis_pasien
+        FROM
+        resep
+        LEFT JOIN barang ON resep.barang_id = barang.barang_id
+        LEFT JOIN satuan ON barang.satuan_id = satuan.satuan_id
+        LEFT JOIN transaksi_obat ON transaksi_obat.nomor_transaksi = resep.nomor_transaksi
+        INNER JOIN pasien ON transaksi_obat.pasien_id = pasien.pasien_id
+        INNER JOIN jenis_pasien ON pasien.jenis_pasien_id = jenis_pasien.jenis_pasien_id
+        WHERE
+        resep.nomor_transaksi = '$nomorTransaksi'
+        ORDER BY
+        barang.nama_barang
+        ";
+
+        $result = $this->conn->query($query);
+
+        $data = array("data"=>$result);
+        return $data;
+    }
 }

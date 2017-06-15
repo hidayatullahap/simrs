@@ -10,7 +10,7 @@ class RiwayatPermintaanFarmasi extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
-        $this->session->set_userdata('navbar_status', 'daftarpasien');
+        $this->session->set_userdata('navbar_status', 'riwayatpermintaan');
         $pengguna = new Pengguna();
         if (!$pengguna->is_loggedin()){
             redirect('login');
@@ -27,9 +27,8 @@ class RiwayatPermintaanFarmasi extends CI_Controller
         $_SESSION["tanggalAwal"]=null;
         $_SESSION["tanggalAkhir"]=null;
         $_SESSION["searchFarmasi"]=null;
-        $this->session->set_userdata('navbar_status', 'riwayatpermintaan');
         $gudang = new Gudang();
-        $title['title']="Riwayat Permintaan Masuk";
+        $title['title']="Riwayat Permintaan barang";
         $status = '';
 
         $limit = $_COOKIE["pageLimit"];

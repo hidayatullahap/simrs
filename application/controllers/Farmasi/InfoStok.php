@@ -29,7 +29,7 @@ class InfoStok extends CI_Controller
     {   
         $gudang = new Gudang();
         $unit_id = 3;
-        $title['title']="Riwayat Barang Masuk";
+        $title['title']="Info Stok";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
 

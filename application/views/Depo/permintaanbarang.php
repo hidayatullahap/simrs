@@ -96,6 +96,7 @@
                                             'autocomplete' => 'off',
                                             'required' => 'required',
                                             'id' => 'jumlah',
+                                            'placeholder' => 'Jumlah item yang diminta',
                                             'type' => 'number',
                                             'class' => 'form-control'
                                         );

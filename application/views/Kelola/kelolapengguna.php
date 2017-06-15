@@ -153,14 +153,14 @@
                                                 'name' => 'password',
                                                 'autocomplete' => 'off',
                                                 'id' => 'password',
-                                                'type' => 'text',
+                                                'type' => 'password',
                                                 'class' => 'form-control col-md-7 col-xs-12',
                                                 'placeholder' => 'Isikan password Pengguna',
                                             );
                                             echo form_input($data);
                                             ?>
                                         </div></div>
-                                        
+                                        <div id="showpass"><input type="checkbox" onclick="showPasswordInput()">Ganti password</div>
                                     </div>
                                 </div><br><br>
                                 <div class="modal-footer">
@@ -255,25 +255,38 @@ $(document).ready(function(){
         document.getElementById("submitModal").innerHTML = "Simpan";
         document.getElementById("formGroupPassword").style.display = 'block';
         document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolapengguna/insertdata') ?>";
+        document.getElementById("nama").value       = "";
+        document.getElementById("nip").value        = "";
+        document.getElementById("username").value   = "";
+        document.getElementById("role").value       = "";
+        document.getElementById("showpass").style.display = 'none';
     });
 });
 
 function editModal(row) {
     var id= document.getElementById("tabel").rows[row].cells[0].innerHTML;
-    
+    document.getElementById("password").value       = "";
     document.getElementById("nama").value       = document.getElementById("tabel").rows[row].cells[1].innerHTML;
     document.getElementById("nip").value        = document.getElementById("tabel").rows[row].cells[2].innerHTML;
     document.getElementById("username").value   = document.getElementById("tabel").rows[row].cells[3].innerHTML;
     document.getElementById("role").value       = document.getElementById("tabel").rows[row].cells[4].innerHTML;
     document.getElementById("formGroupPassword").style.display = 'none';
-
+    document.getElementById("showpass").style.display = 'block';
     document.getElementById("headerModal").innerHTML = "Edit Pengguna";
     document.getElementById("submitModal").innerHTML = "Simpan Perubahan";
     document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolapengguna/editdata') ?>"+"/"+id;
     $("#addForm").modal();
 }
-</script>
 
+function showPasswordInput() {
+    var ib = document.getElementById("formGroupPassword").style.display;
+    if (ib=='none'){
+        document.getElementById("formGroupPassword").style.display = 'block';
+    }else{
+        document.getElementById("formGroupPassword").style.display = 'none';
+    }
+}
+</script>
 
 </body>
 </html>

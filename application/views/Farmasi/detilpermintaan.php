@@ -68,10 +68,10 @@
                                         echo "<td>".$values['jumlah_permintaan']."</td>";
 
                                         if($values['stok_tersedia']>1){
-                                            echo "<td><input class='form-control' placeholder='masukan jumlah' name='jumlah$j' min='0' max='".$values['stok_tersedia']."' 
+                                            echo "<td><input class='form-control' placeholder='masukan jumlah . . . ' name='jumlah$j' min='0' max='".$values['stok_tersedia']."' 
                                             type='number' autocomplete='off' required></input></td>";
                                         }else{
-                                            echo "<td><input class='form-control' placeholder='masukan jumlah' name='jumlah$j' min='0' max='".$values['stok_tersedia']."' 
+                                            echo "<td><input class='form-control' placeholder='masukan jumlah . . . ' name='jumlah$j' min='0' max='".$values['stok_tersedia']."' 
                                             type='number' value='".$values['stok_tersedia']."' autocomplete='off' required></input></td>";
                                         }
                                         

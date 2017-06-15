@@ -53,8 +53,25 @@ class Login extends CI_Controller {
                 $this->session->set_userdata($sess_data);
                 setcookie("pageLimit",10, time()+86400, "/","", 0);
                 setcookie("pageSort", "DESC", time()+86400, "/","", 0);
-                redirect('kelola/kelolapasien');
             }
+            $role=$this->session->userdata('pengguna_peran');
+            if($role == "admin"){
+                redirect('kelola/kelolapengguna');
+            }else if($role == "loket"){
+                redirect('loket/layananpasien');
+            }else if($role == "gudangfarmasi"){
+                redirect('farmasi/halamanutama');
+            }else if($role == "gudanginventaris"){
+                redirect('inventaris/halamanutama');
+            }else if($role == "deporajal"){
+                redirect('depo/antrianberjalandepo');
+            }else{
+                redirect('kelola/kelolabarang');
+            }
+            
+
+            
+
         } else {
             echo "err";
             $this->session->set_userdata('notif_error', 'Username/Password Salah');

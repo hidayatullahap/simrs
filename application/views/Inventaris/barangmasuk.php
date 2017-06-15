@@ -108,6 +108,7 @@
                                         $data = array(
                                             'name' => 'terima_dari',
                                             'autocomplete' => 'off',
+                                            'placeholder' => 'Misal PT Kimia Farma Tbk',
                                             'required' => 'required',
                                             'id' => 'terima_dari',
                                             'type' => 'text',
@@ -123,6 +124,7 @@
                                         $data = array(
                                             'name' => 'no_faktur',
                                             'autocomplete' => 'off',
+                                            'placeholder' => 'Nomor faktur penerimaan',
                                             'required' => 'required',
                                             'id' => 'no_faktur',
                                             'type' => 'text',
@@ -155,6 +157,7 @@
                                             'autocomplete' => 'off',
                                             'required' => 'required',
                                             'id' => 'keterangan',
+                                            'placeholder' => 'masukan keterangan bila perlu . . . ',
                                             'type' => 'text',
                                             'class' => 'form-control'
                                         );
@@ -191,6 +194,7 @@
                                             'name' => 'harga_beli',
                                             'autocomplete' => 'off',
                                             'required' => 'required',
+                                            'placeholder' => 'Harga beli barang dari sumber',
                                             'id' => 'harga_beli',
                                             'type' => 'number',
                                             'class' => 'form-control'
@@ -206,6 +210,7 @@
                                             'name' => 'harga_jual',
                                             'autocomplete' => 'off',
                                             'required' => 'required',
+                                            'placeholder' => 'Harga jual di rumah sakit',
                                             'id' => 'harga_jual',
                                             'type' => 'number',
                                             'class' => 'form-control'
@@ -222,6 +227,7 @@
                                             'autocomplete' => 'off',
                                             'required' => 'required',
                                             'id' => 'nomor_batch',
+                                            'placeholder' => 'Nomor batch barang',
                                             'type' => 'text',
                                             'class' => 'form-control'
                                         );
@@ -251,6 +257,7 @@
                                             'name' => 'jumlah',
                                             'autocomplete' => 'off',
                                             'required' => 'required',
+                                            'placeholder' => 'Misal 1 box isi 20 maka isi 20 (tergantung satuan)',
                                             'id' => 'jumlah',
                                             'type' => 'number',
                                             'class' => 'form-control'
@@ -440,7 +447,7 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
             placeholder: "Ketik kata kunci. . .",
             norecord: "data tidak ditemukan",
             highlight: "",
-            columns: ['id Barang', 'Nama', 'Stok', 'Grup', 'satuan'],
+            columns: ['id Barang', 'Nama', 'Stok', 'Grup', 'satuan','harga sekarang'],
             data: function () {
                 try {
                     var data = daftarObat;

@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>SIMRS | <?php echo $title;?></title>
+        <title><?php echo $title;?></title>
         <link rel="shortcut icon" type="image/icon" href="<?php echo base_url('assets/images/favicon3.png');?>"/>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <!-- Bootstrap 3.3.2 -->

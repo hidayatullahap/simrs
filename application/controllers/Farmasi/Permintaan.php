@@ -30,7 +30,7 @@ class Permintaan extends CI_Controller
     {   
         $gudang = new Gudang();
         $title['title']="Layanan Permintaan Masuk";
-        
+        $this->session->set_userdata('navbar_status', 'halamanutamafarmasi');
         $data = $gudang->getDetil($unit_id, $nomorPermintaan);
         $this->load->view('header',$title);
         $this->load->view('navbar');

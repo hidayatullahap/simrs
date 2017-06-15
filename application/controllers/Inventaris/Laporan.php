@@ -36,7 +36,7 @@ class Laporan extends CI_Controller
 
         $this->session->set_userdata('navbar_status', 'laporaninventaris');
         $gudang = new Gudang();
-        $title['title']="Riwayat Permintaan Masuk";
+        $title['title']="Laporan";
 
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];

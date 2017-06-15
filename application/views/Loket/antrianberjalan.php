@@ -191,7 +191,7 @@ function editModal(id,nama,unit) {
                 }
             },
             "language": {
-                "emptyTable": "Tidak ada data untuk Antrian Utama"
+                "emptyTable": "Tidak ada antrian untuk hari ini"
             }
         } );
         setInterval( function () {

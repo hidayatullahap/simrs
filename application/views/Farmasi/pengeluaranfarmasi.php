@@ -25,7 +25,7 @@
 
                             <form id="formSubmit" method="post" action="<?php echo base_url('/farmasi/pengeluaran') ?>">
                             <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
-                            <input  type="text" class="form-control" onChange="checkTanggal();" placeholder="Cari nama barang" name="search" id="search" 
+                            <input  type="text" class="form-control" onChange="checkTanggal();" placeholder="cari nama barang . . . " name="search" id="search" 
                             value="<?php if(isset($_SESSION['searchFarmasi'])){echo $_SESSION['searchFarmasi'];} ?>">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>

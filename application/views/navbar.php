@@ -92,35 +92,7 @@
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
         </a>
-        <!--
-        <div class="navbar-custom-menu">
-            <ul class="nav navbar-nav">
-
-                <li class="dropdown user user-menu">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="<?php echo base_url('assets/img/avatar5.png'); ?>" class="user-image" alt="User Image"/>
-                        <span class="hidden-xs"><?php echo $this->session->userdata('nama'); ?></span>
-                    </a>
-                    
-                    <ul class="dropdown-menu">
-                        <li class="user-header">
-                            <img src="<?php echo base_url('assets/img/avatar5.png'); ?>" class="img-circle" alt="User Image" />
-                            <p>
-                                <?php echo $this->session->userdata('pengguna_nama'); ?> / <?php echo $this->session->userdata('pengguna_peran'); ?>
-                            </p>
-                        </li>
-                        <li class="user-footer">
-                            <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
-                            </div>
-                            <div class="pull-right">
-                                <a href="<?php echo base_url('login/logout'); ?>" class="btn btn-default btn-flat">Sign out</a>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>-->
+        
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
 
@@ -166,9 +138,10 @@
                 <a href="<?php echo base_url('login/logout'); ?>" style="color:red;"><i class="fa fa-power-off"></i> Logout</a><br>
             </div>
         </div>
-        
+        <?php $role = $this->session->userdata('pengguna_peran');?>
+
         <ul class="sidebar-menu" data-widget="tree">
-            
+            <?php if ($role=="admin" || $role=="loket"){ ?>                  
             <li class="header">MENU NAVIGASI</li>
             
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "daftarpasien") == 0 ? "active" : ""); ?>">
@@ -181,7 +154,9 @@
                     <i class="fa fa-arrow-right"></i> <span>Antrian Berjalan</span> 
                 </a>
             </li>
-
+            <?php }?>
+            
+            <?php if ($role=="admin" || $role=="gudangfarmasi"){ ?>
             <li class="header">MENU NAVIGASI FARMASI</li>
             
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "halamanutamafarmasi") == 0 ? "active" : ""); ?> ">
@@ -214,7 +189,9 @@
                     <i class="fa fa-file"></i> <span>Laporan</span> 
                 </a>
             </li>
+            <?php }?>
 
+            <?php if ($role=="admin" || $role=="gudanginventaris"){ ?>
             <li class="header">MENU NAVIGASI INVENTARIS</li>
             
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "halamanutamainventaris") == 0 ? "active" : ""); ?> ">
@@ -247,6 +224,9 @@
                     <i class="fa fa-file"></i> <span>Laporan</span> 
                 </a>
             </li>
+            <?php }?>
+
+            <?php if ($role=="admin" || $role=="deporajal"){ ?>
             <li class="header">MENU NAVIGASI DEPO RAJAL</li>
             
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "antrianberjalandepo") == 0 ? "active" : ""); ?> ">
@@ -269,6 +249,9 @@
                     <i class="fa fa-history"></i> <span>Riwayat Obat Keluar</span> 
                 </a>
             </li>
+            <?php }?>
+
+            <?php if ($role!="loket"){ ?>
             <li class="header">Pengaturan</li>
             <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "kelola") == 0 ? "active" : ""); ?>">
                 <a href="#">
@@ -284,7 +267,9 @@
                     <li><a href="<?php echo base_url('kelola/kelolaunit'); ?>"><i class="fa fa-table"></i>Unit</a></li>
                     <li><a href="<?php echo base_url('kelola/kelolagrupbarang'); ?>"><i class="fa fa-table"></i>Grup Barang</a></li>
                 </ul>
+                <?php }?>
 
+                <?php if ($role=="admin"){ ?>
                 <li class="header">Admin Area</li>
                 
                 <li class="treeview <?php echo (strcmp($this->session->userdata('navbar_status'), "adminarea") == 0 ? "active" : ""); ?>">
@@ -296,6 +281,7 @@
                     <li><a href="<?php echo base_url('kelola/kelolapengguna'); ?>"><i class="fa fa-user"></i>Pengguna</a></li>
                     <li><a href="<?php echo base_url('kelola/kelolapasien'); ?>"><i class="fa fa-table"></i>Data Pasien</a></li>
                 </ul>
+                <?php }?>
             </li>
         </ul>
     </section>

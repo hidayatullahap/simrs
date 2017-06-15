@@ -50,7 +50,11 @@
                             </tbody>
                         </table>
 
-                        <button class="btn btn-default" onclick="printHalaman()"><i class="glyphicon glyphicon-print"> Print</i></button>
+                        <?php 
+                        $url=base_url('/depo/resepkeluar/printresep');
+                        $nomorTransaksi = $this->uri->segment(4, 0);
+                        ?>
+                        <button class='btn btn-default' onclick= onclick=window.open('<?php echo $url."/".$nomorTransaksi ?>','_blank')><i class="glyphicon glyphicon-print"></i> Print Resep</button>
                         </form>
                 </div><!--/row-->    
             </div><!--/col-12-->

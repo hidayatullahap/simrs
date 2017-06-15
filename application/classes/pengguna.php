@@ -107,13 +107,19 @@ class Pengguna{
 
     public function editData($id)
     {   
+        if(isset($_POST['password'])){
+            $pass = md5($_POST['password']);
+            $sqlPassword=", `password` = '$pass' ";
+        }else{
+            $sqlPassword=" ";
+        }
         $nama           = $_POST['nama'];
         $nip            = $_POST['nip'];
         $username       = $_POST['username'];
         $role           = $_POST['role'];
 
         $query =
-        "UPDATE `pengguna` SET `nama` = '$nama', `nip` = '$nip', `username` = '$username', `role` = '$role' WHERE `pengguna`.`pengguna_id` = $id
+        "UPDATE `pengguna` SET `nama` = '$nama', `nip` = '$nip', `username` = '$username', `role` = '$role' $sqlPassword WHERE `pengguna`.`pengguna_id` = $id
         ";
         $result = $this->conn->query($query);
         return $result;

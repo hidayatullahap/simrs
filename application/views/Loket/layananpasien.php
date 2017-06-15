@@ -277,8 +277,6 @@
                                         <select class="select2_single form-control" tabindex="-1" name="jenis_kunjungan" required>
                                             <option id= "jenis_kunjungan" hidden="" value="">Pilih jenis kunjungan</option>
                                                 <option value="rawat_jalan">Rawat Jalan</option>
-                                                <option value="rawat_inap">Rawat Inap</option>
-                                                <option value="lainnya">Lainnya</option>
                                         </select>
                                         </div><br><br>
 

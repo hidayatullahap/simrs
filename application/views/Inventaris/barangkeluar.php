@@ -78,6 +78,7 @@
                                     $data = array(
                                         'name' => 'nama_penerima',
                                         'autocomplete' => 'off',
+                                        'placeholder' => 'Nama penerima barang',
                                         'required' => 'required',
                                         'id' => 'nama_penerima',
                                         'type' => 'text',
@@ -94,7 +95,7 @@
                                         <option hidden value="" >Pilih jenis unit</option>
                                             <?php
                                             foreach ($daftarUnit['data'] as $field => $values) {
-                                                if ($values['unit_id']!=3) {
+                                                if ($values['unit_id']!=4) {
                                                     echo "<option value=";
                                                     echo $values['unit_id'];
                                                     echo ">";
@@ -127,6 +128,7 @@
                                         $data = array(
                                             'name' => 'nomor_batch',
                                             'autocomplete' => 'off',
+                                            'placeholder' => 'Nomor Batch barang',
                                             'required' => 'required',
                                             'id' => 'nomor_batch',
                                             'type' => 'text',
@@ -143,6 +145,7 @@
                                             'name' => 'jumlah',
                                             'autocomplete' => 'off',
                                             'required' => 'required',
+                                            'placeholder' => 'Jumlah yang akan dikeluarkan',
                                             'id' => 'jumlah',
                                             'type' => 'number',
                                             'class' => 'form-control'

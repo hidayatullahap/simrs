@@ -70,7 +70,7 @@
                     <?php $this->session->unset_userdata('notif_error');
                     } ?>
                     <div class="form-group has-feedback">
-                        <input type="text" name="username" class="form-control" placeholder="Username" required="required"/>
+                        <input type="text" name="username" class="form-control" placeholder="Username" autocomplete="off" required="required"/>
                         <span class="glyphicon glyphicon-user form-control-feedback"></span>
                     </div>
                     <div class="form-group has-feedback">

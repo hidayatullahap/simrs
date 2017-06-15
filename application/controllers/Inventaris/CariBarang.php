@@ -31,7 +31,7 @@ class CariBarang extends CI_Controller
         $unit_id=null; 
         $barang_id=null;
         
-        $title['title']="Riwayat Permintaan Masuk";
+        $title['title']="Cari Barang";
 
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];

@@ -22,7 +22,7 @@
                         <div class="form-group row">
                             <form method="post" action="<?php echo base_url('farmasi/infostok') ?>">
                             <div class="input-group col-xs-2" style="float: left;padding-left:15px;">
-                            <input  type="text" class="form-control" autocomplete="off" placeholder="Cari nama Barang" name="search" id="search">
+                            <input  type="text" class="form-control" autocomplete="off" placeholder="cari nama Barang . . . " name="search" id="search">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                                 </div>

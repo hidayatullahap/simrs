@@ -298,13 +298,13 @@ class Gudang{
     public function prosesPermintaan($id, $idbarang, $unit_id, $untuk_unit_id, $jumlah)
     { 
         $query =
-        "UPDATE `permintaan_stok` SET `jumlah_disetujui` = '$jumlah', `status` = 'belum_dilayani' WHERE `permintaan_stok`.`permintaan_stok_id` = $id;";
+        "UPDATE `permintaan_stok` SET `jumlah_disetujui` = '$jumlah', `status` = 'sudah_dilayani' WHERE `permintaan_stok`.`permintaan_stok_id` = $id;";
         $result = $this->conn->query($query);
         
         $sqlCheckTableExist = $this->conn->query("SELECT COUNT(*) FROM stok WHERE barang_id = '$idbarang' AND unit_id = '$untuk_unit_id'");
         $isExist = $sqlCheckTableExist->fetch_row();
         if ($isExist[0]==0){
-             if($jumlah>0){
+             if($jumlah>=0){
                 $query2 =
                 "INSERT INTO `stok` (`barang_id`, `unit_id`, `jumlah`) VALUES ('$idbarang', '$untuk_unit_id', '$jumlah');";
                 $result = $this->conn->query($query2);
