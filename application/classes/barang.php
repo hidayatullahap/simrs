@@ -212,7 +212,8 @@ class Barang{
         barang.satuan_id AS satuan_id,
         satuan.nama_satuan AS satuan,
         barang.harga_jual AS harga_jual,
-        barang.tanggal_pencatatan AS tanggal_pencatatan
+        barang.tanggal_pencatatan AS tanggal_pencatatan,
+        barang.merek_model_ukuran
         FROM
         barang
         INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id

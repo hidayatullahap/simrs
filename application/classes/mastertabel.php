@@ -19,7 +19,7 @@ class MasterTabel{
 
         $page=($page*$limitItemPage)-$limitItemPage;
         $query =
-        "SELECT * FROM $namatabel ORDER BY `$namatabel`.`{$namatabel}_id` $sort LIMIT $page,$limitItemPage";
+        "SELECT * FROM $namatabel ORDER BY `$namatabel`.`nama_{$namatabel}` $sort LIMIT $page,$limitItemPage";
         $result = $this->conn->query($query);
         
         $sql = $this->conn->query("SELECT COUNT(*) FROM $namatabel");

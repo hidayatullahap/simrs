@@ -5,7 +5,6 @@ require_once CLASSES_DIR  . 'gudang.php';
 require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'barang.php';
 require_once CLASSES_DIR  . 'mastertabel.php';
-require_once CLASSES_DIR  . 'pasien.php';
 
 class Pengeluaran extends CI_Controller
 {   

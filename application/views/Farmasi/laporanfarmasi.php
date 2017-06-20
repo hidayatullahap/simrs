@@ -85,7 +85,7 @@
                                             echo "<td>".date('F-Y', $date)."</td>";
                                     }
                                     echo "<td width='30%'><button type='button' class='btn btn-default btn-sm' 
-                                    onclick=window.open('$url/print/$rangemonth/$yearDate','_blank')>Print <i class='fa fa-print'></i></button>
+                                    onclick=window.open('$url/printlaporan/$rangemonth/$yearDate','_blank')>Print <i class='fa fa-print'></i></button>
                                     <button type='button' class='btn btn-default btn-sm' 
                                     onclick=window.open('$url/excel/$rangemonth/$yearDate','_blank')>Excel <i class='fa fa-file-excel-o'></i></button></td>";
                                     echo "</tr>";

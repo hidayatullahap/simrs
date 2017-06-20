@@ -40,6 +40,7 @@
                                 <th><font color="white">Nama Barang</th>
                                 <th><font color="white">Grup Barang</th>
                                 <th><font color="white">Satuan</th>
+                                <th><font color="white">Harga/Model/Ukuran</th>
                                 <th><font color="white">Harga Jual</th>
                                 <th><font color="white">Tanggal Pencatatan</th>
                                 <th><font color="white">Aksi</th>
@@ -55,8 +56,8 @@
                                     echo "<td>".$values['nama_barang']."</td>";
                                     echo "<td>".$values['grup_barang']."</td>";
                                     echo "<td>".$values['satuan']."</td>";
+                                    echo "<td>".$values['merek_model_ukuran']."</td>";
                                     echo "<td>".$values['harga_jual']."</td>";
-
                                     $date=strtotime($values['tanggal_pencatatan']);
                                     echo "<td>".date('d M Y H:i:s', $date)."</td>";
 
@@ -134,6 +135,22 @@
                                                 }
                                                 ?>
                                         </select>
+                                        </div><br><br>
+
+                                        <label class="col-md-3 control-label paddingForm" for="merek_model_ukuran">Merek/Model/Ukuran</label>
+                                        <div class="col-md-6">
+                                            <?php
+                                            $data = array(
+                                                'name' => 'merek_model_ukuran',
+                                                'autocomplete' => 'off',
+                                                'required' => 'required',
+                                                'id' => 'merek_model_ukuran',
+                                                'type' => 'text',
+                                                'class' => 'form-control col-md-7 col-xs-12',
+                                                'placeholder' => 'Isikan tipe barang',
+                                            );
+                                            echo form_input($data);
+                                            ?>
                                         </div><br><br>
 
                                         <label class="col-md-3 control-label paddingForm" for="harga_jual">Harga Jual</label>

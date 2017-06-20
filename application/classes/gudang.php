@@ -711,7 +711,7 @@ class Gudang{
         WHERE
         stok.unit_id = $unit_id $sqlSearch
         ORDER BY
-        barang.nama_barang DESC
+        barang.nama_barang ASC
         LIMIT $page, $limitItemPage";
         $result = $this->conn->query($query);
         

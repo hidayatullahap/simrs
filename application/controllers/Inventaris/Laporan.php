@@ -52,7 +52,7 @@ class Laporan extends CI_Controller
         $this->load->view('/inventaris/laporanlist', $data);
         $this->load->view('footer');
     }
-    public function print($month, $year)
+    public function printlaporan($month, $year)
     {   
         
         if(isset($_SESSION['pilihanrange'])){

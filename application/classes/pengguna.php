@@ -26,7 +26,7 @@ class Pengguna{
         $sort LIMIT $page,$limitItemPage";
         $result = $this->conn->query($query);
         
-        $sql = $this->conn->query("SELECT COUNT(*) FROM barang");
+        $sql = $this->conn->query("SELECT COUNT(*) FROM pengguna");
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;

@@ -180,9 +180,11 @@
                                 
                             </div>
                             <br><br>
+                            <div style="text-align: center;">
                             <button formnovalidate class="btn btn-danger" name="batal" value="batal" type="submit"><i class="glyphicon glyphicon-remove"> Batal</i></button>
                             <button class="btn btn-success" type="submit" name="simpan" value="simpan"><i class="fa fa-arrow-right"> Proses</i></button>
                             <input id="trTotal" name="trTotal" hidden readonly>
+                            </div>
                         </form>
                     </div>
 

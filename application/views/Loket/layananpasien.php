@@ -70,7 +70,7 @@
                                     $date=strtotime($values['tanggal_daftar']);
                                     echo "<td>".date('d M Y H:i:s', $date)."</td>";
 
-                                    echo "<td width='4%' align='center'><span data-toggle='tooltip' onclick='editModal($i);' title='Edit data pasien'><i class='fa fa-sm fa-edit'>Edit</i></span></td>";
+                                    echo "<td width='4%' align='center'><span data-toggle='tooltip' style='cursor: pointer;' onclick='editModal($i);' title='Edit data pasien'><i class='fa fa-sm fa-edit'>Edit</i></span></td>";
                                     if($values['is_dilayani']){
                                         $is_disabled="disabled";
                                     }else{
