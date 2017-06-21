@@ -4,12 +4,88 @@ require_once CLASSES_DIR  . 'dbconnection.php';
 class Gudang{
     private $db;
     private $conn;
+    private $nomor_permintaan;
+    private $dari_unit_id;
+    private $nama_unit;
+    private $tanggal_permintaan;
+    private $nama_barang;
+    private $jumlah_pengeluaran;
+    private $tanggal_keluar;
+    private $terima_dari;
+    private $tanggal_masuk;
+    private $jumlah_barang;
+    private $permintaan_stok_id;
+    private $barang_id;
+    private $jumlah_permintaan;
+    private $jumlah_disetujui;
+    private $status;
+    private $stok_tersedia;
+    private $nama_satuan;
+    private $nama_grup_barang;
+    private $no_batch;
+    private $nama_penerima;
+    private $nama_jenis_penerimaan;
+    private $harga_jual;
+    private $harga_beli;
+    private $tanggal_kadaluarsa;
+    private $no_faktur;
 
     public function __construct() {
         $this->db = new DB();
         $this->conn = $this->db->connect();
     }
     
+    function setNomor_permintaan($nomor_permintaan) { $this->nomor_permintaan = $nomor_permintaan; }
+    function getNomor_permintaan() { return $this->nomor_permintaan; }
+    function setDari_unit_id($dari_unit_id) { $this->dari_unit_id = $dari_unit_id; }
+    function getDari_unit_id() { return $this->dari_unit_id; }
+    function setNama_unit($nama_unit) { $this->nama_unit = $nama_unit; }
+    function getNama_unit() { return $this->nama_unit; }
+    function setTanggal_permintaan($tanggal_permintaan) { $this->tanggal_permintaan = $tanggal_permintaan; }
+    function getTanggal_permintaan() { return $this->tanggal_permintaan; }
+    function setNama_barang($nama_barang) { $this->nama_barang = $nama_barang; }
+    function getNama_barang() { return $this->nama_barang; }
+    function setJumlah_pengeluaran($jumlah_pengeluaran) { $this->jumlah_pengeluaran = $jumlah_pengeluaran; }
+    function getJumlah_pengeluaran() { return $this->jumlah_pengeluaran; }
+    function setTanggal_keluar($tanggal_keluar) { $this->tanggal_keluar = $tanggal_keluar; }
+    function getTanggal_keluar() { return $this->tanggal_keluar; }
+    function setTerima_dari($terima_dari) { $this->terima_dari = $terima_dari; }
+    function getTerima_dari() { return $this->terima_dari; }
+    function setTanggal_masuk($tanggal_masuk) { $this->tanggal_masuk = $tanggal_masuk; }
+    function getTanggal_masuk() { return $this->tanggal_masuk; }
+    function setJumlah_barang($jumlah_barang) { $this->jumlah_barang = $jumlah_barang; }
+    function getJumlah_barang() { return $this->jumlah_barang; }
+    function setPermintaan_stok_id($permintaan_stok_id) { $this->permintaan_stok_id = $permintaan_stok_id; }
+    function getPermintaan_stok_id() { return $this->permintaan_stok_id; }
+    function setBarang_id($barang_id) { $this->barang_id = $barang_id; }
+    function getBarang_id() { return $this->barang_id; }
+    function setJumlah_permintaan($jumlah_permintaan) { $this->jumlah_permintaan = $jumlah_permintaan; }
+    function getJumlah_permintaan() { return $this->jumlah_permintaan; }
+    function setJumlah_disetujui($jumlah_disetujui) { $this->jumlah_disetujui = $jumlah_disetujui; }
+    function getJumlah_disetujui() { return $this->jumlah_disetujui; }
+    function setStatus($status) { $this->status = $status; }
+    function getStatus() { return $this->status; }
+    function setStok_tersedia($stok_tersedia) { $this->stok_tersedia = $stok_tersedia; }
+    function getStok_tersedia() { return $this->stok_tersedia; }
+    function setNama_satuan($nama_satuan) { $this->nama_satuan = $nama_satuan; }
+    function getNama_satuan() { return $this->nama_satuan; }
+    function setNama_grup_barang($nama_grup_barang) { $this->nama_grup_barang = $nama_grup_barang; }
+    function getNama_grup_barang() { return $this->nama_grup_barang; }
+    function setNo_batch($no_batch) { $this->no_batch = $no_batch; }
+    function getNo_batch() { return $this->no_batch; }
+    function setNama_penerima($nama_penerima) { $this->nama_penerima = $nama_penerima; }
+    function getNama_penerima() { return $this->nama_penerima; }
+    function setNama_jenis_penerimaan($nama_jenis_penerimaan) { $this->nama_jenis_penerimaan = $nama_jenis_penerimaan; }
+    function getNama_jenis_penerimaan() { return $this->nama_jenis_penerimaan; }
+    function setHarga_jual($harga_jual) { $this->harga_jual = $harga_jual; }
+    function getHarga_jual() { return $this->harga_jual; }
+    function setHarga_beli($harga_beli) { $this->harga_beli = $harga_beli; }
+    function getHarga_beli() { return $this->harga_beli; }
+    function setTanggal_kadaluarsa($tanggal_kadaluarsa) { $this->tanggal_kadaluarsa = $tanggal_kadaluarsa; }
+    function getTanggal_kadaluarsa() { return $this->tanggal_kadaluarsa; }
+    function setNo_faktur($no_faktur) { $this->no_faktur = $no_faktur; }
+    function getNo_faktur() { return $this->no_faktur; }
+
     public function ajaxPermintaanMasuk()
     {   
         $requestData = $_REQUEST;
@@ -290,7 +366,50 @@ class Gudang{
         INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id 
         WHERE permintaan_stok.nomor_permintaan = '$nomorPermintaan'";
         $result = $this->conn->query($query);
-        $data = array("data"=>$result);
+
+        $rows = [];
+        $i=0;
+        $object;
+        $nestedData = array();
+        $arrayData = new ArrayObject();
+        while($row = mysqli_fetch_array($result))
+        {   
+            $object{$i} = new Gudang();
+            $object{$i}->setPermintaan_stok_id($row['permintaan_stok_id']);
+            $object{$i}->setNomor_permintaan($row['nomor_permintaan']);
+            $object{$i}->setBarang_id($row['barang_id']);
+            $object{$i}->setDari_unit_id($row['dari_unit_id']);
+            $object{$i}->setJumlah_permintaan($row['jumlah_permintaan']);
+            $object{$i}->setJumlah_disetujui($row['jumlah_disetujui']);
+            $object{$i}->setStatus($row['status']);
+            $object{$i}->setTanggal_permintaan($row['tanggal_permintaan']);
+            $object{$i}->setStok_tersedia($row['stok_tersedia']);
+            $object{$i}->setNama_barang($row['nama_barang']);
+            $object{$i}->setNama_satuan($row['nama_satuan']);
+            $object{$i}->setNama_grup_barang($row['nama_grup_barang']);
+            $object{$i}->setNama_unit($row['nama_unit']);
+            
+
+            $nestedData['permintaan_stok_id'] = $object{$i}->getPermintaan_stok_id();
+            $nestedData['nomor_permintaan'] = $object{$i}->getNomor_permintaan();
+            $nestedData['barang_id'] = $object{$i}->getBarang_id();
+            $nestedData['dari_unit_id'] = $object{$i}->getDari_unit_id();
+            $nestedData['jumlah_permintaan'] = $object{$i}->getJumlah_permintaan();
+            $nestedData['jumlah_disetujui'] = $object{$i}->getJumlah_disetujui();
+            $nestedData['status'] = $object{$i}->getStatus();
+            $nestedData['tanggal_permintaan'] = $object{$i}->getTanggal_permintaan();
+            $nestedData['stok_tersedia'] = $object{$i}->getStok_tersedia();
+            $nestedData['nama_barang'] = $object{$i}->getNama_barang();
+            $nestedData['nama_satuan'] = $object{$i}->getNama_satuan();
+            $nestedData['nama_grup_barang'] = $object{$i}->getNama_grup_barang();
+            $nestedData['nama_unit'] = $object{$i}->getNama_unit();
+            $arrayData[] = $nestedData;
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
+
+        $data = array("data"=>$arrayData);
         
         return $data;
     }
@@ -525,6 +644,35 @@ class Gudang{
         pengeluaran_barang.tanggal_keluar DESC
         LIMIT $page, $limitItemPage";
         $result = $this->conn->query($query);
+
+        $rows = [];
+        $i=0;
+        $object;
+        $nestedData = array();
+        $arrayData = new ArrayObject();
+        while($row = mysqli_fetch_array($result))
+        {   
+            $object{$i} = new Gudang();
+            $object{$i}->setNama_barang($row['nama_barang']);
+            $object{$i}->setJumlah_pengeluaran($row['jumlah_pengeluaran']);
+            $object{$i}->setTanggal_keluar($row['tanggal_keluar']);
+            $object{$i}->setNama_unit($row['nama_unit']);
+            $object{$i}->setNama_grup_barang($row['nama_grup_barang']);
+            $object{$i}->setNo_batch($row['no_batch']);
+            $object{$i}->setNama_penerima($row['nama_penerima']);
+            
+            $nestedData['nama_barang'] = $object{$i}->getNama_barang();
+            $nestedData['jumlah_pengeluaran'] = $object{$i}->getJumlah_pengeluaran();
+            $nestedData['tanggal_keluar'] = $object{$i}->getTanggal_keluar();
+            $nestedData['nama_unit'] = $object{$i}->getNama_unit();
+            $nestedData['nama_grup_barang'] = $object{$i}->getNama_grup_barang();
+            $nestedData['no_batch'] = $object{$i}->getNo_batch();
+            $nestedData['nama_penerima'] = $object{$i}->getNama_penerima();
+            $arrayData[] = $nestedData;
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
         
         $sql = $this->conn->query("SELECT COUNT(*) FROM pengeluaran_barang INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id WHERE
         pengeluaran_barang.dari_unit_id = $unit_id $sqlRangeDate $sqlSearch ");
@@ -533,7 +681,7 @@ class Gudang{
         $count = $row[0];
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
-        $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        $data = array("data"=>$arrayData, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
         return $data;
     }
 
@@ -592,6 +740,45 @@ class Gudang{
         pengadaan_barang.tanggal_masuk DESC
         LIMIT $page, $limitItemPage";
         $result = $this->conn->query($query);
+
+        $rows = [];
+        $i=0;
+        $object;
+        $nestedData = array();
+        $arrayData = new ArrayObject();
+        while($row = mysqli_fetch_array($result))
+        {   
+            $object{$i} = new Gudang();
+            $object{$i}->setNama_barang($row['nama_barang']);
+            $object{$i}->setNama_satuan($row['nama_satuan']);
+            $object{$i}->setJumlah_barang($row['jumlah_barang']);
+            $object{$i}->setTerima_dari($row['terima_dari']);
+            $object{$i}->setNama_jenis_penerimaan($row['nama_jenis_penerimaan']);
+            $object{$i}->setTanggal_masuk($row['tanggal_masuk']);
+            $object{$i}->setHarga_jual($row['harga_jual']);
+            $object{$i}->setHarga_beli($row['harga_beli']);
+            $object{$i}->setTanggal_kadaluarsa($row['tanggal_kadaluarsa']);
+            $object{$i}->setNo_batch($row['no_batch']);
+            $object{$i}->setNo_faktur($row['no_faktur']);
+            $object{$i}->setBarang_id($row['barang_id']);
+            
+            $nestedData['nama_barang'] = $object{$i}->getNama_barang();
+            $nestedData['nama_satuan'] = $object{$i}->getNama_satuan();
+            $nestedData['jumlah_barang'] = $object{$i}->getJumlah_barang();
+            $nestedData['terima_dari'] = $object{$i}->getTerima_dari();
+            $nestedData['nama_jenis_penerimaan'] = $object{$i}->getNama_jenis_penerimaan();
+            $nestedData['tanggal_masuk'] = $object{$i}->getTanggal_masuk();
+            $nestedData['harga_jual'] = $object{$i}->getHarga_jual();
+            $nestedData['harga_beli'] = $object{$i}->getHarga_beli();
+            $nestedData['tanggal_kadaluarsa'] = $object{$i}->getTanggal_kadaluarsa();
+            $nestedData['no_batch'] = $object{$i}->getNo_batch();
+            $nestedData['no_faktur'] = $object{$i}->getNo_faktur();
+            $nestedData['barang_id'] = $object{$i}->getBarang_id();
+            $arrayData[] = $nestedData;
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
         
         $sql = $this->conn->query("SELECT COUNT(*) FROM pengadaan_barang INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id WHERE
         pengadaan_barang.untuk_unit_id = $unit_id $sqlRangeDate $sqlSearch ");
@@ -600,7 +787,7 @@ class Gudang{
         $count = $row[0];
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
-        $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        $data = array("data"=>$arrayData, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
         return $data;
     }
 
@@ -633,7 +820,7 @@ class Gudang{
         }
 
         $data = array();
-        
+
         $query =
         "SELECT
         permintaan_stok.nomor_permintaan,
@@ -653,6 +840,27 @@ class Gudang{
         permintaan_stok.tanggal_permintaan DESC
         LIMIT $page, $limitItemPage";
         $result = $this->conn->query($query);
+
+        $rows = [];
+        $i=0;
+        $object;
+        $nestedData = array();
+        $arrayData = new ArrayObject();
+        while($row = mysqli_fetch_array($result))
+        {   
+            $object{$i} = new Gudang();
+            $object{$i}->setNomor_permintaan($row['nomor_permintaan']);
+            $object{$i}->setStatus($row['status']);
+            $object{$i}->setTanggal_permintaan($row['tanggal_permintaan']);
+            
+            $nestedData['nomor_permintaan'] = $object{$i}->getNomor_permintaan();
+            $nestedData['status'] = $object{$i}->getStatus();
+            $nestedData['tanggal_permintaan'] = $object{$i}->getTanggal_permintaan();
+            $arrayData[] = $nestedData;
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
         
         $sql = $this->conn->query("Select Count(*) From(SELECT COUNT(*) FROM permintaan_stok WHERE
         permintaan_stok.nomor_permintaan LIKE '%$sqlSearch%' AND permintaan_stok.status LIKE '%$status%' $sqlRangeDate 
@@ -662,7 +870,7 @@ class Gudang{
         $count = $row[0];
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
-        $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        $data = array("data"=>$arrayData, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
         return $data;
     }
 

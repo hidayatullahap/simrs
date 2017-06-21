@@ -52,6 +52,7 @@
                             if ($data->num_rows>0) {
                                 foreach ($data as $field => $values) {
                                     echo "<tr>";
+                                    setlocale(LC_ALL,'id_ID');
                                     $date=strtotime($values['range_waktu']);
                                     $yearDate=date('Y', $date);
                                     $rangemonth=intval(date('m', $date));

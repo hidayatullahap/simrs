@@ -304,7 +304,7 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
             placeholder: "Ketik kata kunci. . .",
             norecord: "data tidak ditemukan",
             highlight: "",
-            columns: ['id Barang', 'Nama', 'Stok', 'Grup', 'satuan'],
+            columns: ['id Barang', 'Nama', 'Stok', 'Grup', 'satuan','harga'],
             data: function () {
                 try {
                     var data = daftarObat;

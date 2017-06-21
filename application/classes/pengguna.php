@@ -4,12 +4,28 @@ require_once CLASSES_DIR  . 'dbconnection.php';
 class Pengguna{
     private $db;
     private $conn;
+    private $pengguna_id;
+    private $nama;
+    private $nip;
+    private $username;
+    private $role;
 
     public function __construct() {
         $this->db = new DB();
         $this->conn = $this->db->connect();
     }
-    
+
+    function setPengguna_id($pengguna_id) { $this->pengguna_id = $pengguna_id; }
+    function getPengguna_id() { return $this->pengguna_id; }
+    function setNama($nama) { $this->nama = $nama; }
+    function getNama() { return $this->nama; }
+    function setNip($nip) { $this->nip = $nip; }
+    function getNip() { return $this->nip; }
+    function setUsername($username) { $this->username = $username; }
+    function getUsername() { return $this->username; }
+    function setRole($role) { $this->role = $role; }
+    function getRole() { return $this->role; }
+
     public function getData($sort, $page, $limitItemPage)
     {   
         $page=($page*$limitItemPage)-$limitItemPage;
@@ -25,13 +41,39 @@ class Pengguna{
         ORDER BY `pengguna`.`pengguna_id` 
         $sort LIMIT $page,$limitItemPage";
         $result = $this->conn->query($query);
+
+        $rows = [];
+        $i=0;
+        $object;
+        $nestedData = array();
+        $arrayData = new ArrayObject();
+        while($row = mysqli_fetch_array($result))
+        {   
+            $object{$i} = new Pengguna();
+            $object{$i}->setPengguna_id($row['pengguna_id']);
+            $object{$i}->setNama($row['nama']);
+            $object{$i}->setNip($row['nip']);
+            $object{$i}->setUsername($row['username']);
+            $object{$i}->setRole($row['role']);
+
+            $nestedData['pengguna_id'] = $object{$i}->getPengguna_id();
+            $nestedData['nama'] = $object{$i}->getNama();
+            $nestedData['nip'] = $object{$i}->getNip();
+            $nestedData['username'] = $object{$i}->getUsername();
+            $nestedData['role'] = $object{$i}->getRole();
+            $arrayData[] = $nestedData;
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
         
         $sql = $this->conn->query("SELECT COUNT(*) FROM pengguna");
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
-        $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+
+        $data = array("data"=>$arrayData, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
 
         return $data;
     }

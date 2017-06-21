@@ -53,6 +53,7 @@ class Login extends CI_Controller {
                 $this->session->set_userdata($sess_data);
                 setcookie("pageLimit",10, time()+86400, "/","", 0);
                 setcookie("pageSort", "DESC", time()+86400, "/","", 0);
+                setlocale(LC_ALL,'id_ID');
             }
             $role=$this->session->userdata('pengguna_peran');
             if($role == "admin"){
@@ -69,9 +70,6 @@ class Login extends CI_Controller {
                 redirect('kelola/kelolabarang');
             }
             
-
-            
-
         } else {
             echo "err";
             $this->session->set_userdata('notif_error', 'Username/Password Salah');

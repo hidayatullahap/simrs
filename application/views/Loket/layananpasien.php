@@ -398,10 +398,13 @@ function editModal(row) {
     document.getElementById("tempat_lahir").value  = document.getElementById("tabel").rows[row].cells[2].innerHTML;
     document.getElementById("tanggal_lahir").value   = document.getElementById("tabel").rows[row].cells[3].innerHTML;
     document.getElementById("alamat").value         = document.getElementById("tabel").rows[row].cells[4].innerHTML;
+    //document.getElementById("jenis_kelamin").value  = document.getElementById("tabel").rows[row].cells[5].innerHTML;
     document.getElementById("jenis_kelamin").innerHTML  = document.getElementById("tabel").rows[row].cells[5].innerHTML;
     document.getElementById("nomor_rm").value       = document.getElementById("tabel").rows[row].cells[6].innerHTML;
     document.getElementById("agama").value          = document.getElementById("tabel").rows[row].cells[7].innerHTML;
+    //document.getElementById("golongan_darah").value = document.getElementById("tabel").rows[row].cells[8].innerHTML;
     document.getElementById("golongan_darah").innerHTML = document.getElementById("tabel").rows[row].cells[8].innerHTML;
+    //document.getElementById("optionJenisPasien").value   = document.getElementById("tabel").rows[row].cells[9].innerHTML;
     document.getElementById("optionJenisPasien").innerHTML   = document.getElementById("tabel").rows[row].cells[9].innerHTML;
 
     document.getElementById("headerModal").innerHTML = "Edit Pasien";

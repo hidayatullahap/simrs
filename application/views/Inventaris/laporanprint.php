@@ -14,6 +14,7 @@ body {
     $choice=$_SESSION['pilihanrange'];
     $yearDate=$this->uri->segment(5);
     $rangemonth=$this->uri->segment(4);
+    setlocale(LC_ALL,'id_ID');
 
     $strDate = "$yearDate-$rangemonth-01 00:00:00";
     $strDate=strtotime($strDate);
