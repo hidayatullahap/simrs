@@ -29,6 +29,13 @@ class Gudang{
     private $harga_beli;
     private $tanggal_kadaluarsa;
     private $no_faktur;
+    private $jumlah_barang_keluar;
+    private $jumlah_pengeluaran_in_rp;
+    private $jumlah_barang_masuk;
+    private $jumlah_pengadaan_in_rp;
+    private $stok_sekarang;
+    private $jumlah_stok_in_rp;
+
 
     public function __construct() {
         $this->db = new DB();
@@ -85,6 +92,19 @@ class Gudang{
     function getTanggal_kadaluarsa() { return $this->tanggal_kadaluarsa; }
     function setNo_faktur($no_faktur) { $this->no_faktur = $no_faktur; }
     function getNo_faktur() { return $this->no_faktur; }
+    function setJumlah_barang_keluar($jumlah_barang_keluar) { $this->jumlah_barang_keluar = $jumlah_barang_keluar; }
+    function getJumlah_barang_keluar() { return $this->jumlah_barang_keluar; }
+    function setJumlah_pengeluaran_in_rp($jumlah_pengeluaran_in_rp) { $this->jumlah_pengeluaran_in_rp = $jumlah_pengeluaran_in_rp; }
+    function getJumlah_pengeluaran_in_rp() { return $this->jumlah_pengeluaran_in_rp; }
+    function setJumlah_barang_masuk($jumlah_barang_masuk) { $this->jumlah_barang_masuk = $jumlah_barang_masuk; }
+    function getJumlah_barang_masuk() { return $this->jumlah_barang_masuk; }
+    function setJumlah_pengadaan_in_rp($jumlah_pengadaan_in_rp) { $this->jumlah_pengadaan_in_rp = $jumlah_pengadaan_in_rp; }
+    function getJumlah_pengadaan_in_rp() { return $this->jumlah_pengadaan_in_rp; }
+    function setStok_sekarang($stok_sekarang) { $this->stok_sekarang = $stok_sekarang; }
+    function getStok_sekarang() { return $this->stok_sekarang; }
+    function setJumlah_stok_in_rp($jumlah_stok_in_rp) { $this->jumlah_stok_in_rp = $jumlah_stok_in_rp; }
+    function getJumlah_stok_in_rp() { return $this->jumlah_stok_in_rp; }
+
 
     public function ajaxPermintaanMasuk()
     {   
@@ -404,6 +424,7 @@ class Gudang{
             $nestedData['nama_grup_barang'] = $object{$i}->getNama_grup_barang();
             $nestedData['nama_unit'] = $object{$i}->getNama_unit();
             $arrayData[] = $nestedData;
+            $object{$i}->conn->close();
 
             $i++;
         } 
@@ -669,6 +690,7 @@ class Gudang{
             $nestedData['no_batch'] = $object{$i}->getNo_batch();
             $nestedData['nama_penerima'] = $object{$i}->getNama_penerima();
             $arrayData[] = $nestedData;
+            $object{$i}->conn->close();
 
             $i++;
         } 
@@ -775,6 +797,7 @@ class Gudang{
             $nestedData['no_faktur'] = $object{$i}->getNo_faktur();
             $nestedData['barang_id'] = $object{$i}->getBarang_id();
             $arrayData[] = $nestedData;
+            $object{$i}->conn->close();
 
             $i++;
         } 
@@ -852,11 +875,14 @@ class Gudang{
             $object{$i}->setNomor_permintaan($row['nomor_permintaan']);
             $object{$i}->setStatus($row['status']);
             $object{$i}->setTanggal_permintaan($row['tanggal_permintaan']);
+            $object{$i}->setNama_unit($row['nama_unit']);
             
             $nestedData['nomor_permintaan'] = $object{$i}->getNomor_permintaan();
             $nestedData['status'] = $object{$i}->getStatus();
             $nestedData['tanggal_permintaan'] = $object{$i}->getTanggal_permintaan();
+            $nestedData['nama_unit'] = $object{$i}->getNama_unit();
             $arrayData[] = $nestedData;
+            $object{$i}->conn->close();
 
             $i++;
         } 
@@ -929,6 +955,53 @@ class Gudang{
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
         $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        return $data;
+    }
+
+    public function printInfoStok($unit_id)
+    {   
+        $sqlTambahan1 = "";
+        $sqlTambahan2 = "";
+
+        if($unit_id==3){
+            $sqlTambahan1 = ", IFNULL(lj_stok.jumlah_deporajal,'0') AS jumlah_deporajal";
+            $sqlTambahan2 = "LEFT JOIN (SELECT
+			stok.barang_id,
+            stok.unit_id AS unit_id,
+            stok.jumlah AS jumlah_deporajal
+            FROM
+            stok
+            WHERE
+            stok.unit_id = 2
+            ) AS lj_stok ON (lj_stok.barang_id = stok.barang_id) ";
+        }
+
+        $data = array();
+        
+        $query =
+        "SELECT
+        stok.stok_id,
+        stok.barang_id,
+        barang.nama_barang,
+        stok.jumlah,
+        barang.harga_jual,
+        stok.tanggal_pencatatan,
+        stok.jumlah AS jumlah_farmasi,
+        (barang.harga_jual*stok.jumlah) AS jumlah_stok_rp,
+        grup_barang.nama_grup_barang,
+        satuan.nama_satuan $sqlTambahan1
+        FROM
+        stok $sqlTambahan2
+        INNER JOIN barang ON barang.barang_id = stok.barang_id
+        INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
+        INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
+        WHERE
+        stok.unit_id = $unit_id 
+        ORDER BY
+        barang.nama_barang ASC";
+        $result = $this->conn->query($query);
+        
+        $data = array("data"=>$result);
         return $data;
     }
 
@@ -1077,7 +1150,44 @@ class Gudang{
         barang.nama_barang
         ";
         $result = $this->conn->query($query);
-        $data = array("data"=>$result);
+        
+        $rows = [];
+        $i=0;
+        $object;
+        $nestedData = array();
+        $arrayData = new ArrayObject();
+        while($row = mysqli_fetch_array($result))
+        {   
+            $object{$i} = new Gudang();
+            $object{$i}->setBarang_id($row['barang_id']);
+            $object{$i}->setNama_barang($row['nama_barang']);
+            $object{$i}->setNama_satuan($row['nama_satuan']);
+            $object{$i}->setHarga_jual($row['harga_jual']);
+            $object{$i}->setJumlah_barang_keluar($row['jumlah_barang_keluar']);
+            $object{$i}->setJumlah_pengeluaran_in_rp($row['jumlah_pengeluaran_in_rp']);
+            $object{$i}->setJumlah_barang_masuk($row['jumlah_barang_masuk']);
+            $object{$i}->setJumlah_pengadaan_in_rp($row['jumlah_pengadaan_in_rp']);
+            $object{$i}->setStok_sekarang($row['stok_sekarang']);
+            $object{$i}->setJumlah_stok_in_rp($row['jumlah_stok_in_rp']);
+            
+            $nestedData['barang_id'] = $object{$i}->getBarang_id();
+            $nestedData['nama_barang'] = $object{$i}->getNama_barang();
+            $nestedData['nama_satuan'] = $object{$i}->getNama_satuan();
+            $nestedData['harga_jual'] = $object{$i}->getHarga_jual();
+            $nestedData['jumlah_barang_keluar'] = $object{$i}->getJumlah_barang_keluar();
+            $nestedData['jumlah_pengeluaran_in_rp'] = $object{$i}->getJumlah_pengeluaran_in_rp();
+            $nestedData['jumlah_barang_masuk'] = $object{$i}->getJumlah_barang_masuk();
+            $nestedData['jumlah_pengadaan_in_rp'] = $object{$i}->getJumlah_pengadaan_in_rp();
+            $nestedData['stok_sekarang'] = $object{$i}->getStok_sekarang();
+            $nestedData['jumlah_stok_in_rp'] = $object{$i}->getJumlah_stok_in_rp();
+            $arrayData[] = $nestedData;
+            $object{$i}->conn->close();
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
+
+        $data = array("data"=>$arrayData);
         return $data;
     }
     

@@ -2,7 +2,7 @@
     class Pagination {
         public function tampilkan($url, $currentPage,$totalPages)
         {   
-            echo "<ul class='pagination pagination-md no-margin pull-right'>";
+            echo "<ul class='hidden-print pagination pagination-md no-margin pull-right'>";
                 if (isset($totalPages)) {
                     echo "<li><a href='".base_url($url.'/page/1')."'>&Lang;</a></li>";
 

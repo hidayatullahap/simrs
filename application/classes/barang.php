@@ -29,7 +29,7 @@ class Barang{
         INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
         INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
         ORDER BY `barang`.`barang_id` 
-        $sort LIMIT $page,$limitItemPage";
+        ASC LIMIT $page,$limitItemPage";
         $result = $this->conn->query($query);
         
         $sql = $this->conn->query("SELECT COUNT(*) FROM barang");
@@ -114,6 +114,16 @@ class Barang{
 
     public function getAll($unit_id)
     {   
+        if($unit_id == 3){
+            $sqlGrupBarang = " WHERE barang.grup_barang_id = 1 OR barang.grup_barang_id = 4";
+        }else if($unit_id == 2){
+            $sqlGrupBarang = " WHERE barang.grup_barang_id = 3 OR barang.grup_barang_id = 4 OR barang.grup_barang_id = 1";
+        }else if($unit_id == 4){
+            $sqlGrupBarang = " WHERE barang.grup_barang_id = 1  OR barang.grup_barang_id = 2";
+        }else{
+            $sqlGrupBarang = "";
+        }
+        
         $query =
         "SELECT
         barang.barang_id AS barang_id,
@@ -126,7 +136,8 @@ class Barang{
         barang
         INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
         INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
-        LEFT JOIN stok ON stok.barang_id = barang.barang_id AND stok.unit_id = $unit_id";
+        LEFT JOIN stok ON stok.barang_id = barang.barang_id AND stok.unit_id = $unit_id
+        $sqlGrupBarang";
         $result = $this->conn->query($query);
 
         $data = array("data"=>$result);

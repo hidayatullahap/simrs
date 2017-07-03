@@ -12,7 +12,7 @@ class Login extends CI_Controller {
         $pengguna = new Pengguna();
         //if ($this->is_loggedin()){
         if ($pengguna->is_loggedin()){
-            redirect('kelola/kelolapasien');
+            redirect('kelola/masterpasien');
             //$this->proses();
         } else {
             $title['title']="Login";
@@ -57,7 +57,7 @@ class Login extends CI_Controller {
             }
             $role=$this->session->userdata('pengguna_peran');
             if($role == "admin"){
-                redirect('kelola/kelolapengguna');
+                redirect('kelola/masterpengguna');
             }else if($role == "loket"){
                 redirect('loket/layananpasien');
             }else if($role == "gudangfarmasi"){
@@ -67,7 +67,7 @@ class Login extends CI_Controller {
             }else if($role == "deporajal"){
                 redirect('depo/antrianberjalandepo');
             }else{
-                redirect('kelola/kelolabarang');
+                redirect('kelola/masterbarang');
             }
             
         } else {

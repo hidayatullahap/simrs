@@ -62,6 +62,7 @@ class Pengguna{
             $nestedData['username'] = $object{$i}->getUsername();
             $nestedData['role'] = $object{$i}->getRole();
             $arrayData[] = $nestedData;
+            $object{$i}->conn->close();
 
             $i++;
         } 

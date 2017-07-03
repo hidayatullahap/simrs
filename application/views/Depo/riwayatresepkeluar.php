@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/depo/resepkeluar'); ?>"><font color='black'><strong>Riwayat obat keluar</strong></font></a>
+            <a href="<?php echo base_url('/depo/resepkeluar'); ?>"><font color='black'><strong>Riwayat resep keluar</strong></font></a>
         </h1>
     </section>
 
@@ -22,7 +22,7 @@
 
                             <form id="formSubmit" method="post" action="<?php echo base_url('/depo/resepkeluar') ?>">
                             <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
-                            <input  type="text" class="form-control" onChange="checkTanggal();" placeholder="Cari nomor permintaan" name="search" id="search" 
+                            <input  type="text" class="form-control" onChange="checkTanggal();" placeholder="Cari nama pasien" name="search" id="search" 
                             value="<?php if(isset($_SESSION['searchFarmasi'])){echo $_SESSION['searchFarmasi'];} ?>">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>

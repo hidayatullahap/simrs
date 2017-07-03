@@ -5,7 +5,7 @@
 }
 body {
     height: 1000px;
-    width: 800px;
+    width: 900px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -68,18 +68,24 @@ body {
       <?php
         foreach ($data as $field => $value) {
             echo "<tr>";
-            echo "<td>".$value['nama_barang']."</td>";
+            echo "<td width='20%'>".$value['nama_barang']."</td>";
             echo "<td>".$value['nama_satuan']."</td>";
-            echo "<td>Rp. ".number_format($value['harga_jual'],0,',','.')."</td>";
+            echo "<td width='15%'>Rp. ".number_format($value['harga_jual'],0,',','.')."</td>";
             echo "<td>".$value['jumlah_barang_keluar']."</td>";
-            echo "<td>Rp. ".number_format($value['jumlah_pengeluaran_in_rp'],0,',','.')."</td>";
+            echo "<td width='20%'>Rp. ".number_format($value['jumlah_pengeluaran_in_rp'],0,',','.')."</td>";
             echo "<td>".$value['jumlah_barang_masuk']."</td>";
-            echo "<td>Rp. ".number_format($value['jumlah_pengadaan_in_rp'],0,',','.')."</td>";
+            echo "<td width='20%'>Rp. ".number_format($value['jumlah_pengadaan_in_rp'],0,',','.')."</td>";
             echo "<td>".$value['stok_sekarang']."</td>";
-            echo "<td>Rp. ".number_format($value['jumlah_stok_in_rp'],0,',','.')."</td>";
+            echo "<td width='25%'>Rp. ".number_format($value['jumlah_stok_in_rp'],0,',','.')."</td>";
             echo "</tr>";
         }
       ?>
     </tbody>
     </table>
 </body>
+<script src="<?php echo base_url();?>datatables/media/js/jquery.js"></script>
+<script>
+    $(document).ready(function() {
+        window.print();
+    })
+</script>

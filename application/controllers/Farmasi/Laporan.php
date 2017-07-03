@@ -81,14 +81,14 @@ class Laporan extends CI_Controller
 
         $tempArray = array();
         $myArray = array();
-        while($row = $data['data']->fetch_object()) {
+        foreach ($data['data'] as $field => $row){
                 $tempArray = $row;
                 array_push($myArray, $tempArray);
             }
         $json = json_encode($myArray);
         $arrayMu=json_decode($json,true);
 
-        $filename = 'daftarpasien.csv';
+        $filename = 'laporan.csv';
         header("Content-type: text/csv");
         header("Content-Disposition: attachment; filename=$filename");
         $output = fopen("php://output", "w");

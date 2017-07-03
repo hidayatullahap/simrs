@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/inventaris/halamanutama'); ?>"><font color='black'><strong>Halaman Utama Farmasi</strong></font></a>
+            <a href="<?php echo base_url('/inventaris/halamanutama'); ?>"><font color='black'><strong>Halaman Utama Inventaris</strong></font></a>
         </h1>
     </section>
 

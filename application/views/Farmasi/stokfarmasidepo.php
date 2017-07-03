@@ -65,7 +65,12 @@
                         echo "<p style='font-family:Calibri; font-size:85%;'>Showing page: ".$currentPage." with total data: ".$totalData."</p>";
                         }
                     ?>
-                    <div class="box-footer clearfix">
+                    <div class="box-footer clearfix hidden-print">
+                        <?php 
+                            $url=base_url('/farmasi/infostok/printstok');
+                        ?>
+                        <button class='btn btn-default btn-sm' onclick= onclick=window.open('<?php echo $url ?>','_blank')><i class="glyphicon glyphicon-print"></i> Print Stok</button>
+                        <button class='btn btn-default btn-sm' onclick= onclick=window.print()><i class="glyphicon glyphicon-print"></i> Print Halaman</button>
                         <?php
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();

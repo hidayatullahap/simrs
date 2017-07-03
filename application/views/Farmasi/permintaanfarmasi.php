@@ -20,7 +20,7 @@
                     <div class="box-header with-border">
                         <div class="form-group row">
 
-                            <form id="formSubmit" method="post" action="<?php echo base_url('/farmasi/permintaan/riwayatPermintaan') ?>">
+                            <form id="formSubmit" method="post" action="<?php echo base_url('farmasi/riwayatpermintaanfarmasi') ?>">
                             <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
                             <input  type="text" class="form-control" onChange="checkTanggal();" placeholder="Cari nomor permintaan" name="search" id="search" 
                             value="<?php if(isset($_SESSION['searchFarmasi'])){echo $_SESSION['searchFarmasi'];} ?>">

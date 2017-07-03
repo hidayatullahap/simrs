@@ -9,73 +9,53 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/depo/obatkeluar'); ?>"><font color='black'><strong>Riwayat obat keluar</strong></font></a>
+            <a href="<?php echo base_url('/inventaris/infostok'); ?>"><font color='black'><strong>Informasi stok inventaris</strong></font></a>
         </h1>
     </section>
 
+    <!-- Main content -->
     <section class="content">
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header with-border">
                         <div class="form-group row">
-
-                            <form id="formSubmit" method="post" action="<?php echo base_url('/depo/obatkeluar') ?>">
-                            <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
-                            <input  type="text" class="form-control" onChange="checkTanggal();" placeholder="Cari nomor permintaan" name="search" id="search" 
-                            value="<?php if(isset($_SESSION['searchFarmasi'])){echo $_SESSION['searchFarmasi'];} ?>">
+                            <form method="post" action="<?php echo base_url('inventaris/infostok') ?>">
+                            <div class="input-group col-xs-2" style="float: left;padding-left:15px;">
+                            <input  type="text" class="form-control" autocomplete="off" placeholder="Cari nama Barang" name="search" id="search">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                                 </div>
                             </div>
-
-                            <div class="input-group col-xs-4" style="float: right;padding-right:15px;">
-                                <div class="input-group-btn">
-                                        <button class="btn btn-default"><i>Filter mulai tgl</i></button>
-                                </div>
-                                <input  type="date" class="input-group form-control" id="tanggalAwal" name="tanggalAwal" 
-                                value="<?php if(isset($_SESSION['tanggalAwal'])){echo date('Y-m-d', strtotime($_SESSION['tanggalAwal']));} ?>">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-default"><i> hingga</i></button>
-                                </div>
-                                <input  type="date" class="input-group form-control" id="tanggalAkhir" name="tanggalAkhir" 
-                                value="<?php if(isset($_SESSION['tanggalAkhir'])){echo date('Y-m-d', strtotime($_SESSION['tanggalAkhir']));} ?>">
-                            </div>
                             </form>
-
                         </div>
                         
                         <table class="table table-bordered table-hover" id="tabel" cellspacing="0" width="100%">
                             <thead bgcolor="#4a4a4c">
                             <tr>
-                                <th><font color="white">Tanggal Keluar</font></th>
-                                <th><font color="white">Nama Barang</font></th>
-                                <th><font color="white">Jumlah</font></th>
-                                <th><font color="white">Untuk Unit</font></th>
-                                <th><font color="white">Grup Barang</font></th>
-                                <th><font color="white">Nomor Batch</font></th>
-                                <th><font color="white">Nama Penerima</font></th>
+                                <th><font color="white">Barang ID</th>
+                                <th><font color="white">Nama Barang</th>
+                                <th><font color="white">Jumlah Stok Inventaris</th>
+                                <th><font color="white">Satuan</th>
+                                <th><font color="white">Grup Barang</th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php
                             if ($data->num_rows>0) {
+                                $i=1;
                                 foreach ($data as $field => $values) {
                                     echo "<tr>";
-                                    $date=strtotime($values['tanggal_keluar']);
-                                    echo "<td width='10%'>".date('d M Y H:i:s', $date)."</td>";
+                                    echo "<td width='5%'>".$values['barang_id']."</td>";
                                     echo "<td>".$values['nama_barang']."</td>";
-                                    echo "<td>".$values['jumlah_pengeluaran']."</td>";
-                                    echo "<td>".$values['nama_unit']."</td>";
+                                    echo "<td>".$values['jumlah_farmasi']."</td>";
+                                    echo "<td>".$values['nama_satuan']."</td>";
                                     echo "<td>".$values['nama_grup_barang']."</td>";
-                                    echo "<td>".$values['no_batch']."</td>";
-                                    echo "<td>".$values['nama_penerima']."</td>";
-                                    echo "</tr>";
+                                    $i++;
                                 }
                             } else {
-                                echo "<tr><td colspan='11' align='center'><font size='3' color='red'>Tidak ada data</font></td></tr>";
+                                echo "<tr><td colspan='6' align='center'><font size='3' color='red'>Tidak ada data</font></td></tr>";
                             }
-
                             ?>
                             </tbody>
                         </table>
@@ -83,25 +63,27 @@
                         echo "<p style='font-family:Calibri; font-size:85%;'>Showing page: ".$currentPage." with total data: ".$totalData."</p>";
                         }
                     ?>
-                    <div class="box-footer clearfix">
-                    <span><i>*Hapus 'filter mulai tanggal' untuk mendapatkan semua hasil</i></span>
+                    <div class="hidden-print box-footer clearfix">
+                        <?php 
+                            $url=base_url('/inventaris/infostok/printstok');
+                        ?>
+                        <button class='btn btn-default btn-sm' onclick= onclick=window.open('<?php echo $url ?>','_blank')><i class="glyphicon glyphicon-print"></i> Print Stok</button>
+                        <button class='btn btn-default btn-sm' onclick= onclick=window.print()><i class="glyphicon glyphicon-print"></i> Print Halaman</button>
                         <?php
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
                         if (isset($totalPages)) {
-                            $entity->tampilkan('depo/obatkeluar',$currentPage, $totalPages);
+                            $entity->tampilkan('inventaris/infostok',$currentPage, $totalPages);
                         }
                         ?>
                     </div>
-
-                    <?php if ($this->session->flashdata('pesan')) {?>
+                    <?php if($this->session->flashdata('pesan')) {?>
                         <div class="alert alert-success alert-dismissible" id="success-alert">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <h4><i class="icon fa fa-info"></i> Notifikasi</h4>
-                            <?php echo $this->session->flashdata('metode') ?>
+                            <h4><i class="icon fa fa-info"></i> Data Barang</h4>
+                            <?php echo $this->session->flashdata('metode')." data Barang ".$this->session->flashdata('pesan'); ?>
                         </div>
                     <?php } ?>
-
                     </div>
                 </div>
             </div>
@@ -135,18 +117,6 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
 });
 </script>
 
-<script>
-$('#formSubmit').submit(function() {
-    var tanggalAwal = document.getElementById('tanggalAwal').value;
-    var tanggalAkhir = document.getElementById('tanggalAkhir').value;
-
-    if (tanggalAwal=="" || tanggalTanggal==""){
-        alert("Isi terlebih dahulu tanggal sebelum search");
-    }
-    document.getElementById('search').value="";
-    return false; // return false to cancel form action
-});
-</script>
 
 </body>
 </html>

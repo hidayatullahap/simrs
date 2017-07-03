@@ -17,21 +17,20 @@
     <section class="content">
         <div class="row">
             <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="well">
+                <div class="box">
+                    <div class="box-header with-border">
                         <h4>Detil item dengan nomor: <strong><?php echo $this->uri->segment(4, 0); ?></strong></h4>
                         <table class="table table-bordered table-hover" id="tabel" cellspacing="0" width="100%">
                         <thead bgcolor="#4a4a4c">
                             <tr>
-                                <th><font color="white">ID Barang</th>
-                                <th><font color="white">Nama Barang</th>
-                                <th><font color="white">Satuan</th>
-                                <th><font color="white">Grup Barang</th>
-                                <th><font color="white">Tanggal Pesan</th>
-                                <th><font color="white">Jumlah Permintaan</th>
-                                <th><font color="white">Jumlah disetujui</th>
-                                <th><font color="white">Status</th>
+                                <th><font color="white">ID Barang</font></th>
+                                <th><font color="white">Nama Barang</font></th>
+                                <th><font color="white">Satuan</font></th>
+                                <th><font color="white">Grup Barang</font></th>
+                                <th><font color="white">Tanggal Pesan</font></th>
+                                <th><font color="white">Jumlah Permintaan</font></th>
+                                <th><font color="white">Jumlah disetujui</font></th>
+                                <th><font color="white">Status</font></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -69,9 +68,8 @@
                             </tbody>
                         </table>
 
-                        <button class="btn btn-default" onclick="printHalaman()"><i class="glyphicon glyphicon-print"> Print</i></button>
+                        <button class="hidden-print btn btn-default" onclick="printHalaman()"><i class="glyphicon glyphicon-print"> Print</i></button>
                         </form>
-                </div><!--/row-->    
             </div><!--/col-12-->
             </div><!--/row-->
     </section>

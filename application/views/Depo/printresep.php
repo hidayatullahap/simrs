@@ -5,7 +5,7 @@
 }
 body {
     height: 297.5px;
-    width: 421px;
+    width: 320px;
     
     margin-right: auto;
 }
@@ -41,7 +41,7 @@ body {
       $total=0;
         foreach ($data as $field => $value) {
             echo "<tr>";
-            echo "<td>".$value['nama_barang']."</td>";
+            echo "<td width='30%'>".$value['nama_barang']."</td>";
             echo "<td>".$value['jumlah']."</td>";
             echo "<td>Rp. ".number_format($value['harga_jual'],0,',','.')."</td>";
             echo "<td>Rp. ".number_format($value['total'],0,',','.')."</td>";
@@ -51,7 +51,7 @@ body {
       ?>
       <tr>
       <td>Total yang harus dibayarkan:</td>
-      <td colspan='6' align='right' style="padding-right:20px;">Rp. <?php echo number_format($total);?></td>
+      <td colspan='6' align='right' style="padding-right:30px;">Rp. <?php echo number_format($total);?></td>
       </tr>
     </tbody>
     </table>

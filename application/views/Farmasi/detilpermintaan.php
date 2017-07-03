@@ -17,9 +17,8 @@
     <section class="content">
         <div class="row">
             <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="well">
+                <div class="box">
+                    <div class="box-header with-border">
                         <?php
                         $i=0;
                         foreach ($data as $field => $values) {
@@ -30,17 +29,17 @@
                         echo "'>";
                         ?>
                         <h4>Permintaan dari unit: <?php echo $values['nama_unit']; ?></h4>
-                        <table class="table table-bordered table-hover" id="tabel" cellspacing="0" width="100%">
+                        <table class="table table-bordered" id="tabel" cellspacing="0" width="100%">
                         <thead bgcolor="#4a4a4c">
                             <tr>
-                                <th><font color="white">ID Barang</th>
-                                <th><font color="white">Nama Barang</th>
-                                <th><font color="white">Satuan</th>
-                                <th><font color="white">Grup Barang</th>
-                                <th><font color="white">Tanggal Pesan</th>
-                                <th><font color="white">Jumlah Permintaan</th>
-                                <th><font color="white">Jumlah disetujui</th>
-                                <th><font color="white">Stok Tersedia</th>
+                                <th><font color="white">ID Barang</font></th>
+                                <th><font color="white">Nama Barang</font></th>
+                                <th><font color="white">Satuan</font></th>
+                                <th><font color="white">Grup Barang</font></th>
+                                <th><font color="white">Tanggal Pesan</font></th>
+                                <th><font color="white">Jumlah Permintaan</font></th>
+                                <th><font color="white">Jumlah disetujui</font></th>
+                                <th><font color="white">Stok Tersedia</font></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -67,7 +66,7 @@
                                         echo "<td>".date('m-M-Y H:i:s',strtotime($values['tanggal_permintaan']))."</td>";
                                         echo "<td>".$values['jumlah_permintaan']."</td>";
 
-                                        if($values['stok_tersedia']>1){
+                                        if($values['stok_tersedia']>0){
                                             echo "<td><input class='form-control' placeholder='masukan jumlah . . . ' name='jumlah$j' min='0' max='".$values['stok_tersedia']."' 
                                             type='number' autocomplete='off' required></input></td>";
                                         }else{
@@ -75,8 +74,7 @@
                                             type='number' value='".$values['stok_tersedia']."' autocomplete='off' required></input></td>";
                                         }
                                         
-                                        echo "<td><span class='label label-$label pull-left' id='stok$permintaan_stok_id'>".$values['nama_barang']."= 
-                                        ".$values['stok_tersedia']."</span></td>";
+                                        echo "<td align='center'><h4><span class='label label-$label' id='stok$permintaan_stok_id'>".$values['stok_tersedia']."</span></h4></td>";
                                         echo "</tr>";
                                         $j++;
                                         }
@@ -87,11 +85,10 @@
                             </tbody>
                         </table>
 
-                        <button class="btn btn-default" onclick="printHalaman()"><i class="glyphicon glyphicon-print"> Print</i></button>
-                        <button class="btn btn-default" type="submit"><i class="fa fa-arrow-right"> Proses</i></button>
+                        <button class="hidden-print btn btn-default" type="button" onclick="printHalaman()"><i class="glyphicon glyphicon-print"> Print</i></button>
+                        <button class="hidden-print btn btn-default" type="submit"><i class="fa fa-arrow-right"> Proses</i></button>
                         <span><i>*Isi jumlah disetujui 0 bila tidak ada stok</i></span>
-                        </form>
-                </div><!--/row-->    
+                        </form>  
             </div><!--/col-12-->
             </div><!--/row-->
     </section>

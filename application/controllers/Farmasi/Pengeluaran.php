@@ -88,7 +88,7 @@ class Pengeluaran extends CI_Controller
         $this->load->view('/farmasi/barangkeluar', $data);
         $this->load->view('footer');
     }
-
+    
     public function test() {
         $gudang=new Gudang();
         $return=$gudang->riwayatPengeluaranStok(3,"DESC",1,10);

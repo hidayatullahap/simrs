@@ -44,12 +44,20 @@ class InfoStok extends CI_Controller
         $data = $gudang->infoStok($this->unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
-        $this->load->view('/inventaris/stokdepo', $data);
+        $this->load->view('/inventaris/stokinventaris', $data);
         $this->load->view('footer');
     }
 
     public function pesan($metode, $return) {
         $this->session->set_flashdata('metode', $metode);
         $this->session->set_flashdata('pesan', 'berhasil');
+    }
+    public function printStok() {
+        $unit_id=4;
+        $title['title']="Cetak Stok Hari Ini";
+        $gudang = new Gudang();
+        $data = $gudang->printInfoStok($unit_id);
+        $this->load->view('header',$title);
+        $this->load->view('/inventaris/printstokhariini', $data);
     }
 }

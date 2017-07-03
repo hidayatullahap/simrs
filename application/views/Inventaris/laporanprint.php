@@ -84,3 +84,9 @@ body {
     </tbody>
     </table>
 </body>
+<script src="<?php echo base_url();?>datatables/media/js/jquery.js"></script>
+<script>
+    $(document).ready(function() {
+        window.print();
+    })
+</script>

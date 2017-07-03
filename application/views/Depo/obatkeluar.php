@@ -61,7 +61,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/farmasi/pengeluaran'); ?>"><b> Pengeluaran Barang </b></a><br>
+            <a href="<?php echo base_url('/farmasi/pengeluaran'); ?>"><b> Pencatatan Resep </b></a><br>
 
         </h1>
     </section>
@@ -390,6 +390,8 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     var nama_barang_temp;
     var barang_id_temp;
     var harga_barang_temp;
+    var stok_temp;
+    
 
     function clearFields(){
         aturan_pakai.value = "";
@@ -403,6 +405,7 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     function tambahDataKeTabel(idTabel) {
         if(jumlah.value == ""){ alert("Kolom jumlah tidak boleh kosong!"); }else if(jumlah.value <0){ alert("Angka tidak boleh negatif!"); }
         if(kolom_barang_id.value == ""){ alert("Nama barang tidak boleh kosong!"); }
+        if(parseInt(jumlah.value) > parseInt(stok_temp)){ alert("Stok " + nama_barang_temp + " yang tersedia hanya "+stok_temp); return false;}
 
         if(jumlah.value>0 && kolom_barang_id.value){
         tampilkanTabel.style.display = "block";
@@ -515,6 +518,7 @@ $( function() {
                     barang_id_temp = daftarSearchData.all()['id Barang'];
                     nama_barang_temp = daftarSearchData.all()['Nama'];
                     harga_barang_temp = daftarSearchData.all()['Harga'];
+                    stok_temp = daftarSearchData.all()['Stok'];
                 }
             }
         });

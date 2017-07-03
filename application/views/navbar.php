@@ -259,13 +259,13 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="<?php echo base_url('kelola/kelolabarang'); ?>"><i class="fa fa-table"></i>Master Barang</a></li>
-                    <li><a href="<?php echo base_url('kelola/kelolajenispasien'); ?>"><i class="fa fa-table"></i>Jenis Pasien</a></li>
-                    <li><a href="<?php echo base_url('kelola/kelolaaturanpakaiobat'); ?>"><i class="fa fa-table"></i>Aturan Pakai</a></li>
-                    <li><a href="<?php echo base_url('kelola/kelolajenispenerimaan'); ?>"><i class="fa fa-table"></i>Jenis Penerimaan</a></li>
-                    <li><a href="<?php echo base_url('kelola/kelolasatuan'); ?>"><i class="fa fa-table"></i>Satuan</a></li>
-                    <li><a href="<?php echo base_url('kelola/kelolaunit'); ?>"><i class="fa fa-table"></i>Unit</a></li>
-                    <li><a href="<?php echo base_url('kelola/kelolagrupbarang'); ?>"><i class="fa fa-table"></i>Grup Barang</a></li>
+                    <li><a href="<?php echo base_url('kelola/masterbarang'); ?>"><i class="fa fa-table"></i>Master Barang</a></li>
+                    <li><a href="<?php echo base_url('kelola/masterjenispasien'); ?>"><i class="fa fa-table"></i>Jenis Pasien</a></li>
+                    <li><a href="<?php echo base_url('kelola/masteraturanpakaiobat'); ?>"><i class="fa fa-table"></i>Aturan Pakai</a></li>
+                    <li><a href="<?php echo base_url('kelola/masterjenispenerimaan'); ?>"><i class="fa fa-table"></i>Jenis Penerimaan</a></li>
+                    <li><a href="<?php echo base_url('kelola/mastersatuan'); ?>"><i class="fa fa-table"></i>Satuan</a></li>
+                    <li><a href="<?php echo base_url('kelola/masterunit'); ?>"><i class="fa fa-table"></i>Unit</a></li>
+                    <li><a href="<?php echo base_url('kelola/mastergrupbarang'); ?>"><i class="fa fa-table"></i>Grup Barang</a></li>
                 </ul>
                 <?php }?>
 
@@ -278,8 +278,8 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="<?php echo base_url('kelola/kelolapengguna'); ?>"><i class="fa fa-user"></i>Pengguna</a></li>
-                    <li><a href="<?php echo base_url('kelola/kelolapasien'); ?>"><i class="fa fa-table"></i>Data Pasien</a></li>
+                    <li><a href="<?php echo base_url('kelola/masterpengguna'); ?>"><i class="fa fa-user"></i>Pengguna</a></li>
+                    <li><a href="<?php echo base_url('kelola/masterpasien'); ?>"><i class="fa fa-table"></i>Data Pasien</a></li>
                 </ul>
                 <?php }?>
             </li>

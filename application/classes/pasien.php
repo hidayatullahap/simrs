@@ -105,6 +105,7 @@ class Pasien{
             $nestedData['jenis_pasien'] = $object{$i}->getJenis_pasien();
             $nestedData['tanggal_daftar'] = $object{$i}->getTanggal_daftar();
             $arrayData[] = $nestedData;
+            $object{$i}->conn->close();
 
             $i++;
         } 

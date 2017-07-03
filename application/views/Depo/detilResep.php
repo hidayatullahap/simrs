@@ -17,9 +17,8 @@
     <section class="content">
         <div class="row">
             <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="well">
+                <div class="box">
+                    <div class="box-header with-border">
                         <h4>Detil item dengan nomor: <strong><?php echo $this->uri->segment(4, 0); ?></strong></h4>
                         <table class="table table-bordered table-hover" id="tabel" cellspacing="0" width="100%">
                         <thead bgcolor="#4a4a4c">
@@ -55,8 +54,7 @@
                         $nomorTransaksi = $this->uri->segment(4, 0);
                         ?>
                         <button class='btn btn-default' onclick= onclick=window.open('<?php echo $url."/".$nomorTransaksi ?>','_blank')><i class="glyphicon glyphicon-print"></i> Print Resep</button>
-                        </form>
-                </div><!--/row-->    
+                        </form>   
             </div><!--/col-12-->
             </div><!--/row-->
     </section>
