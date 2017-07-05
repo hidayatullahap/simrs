@@ -1,11 +1,11 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'gudang.php';
+require_once CLASSES_DIR  . 'permintaanbarang.php';
+require_once CLASSES_DIR  . 'stok.php';
 require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'barang.php';
 require_once CLASSES_DIR  . 'mastertabel.php';
-require_once CLASSES_DIR  . 'depo.php';
 
 class PermintaanDepo extends CI_Controller
 {   
@@ -35,8 +35,8 @@ class PermintaanDepo extends CI_Controller
             redirect('/depo/permintaandepo', 'refresh');
 
         } else if( $this->input->post('simpan') ){
-            $depo=new Depo();
-            $return = $depo->prosesPermintaanStok($this->unit_id);
+            $permintaan = new PermintaanBarang();
+            $return = $permintaan->prosesPermintaanStok($this->unit_id);
             //var_dump($return);
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", $return);
@@ -53,7 +53,7 @@ class PermintaanDepo extends CI_Controller
 
     public function page($page)
     {   
-        $gudang = new Gudang();
+        $stok = new Stok();
         $title['title']="Riwayat Barang Masuk";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
@@ -66,7 +66,7 @@ class PermintaanDepo extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
 
-        $data = $gudang->infoStok($this->unit_id, $sort,$page,$limit);
+        $data = $stok->infoStok($this->unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/depo/stokdepo', $data);

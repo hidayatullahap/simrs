@@ -241,5 +241,94 @@ class PermintaanBarang{
         $conn->close();
         return $result;
     }
+
+    public function riwayatPermintaanStok($sort, $page, $limitItemPage, $status)
+    {   
+        $db = new DB();
+        $conn = $db->connect();
+        $page=($page*$limitItemPage)-$limitItemPage;
+        
+        if (isset($_POST['tanggalAwal'])){ $tanggalAwal = $_POST['tanggalAwal']; $tanggalAwal = $tanggalAwal." 00:00:00"; $_SESSION["tanggalAwal"] = $tanggalAwal;}
+        if (isset($_POST['tanggalAkhir'])){ $tanggalAkhir = $_POST['tanggalAkhir']; $tanggalAkhir = $tanggalAkhir." 23:59:59"; $_SESSION["tanggalAkhir"] = $tanggalAkhir; }
+        if (isset($_POST['search'])){ $search = $_POST['search'];  $_SESSION["searchFarmasi"] = $search;} 
+        if (isset($_SESSION["tanggalAwal"])){ $tanggalAwal =  $_SESSION["tanggalAwal"];}
+        if (isset($_SESSION["tanggalAkhir"])){ $tanggalAkhir =  $_SESSION["tanggalAkhir"];}
+        if (isset($_SESSION["searchFarmasi"])){ $search =  $_SESSION["searchFarmasi"];}
+        
+        if(!isset($tanggalAwal) && !isset($tanggalAkhir)){
+            $sqlRangeDate = "";
+        }else if(isset($tanggalAwal) && isset($tanggalAkhir)){
+            $sqlRangeDate = "AND permintaan_stok.tanggal_permintaan BETWEEN '$tanggalAwal' AND '$tanggalAkhir' ";
+        }
+        else if(!isset($tanggalAwal) || !isset($tanggalAkhir)){
+            $sqlRangeDate = "";
+        }else{
+            $sqlRangeDate = "";
+        }
+
+        if(isset($search)){
+            $sqlSearch = $search;
+        }else{
+            $sqlSearch = "";
+        }
+
+        $data = array();
+
+        $query =
+        "SELECT
+        permintaan_stok.nomor_permintaan,
+        permintaan_stok.`status`,
+        permintaan_stok.tanggal_permintaan,
+        unit.nama_unit
+        FROM
+        permintaan_stok
+        INNER JOIN unit ON permintaan_stok.dari_unit_id = unit.unit_id
+        WHERE
+        permintaan_stok.nomor_permintaan LIKE '%$sqlSearch%' 
+        AND permintaan_stok.status LIKE '%$status%'
+        $sqlRangeDate 
+        GROUP BY
+        permintaan_stok.nomor_permintaan
+        ORDER BY
+        permintaan_stok.tanggal_permintaan DESC
+        LIMIT $page, $limitItemPage";
+        $result = $conn->query($query);
+
+        $rows = [];
+        $i=0;
+        $object; $unit;
+        $nestedData = array();
+        $arrayData = new ArrayObject();
+        while($row = mysqli_fetch_array($result))
+        {   
+            $object{$i} = new PermintaanBarang();
+            $unit{$i} = new Unit();
+            $object{$i}->setNomor_permintaan($row['nomor_permintaan']);
+            $object{$i}->setStatus($row['status']);
+            $object{$i}->setTanggal_permintaan($row['tanggal_permintaan']);
+            $unit{$i}->setNama_unit($row['nama_unit']);
+            
+            $nestedData['nomor_permintaan'] = $object{$i}->getNomor_permintaan();
+            $nestedData['status'] = $object{$i}->getStatus();
+            $nestedData['tanggal_permintaan'] = $object{$i}->getTanggal_permintaan();
+            $nestedData['nama_unit'] = $unit{$i}->getNama_unit();
+            $arrayData[] = $nestedData;
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
+        
+        $sql = $conn->query("Select Count(*) From(SELECT COUNT(*) FROM permintaan_stok WHERE
+        permintaan_stok.nomor_permintaan LIKE '%$sqlSearch%' AND permintaan_stok.status LIKE '%$status%' $sqlRangeDate 
+        GROUP BY permintaan_stok.nomor_permintaan ) As total ");
+
+        $row = $sql->fetch_row();
+        $count = $row[0];
+        $totalData = $count;
+        $totalPages = ceil($totalData/$limitItemPage);
+        $conn->close();
+        $data = array("data"=>$arrayData, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        return $data;
+    }
 }
 ?>

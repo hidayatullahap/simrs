@@ -2,7 +2,7 @@
     exit('No direct script access allowed');
 }
 require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'gudang.php';
+require_once CLASSES_DIR  . 'pengeluaranbarang.php';
 class ObatKeluar extends CI_Controller
 {   
     private $unit_id=2;
@@ -28,7 +28,7 @@ class ObatKeluar extends CI_Controller
 
     public function page($page=null)
     {   
-        $gudang = new Gudang();
+        $pengeluaran = new PengeluaranBarang();
         $title['title']="Riwayat Permintaan Masuk";
         $status = 'sudah_dilayani';
 
@@ -39,7 +39,7 @@ class ObatKeluar extends CI_Controller
         if(!isset($limit)){ $limit = $this->default_setting->pagination('LIMIT'); }
         if(!isset($sort)){ $sort = $this->default_setting->pagination('SORT');  }
 
-        $data = $gudang->riwayatPengeluaranStok($this->unit_id, $sort,$page,$limit);
+        $data = $pengeluaran->riwayatPengeluaranStok($this->unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/depo/riwayatobatkeluar', $data);
