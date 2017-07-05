@@ -1,28 +1,18 @@
 <?php
 require_once CLASSES_DIR  . 'dbconnection.php';
+require_once CLASSES_DIR  . 'pasien.php';
+require_once CLASSES_DIR  . 'jenispasien.php';
 
 class Antrian{
     private $db;
     private $conn;
     private $antrian_id;
-    private $pasien_id;
-    private $nama;
-    private $tempat_lahir;
-    private $tanggal_lahir;
-    private $alamat;
-    private $jenis_kelamin;
-    private $golongan_darah;
-    private $agama;
-    private $nomor_RM;
-    private $jenis_pasien_id;
-    private $tanggal_daftar;
-    private $jenis_pasien;
-    private $is_dilayani;
     private $status;
     private $jenis_kunjungan;
     private $unit_id_tujuan;
     private $tanggal_antrian;
     private $nama_unit;
+    private $is_dilayani;
 
     public function __construct() {
         $this->db = new DB();
@@ -31,32 +21,6 @@ class Antrian{
 
     function setAntrian_id($antrian_id) { $this->antrian_id = $antrian_id; }
     function getAntrian_id() { return $this->antrian_id; }
-    function setPasien_id($pasien_id) { $this->pasien_id = $pasien_id; }
-    function getPasien_id() { return $this->pasien_id; }
-    function setNama($nama) { $this->nama = $nama; }
-    function getNama() { return $this->nama; }
-    function setTempat_lahir($tempat_lahir) { $this->tempat_lahir = $tempat_lahir; }
-    function getTempat_lahir() { return $this->tempat_lahir; }
-    function setTanggal_lahir($tanggal_lahir) { $this->tanggal_lahir = $tanggal_lahir; }
-    function getTanggal_lahir() { return $this->tanggal_lahir; }
-    function setAlamat($alamat) { $this->alamat = $alamat; }
-    function getAlamat() { return $this->alamat; }
-    function setJenis_kelamin($jenis_kelamin) { $this->jenis_kelamin = $jenis_kelamin; }
-    function getJenis_kelamin() { return $this->jenis_kelamin; }
-    function setGolongan_darah($golongan_darah) { $this->golongan_darah = $golongan_darah; }
-    function getGolongan_darah() { return $this->golongan_darah; }
-    function setAgama($agama) { $this->agama = $agama; }
-    function getAgama() { return $this->agama; }
-    function setNomor_RM($nomor_RM) { $this->nomor_RM = $nomor_RM; }
-    function getNomor_RM() { return $this->nomor_RM; }
-    function setJenis_pasien_id($jenis_pasien_id) { $this->jenis_pasien_id = $jenis_pasien_id; }
-    function getJenis_pasien_id() { return $this->jenis_pasien_id; }
-    function setTanggal_daftar($tanggal_daftar) { $this->tanggal_daftar = $tanggal_daftar; }
-    function getTanggal_daftar() { return $this->tanggal_daftar; }
-    function setJenis_pasien($jenis_pasien) { $this->jenis_pasien = $jenis_pasien; }
-    function getJenis_pasien() { return $this->jenis_pasien; }
-    function setIs_dilayani($is_dilayani) { $this->is_dilayani = $is_dilayani; }
-    function getIs_dilayani() { return $this->is_dilayani; }
     function setStatus($status) { $this->status = $status; }
     function getStatus() { return $this->status; }
     function setJenis_kunjungan($jenis_kunjungan) { $this->jenis_kunjungan = $jenis_kunjungan; }
@@ -67,7 +31,8 @@ class Antrian{
     function getTanggal_antrian() { return $this->tanggal_antrian; }
     function setNama_unit($nama_unit) { $this->nama_unit = $nama_unit; }
     function getNama_unit() { return $this->nama_unit; }
-
+    function setIs_dilayani($is_dilayani) { $this->is_dilayani = $is_dilayani; }
+    function getIs_dilayani() { return $this->is_dilayani; }
 
 
     public function AntrianHariIni($sort, $page, $limitItemPage)
@@ -95,31 +60,33 @@ class Antrian{
 
         $rows = [];
         $i=0;
-        $object;
+        $antrian;
+        $pasien;
         $nestedData = array();
         $arrayData = new ArrayObject();
         while($row = mysqli_fetch_array($result))
         {   
-            $object{$i} = new Antrian();
-            $object{$i}->setAntrian_id($row['antrian_id']);
-            $object{$i}->setPasien_id($row['pasien_id']);
-            $object{$i}->setJenis_kunjungan($row['jenis_kunjungan']);
-            $object{$i}->setUnit_id_tujuan($row['unit_id_tujuan']);
-            $object{$i}->setStatus($row['status']);
-            $object{$i}->setTanggal_antrian($row['tanggal_antrian']);
-            $object{$i}->setNama($row['nama']);
-            $object{$i}->setNama_unit($row['nama_unit']);
+            $antrian{$i} = new Antrian();
+            $pasien{$i} = new Pasien();
+            $antrian{$i}->setAntrian_id($row['antrian_id']);
+            $pasien{$i}->setPasien_id($row['pasien_id']);
+            $antrian{$i}->setJenis_kunjungan($row['jenis_kunjungan']);
+            $antrian{$i}->setUnit_id_tujuan($row['unit_id_tujuan']);
+            $antrian{$i}->setStatus($row['status']);
+            $antrian{$i}->setTanggal_antrian($row['tanggal_antrian']);
+            $pasien{$i}->setNama($row['nama']);
+            $antrian{$i}->setNama_unit($row['nama_unit']);
 
-            $nestedData['antrian_id'] = $object{$i}->getAntrian_id();
-            $nestedData['pasien_id'] = $object{$i}->getPasien_id();
-            $nestedData['jenis_kunjungan'] = $object{$i}->getJenis_kunjungan();
-            $nestedData['unit_id_tujuan'] = $object{$i}->getUnit_id_tujuan();
-            $nestedData['status'] = $object{$i}->getStatus();
-            $nestedData['tanggal_antrian'] = $object{$i}->getTanggal_antrian();
-            $nestedData['nama'] = $object{$i}->getNama();
-            $nestedData['nama_unit'] = $object{$i}->getNama_unit();
+            $nestedData['antrian_id'] = $antrian{$i}->getAntrian_id();
+            $nestedData['pasien_id'] = $pasien{$i}->getPasien_id();
+            $nestedData['jenis_kunjungan'] = $antrian{$i}->getJenis_kunjungan();
+            $nestedData['unit_id_tujuan'] = $antrian{$i}->getUnit_id_tujuan();
+            $nestedData['status'] = $antrian{$i}->getStatus();
+            $nestedData['tanggal_antrian'] = $antrian{$i}->getTanggal_antrian();
+            $nestedData['nama'] = $pasien{$i}->getNama();
+            $nestedData['nama_unit'] = $antrian{$i}->getNama_unit();
             $arrayData[] = $nestedData;
-            $object{$i}->conn->close();
+            $antrian{$i}->conn->close();
 
             $i++;
         } 
@@ -276,43 +243,45 @@ class Antrian{
 
         $rows = [];
         $i=0;
-        $object;
+        $antrian;$pasien;$jenisPasien;
         $nestedData = array();
         $arrayData = new ArrayObject();
         while($row = mysqli_fetch_array($result))
         {   
-            $object{$i} = new Antrian();
-            $object{$i}->setPasien_id($row['pasien_id']);
-            $object{$i}->setNama($row['nama']);
-            $object{$i}->setTempat_lahir($row['tempat_lahir']);
-            $object{$i}->setTanggal_lahir($row['tanggal_lahir']);
-            $object{$i}->setAlamat($row['alamat']);
-            $object{$i}->setJenis_kelamin($row['jenis_kelamin']);
-            $object{$i}->setGolongan_darah($row['golongan_darah']);
-            $object{$i}->setAgama($row['agama']);
-            $object{$i}->setNomor_RM($row['nomor_RM']);
-            $object{$i}->setJenis_pasien_id($row['jenis_pasien_id']);
-            $object{$i}->setTanggal_daftar($row['tanggal_daftar']);
-            $object{$i}->setJenis_pasien($row['jenis_pasien']);
-            $object{$i}->setIs_dilayani($row['is_dilayani']);
-            $object{$i}->setStatus($row['status']);
+            $antrian{$i} = new Antrian();
+            $pasien{$i} = new Pasien();
+            $jenisPasien{$i} = new JenisPasien();
+            $pasien{$i}->setPasien_id($row['pasien_id']);
+            $pasien{$i}->setNama($row['nama']);
+            $pasien{$i}->setTempat_lahir($row['tempat_lahir']);
+            $pasien{$i}->setTanggal_lahir($row['tanggal_lahir']);
+            $pasien{$i}->setAlamat($row['alamat']);
+            $pasien{$i}->setJenis_kelamin($row['jenis_kelamin']);
+            $pasien{$i}->setGolongan_darah($row['golongan_darah']);
+            $pasien{$i}->setAgama($row['agama']);
+            $pasien{$i}->setNomor_RM($row['nomor_RM']);
+            $jenisPasien{$i}->setJenis_pasien_id($row['jenis_pasien_id']);
+            $pasien{$i}->setTanggal_daftar($row['tanggal_daftar']);
+            $jenisPasien{$i}->setNama_jenis_pasien($row['jenis_pasien']);
+            $antrian{$i}->setIs_dilayani($row['is_dilayani']);
+            $antrian{$i}->setStatus($row['status']);
 
-            $nestedData['pasien_id'] = $object{$i}->getPasien_id();
-            $nestedData['nama'] = $object{$i}->getNama();
-            $nestedData['tempat_lahir'] = $object{$i}->getTempat_lahir();
-            $nestedData['tanggal_lahir'] = $object{$i}->getTanggal_lahir();
-            $nestedData['alamat'] = $object{$i}->getAlamat();
-            $nestedData['jenis_kelamin'] = $object{$i}->getJenis_kelamin();
-            $nestedData['golongan_darah'] = $object{$i}->getGolongan_darah();
-            $nestedData['agama'] = $object{$i}->getAgama();
-            $nestedData['nomor_RM'] = $object{$i}->getNomor_RM();
-            $nestedData['jenis_pasien_id'] = $object{$i}->getJenis_pasien_id();
-            $nestedData['tanggal_daftar'] = $object{$i}->getTanggal_daftar();
-            $nestedData['jenis_pasien'] = $object{$i}->getJenis_pasien();
-            $nestedData['is_dilayani'] = $object{$i}->getIs_dilayani();
-            $nestedData['status'] = $object{$i}->getStatus();
+            $nestedData['pasien_id'] = $pasien{$i}->getPasien_id();
+            $nestedData['nama'] = $pasien{$i}->getNama();
+            $nestedData['tempat_lahir'] = $pasien{$i}->getTempat_lahir();
+            $nestedData['tanggal_lahir'] = $pasien{$i}->getTanggal_lahir();
+            $nestedData['alamat'] = $pasien{$i}->getAlamat();
+            $nestedData['jenis_kelamin'] = $pasien{$i}->getJenis_kelamin();
+            $nestedData['golongan_darah'] = $pasien{$i}->getGolongan_darah();
+            $nestedData['agama'] = $pasien{$i}->getAgama();
+            $nestedData['nomor_RM'] = $pasien{$i}->getNomor_RM();
+            $nestedData['jenis_pasien_id'] = $jenisPasien{$i}->getJenis_pasien_id();
+            $nestedData['tanggal_daftar'] = $pasien{$i}->getTanggal_daftar();
+            $nestedData['jenis_pasien'] = $jenisPasien{$i}->getNama_jenis_pasien();
+            $nestedData['is_dilayani'] = $antrian{$i}->getIs_dilayani();
+            $nestedData['status'] = $antrian{$i}->getStatus();
             $arrayData[] = $nestedData;
-            $object{$i}->conn->close();
+            $antrian{$i}->conn->close();
 
             $i++;
         } 

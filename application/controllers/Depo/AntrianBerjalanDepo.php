@@ -7,7 +7,6 @@ require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'mastertabel.php';
 require_once CLASSES_DIR  . 'barang.php';
 require_once CLASSES_DIR  . 'pasien.php';
-require_once CLASSES_DIR  . 'depo.php';
 
 class AntrianBerjalanDepo extends CI_Controller
 {   

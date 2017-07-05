@@ -1,11 +1,10 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'gudang.php';
+require_once CLASSES_DIR  . 'pengeluaranbarang.php';
 require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'barang.php';
 require_once CLASSES_DIR  . 'mastertabel.php';
-require_once CLASSES_DIR  . 'pasien.php';
 
 class Pengeluaran extends CI_Controller
 {   
@@ -36,8 +35,8 @@ class Pengeluaran extends CI_Controller
             redirect('/inventaris/pengeluaran', 'refresh');
 
         } else if( $this->input->post('simpan') ){
-            $gudang=new Gudang();
-            $return = $gudang->prosesPengeluaranStok($this->unit_id);
+            $pengeluaran = new PengeluaranBarang();
+            $return = $pengeluaran->prosesPengeluaranStok($this->unit_id);
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", $return);
                     redirect('/inventaris/pengeluaran', 'refresh');
@@ -52,7 +51,7 @@ class Pengeluaran extends CI_Controller
     }
     public function page($page)
     {   
-        $gudang = new Gudang();
+        $pengeluaran = new PengeluaranBarang();
         $title['title']="Riwayat Barang Keluar";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
@@ -65,7 +64,7 @@ class Pengeluaran extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
 
-        $data = $gudang->riwayatPengeluaranStok($this->unit_id, $sort,$page,$limit);
+        $data = $pengeluaran->riwayatPengeluaranStok($this->unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/inventaris/pengeluaranriwayat', $data);

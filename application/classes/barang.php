@@ -2,16 +2,33 @@
 require_once CLASSES_DIR  . 'dbconnection.php';
 
 class Barang{
-    private $db;
-    private $conn;
+    private $barang_id;
+    private $nama_barang;
+    private $grup_barang_id;
+    private $satuan_id;
+    private $merek_model_ukuran;
+    private $harga_jual;
+    private $tanggal_pencatatan;
 
-    public function __construct() {
-        $this->db = new DB();
-        $this->conn = $this->db->connect();
-    }
-    
+    function setBarang_id($barang_id) { $this->barang_id = $barang_id; }
+    function getBarang_id() { return $this->barang_id; }
+    function setNama_barang($nama_barang) { $this->nama_barang = $nama_barang; }
+    function getNama_barang() { return $this->nama_barang; }
+    function setGrup_barang_id($grup_barang_id) { $this->grup_barang_id = $grup_barang_id; }
+    function getGrup_barang_id() { return $this->grup_barang_id; }
+    function setSatuan_id($satuan_id) { $this->satuan_id = $satuan_id; }
+    function getSatuan_id() { return $this->satuan_id; }
+    function setMerek_model_ukuran($merek_model_ukuran) { $this->merek_model_ukuran = $merek_model_ukuran; }
+    function getMerek_model_ukuran() { return $this->merek_model_ukuran; }
+    function setHarga_jual($harga_jual) { $this->harga_jual = $harga_jual; }
+    function getHarga_jual() { return $this->harga_jual; }
+    function setTanggal_pencatatan($tanggal_pencatatan) { $this->tanggal_pencatatan = $tanggal_pencatatan; }
+    function getTanggal_pencatatan() { return $this->tanggal_pencatatan; }
+
     public function getData($sort, $page, $limitItemPage)
     {   
+        $db = new DB();
+        $conn = $db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         $query =
         "SELECT
@@ -30,20 +47,23 @@ class Barang{
         INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
         ORDER BY `barang`.`barang_id` 
         ASC LIMIT $page,$limitItemPage";
-        $result = $this->conn->query($query);
+        $result = $conn->query($query);
         
-        $sql = $this->conn->query("SELECT COUNT(*) FROM barang");
+        $sql = $conn->query("SELECT COUNT(*) FROM barang");
         $row = $sql->fetch_row();
         $count = $row[0];
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
         $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
-
+        $conn->close();
+        
         return $data;
     }
 
     public function getStok($sort, $page, $limitItemPage)
     {   
+        $db = new DB();
+        $conn = $db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
 
         if(isset($_POST['search_nama_unit'])){
@@ -83,9 +103,9 @@ class Barang{
         AND unit.nama_unit LIKE '%$unit_search%' 
         ORDER BY `barang`.`nama_barang` 
         $sort LIMIT $page,$limitItemPage";
-        $result = $this->conn->query($query);
+        $result = $conn->query($query);
         
-        $sql = $this->conn->query("SELECT COUNT(*) FROM 
+        $sql = $conn->query("SELECT COUNT(*) FROM 
         (SELECT
         satuan.nama_satuan,
         grup_barang.nama_grup_barang,
@@ -108,12 +128,15 @@ class Barang{
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
         $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        $conn->close();
 
         return $data;
     }
 
     public function getAll($unit_id)
     {   
+        $db = new DB();
+        $conn = $db->connect();
         if($unit_id == 3){
             $sqlGrupBarang = " WHERE barang.grup_barang_id = 1 OR barang.grup_barang_id = 4";
         }else if($unit_id == 2){
@@ -138,15 +161,18 @@ class Barang{
         INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
         LEFT JOIN stok ON stok.barang_id = barang.barang_id AND stok.unit_id = $unit_id
         $sqlGrupBarang";
-        $result = $this->conn->query($query);
+        $result = $conn->query($query);
 
         $data = array("data"=>$result);
+        $conn->close();
 
         return $data;
     }
 
     public function getOne($id)
     {   
+        $db = new DB();
+        $conn = $db->connect();
         $query =
         "SELECT
         barang.barang_id AS barang_id,
@@ -164,14 +190,17 @@ class Barang{
         INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
         WHERE
         barang.barang_id = $id";
-        $result = $this->conn->query($query);
+        $result = $conn->query($query);
         $data = array("data"=>$result);
+        $conn->close();
         
         return $data;
     }
 
     public function postData()
     {   
+        $db = new DB();
+        $conn = $db->connect();
         $nama_barang    = $_POST['nama_barang'];
         $grup_barang_id = $_POST['grup_barang_id'];
         $satuan_id      = $_POST['satuan_id'];
@@ -183,12 +212,15 @@ class Barang{
         INTO barang(nama_barang, grup_barang_id, satuan_id , merek_model_ukuran, harga_jual)
         VALUES ('$nama_barang', '$grup_barang_id', '$satuan_id', '$merek_model_ukuran','$harga_jual')
         ";
-        $result = $this->conn->query($query);
+        $result = $conn->query($query);
+        $conn->close();
         return $result;
     }
 
     public function editData($id)
     {   
+        $db = new DB();
+        $conn = $db->connect();
         $nama_barang    = $_POST['nama_barang'];
         $grup_barang_id = $_POST['grup_barang_id'];
         $satuan_id      = $_POST['satuan_id'];
@@ -200,20 +232,26 @@ class Barang{
         `merek_model_ukuran` = '$merek_model_ukuran'
          WHERE `barang`.`barang_id` = $id
         ";
-        $result = $this->conn->query($query);
+        $result = $conn->query($query);
+        $conn->close();
         return $result;
     }
 
     public function deleteData($id)
-    {
+    {   
+        $db = new DB();
+        $conn = $db->connect();
         $query ="DELETE FROM `barang` WHERE `barang`.`barang_id` = $id";
-        $result = $this->conn->query($query);
+        $result = $conn->query($query);
+        $conn->close();
         return $result;
         
     }
 
     public function searchData($search)
     {   
+        $db = new DB();
+        $conn = $db->connect();
         $query = 
         "SELECT
         barang.barang_id AS barang_id,
@@ -233,9 +271,10 @@ class Barang{
         barang.nama_barang LIKE '%$search%'
         ORDER BY `barang`.`barang_id` ASC";
 
-        $result = $this->conn->query($query);
+        $result = $conn->query($query);
         $data = array("data"=>$result);
-        
+        $conn->close();
+
         return $data;
     }
 }

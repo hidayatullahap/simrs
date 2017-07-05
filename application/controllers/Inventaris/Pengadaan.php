@@ -1,7 +1,7 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'gudang.php';
+require_once CLASSES_DIR  . 'pengadaanbarang.php';
 require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'barang.php';
 require_once CLASSES_DIR  . 'mastertabel.php';
@@ -35,8 +35,8 @@ class Pengadaan extends CI_Controller
             redirect('/inventaris/halamanutama', 'refresh');
 
         } else if( $this->input->post('simpan') ){
-            $gudang=new Gudang();
-            $return = $gudang->prosesPengadaanStok($this->unit_id);
+            $pengadaan = new PengadaanBarang();
+            $return = $pengadaan->prosesPengadaanStok($this->unit_id);
             //var_dump($return);
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", $return);
@@ -52,7 +52,7 @@ class Pengadaan extends CI_Controller
     }
     public function page($page)
     {   
-        $gudang = new Gudang();
+        $pengadaan = new PengadaanBarang();
         $title['title']="Riwayat Barang Masuk";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
@@ -65,7 +65,7 @@ class Pengadaan extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
 
-        $data = $gudang->riwayatPengadaanStok($this->unit_id, $sort,$page,$limit);
+        $data = $pengadaan->riwayatPengadaanStok($this->unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/inventaris/pengadaanriwayat', $data);

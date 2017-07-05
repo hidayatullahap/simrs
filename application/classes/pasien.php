@@ -1,21 +1,22 @@
 <?php
 require_once CLASSES_DIR  . 'dbconnection.php';
+require_once CLASSES_DIR  . 'jenispasien.php';
 
 class Pasien{
     private $db;
     private $conn;
-    private $pasien_id;
-    private $nama;
-    private $tempat_lahir;
-    private $tanggal_lahir;
-    private $alamat;
-    private $jenis_kelamin;
-    private $golongan_darah;
-    private $agama;
-    private $nomor_RM;
+    private $pasien_id;#
+    private $nama;#
+    private $tempat_lahir;#
+    private $tanggal_lahir;#
+    private $alamat;#
+    private $jenis_kelamin;#
+    private $golongan_darah;#
+    private $agama;#
+    private $nomor_RM;#
     private $jenis_pasien_id;
     private $jenis_pasien;
-    private $tanggal_daftar;
+    private $tanggal_daftar;#
 
     public function __construct() {
         $this->db = new DB();
@@ -40,10 +41,6 @@ class Pasien{
     function getAgama() { return $this->agama; }
     function setNomor_RM($nomor_RM) { $this->nomor_RM = $nomor_RM; }
     function getNomor_RM() { return $this->nomor_RM; }
-    function setJenis_pasien_id($jenis_pasien_id) { $this->jenis_pasien_id = $jenis_pasien_id; }
-    function getJenis_pasien_id() { return $this->jenis_pasien_id; }
-    function setJenis_pasien($jenis_pasien) { $this->jenis_pasien = $jenis_pasien; }
-    function getJenis_pasien() { return $this->jenis_pasien; }
     function setTanggal_daftar($tanggal_daftar) { $this->tanggal_daftar = $tanggal_daftar; }
     function getTanggal_daftar() { return $this->tanggal_daftar; }
 
@@ -74,11 +71,13 @@ class Pasien{
         $rows = [];
         $i=0;
         $object;
+        $jenisPasien;
         $nestedData = array();
         $arrayData = new ArrayObject();
         while($row = mysqli_fetch_array($result))
         {   
             $object{$i} = new Pasien();
+            $jenisPasien{$i} = new JenisPasien();
             $object{$i}->setPasien_id($row['pasien_id']);
             $object{$i}->setNama($row['nama']);
             $object{$i}->setTempat_lahir($row['tempat_lahir']);
@@ -88,8 +87,8 @@ class Pasien{
             $object{$i}->setGolongan_darah($row['golongan_darah']);
             $object{$i}->setAgama($row['agama']);
             $object{$i}->setNomor_RM($row['nomor_RM']);
-            $object{$i}->setJenis_pasien_id($row['jenis_pasien_id']);
-            $object{$i}->setJenis_pasien($row['jenis_pasien']);
+            $jenisPasien{$i}->setJenis_pasien_id($row['jenis_pasien_id']);
+            $jenisPasien{$i}->setNama_jenis_pasien($row['jenis_pasien']);
             $object{$i}->setTanggal_daftar($row['tanggal_daftar']);
 
             $nestedData['pasien_id'] = $object{$i}->getPasien_id();
@@ -101,8 +100,8 @@ class Pasien{
             $nestedData['golongan_darah'] = $object{$i}->getGolongan_darah();
             $nestedData['agama'] = $object{$i}->getAgama();
             $nestedData['nomor_RM'] = $object{$i}->getNomor_RM();
-            $nestedData['jenis_pasien_id'] = $object{$i}->getJenis_pasien_id();
-            $nestedData['jenis_pasien'] = $object{$i}->getJenis_pasien();
+            $nestedData['jenis_pasien_id'] = $jenisPasien{$i}->getJenis_pasien_id();
+            $nestedData['jenis_pasien'] = $jenisPasien{$i}->getNama_jenis_pasien();
             $nestedData['tanggal_daftar'] = $object{$i}->getTanggal_daftar();
             $arrayData[] = $nestedData;
             $object{$i}->conn->close();
@@ -180,20 +179,6 @@ class Pasien{
         $agama          = $_POST['agama'];
         $nomor_RM       = $_POST['nomor_rm'];
         $jenis_pasien_id= $_POST['optionJenisPasien'];
-
-        /*
-        UPDATE Customers
-        SET ContactName='Juan'
-        WHERE Country='Mexico';
-
-        $query =
-        "UPDATE `pasien` SET `nomor_RM` = '131312223300'
-        SET pasien(nama,tempat_lahir, tanggal_lahir, alamat,jenis_kelamin,golongan_darah, agama,nomor_RM, jenis_pasien_id)
-        VALUES ('$nama', '$tempat_lahir', '$tanggal_lahir', '$alamat', '$jenis_kelamin', '$golongan_darah', '$agama', '$nomor_RM', '$jenis_pasien_id')
-        WHERE `pasien`.`pasien_id` = $id;
-        ";
-        UPDATE `pasien` SET `nama` = 'Belaa', `tempat_lahir` = 'Lombokk', `tanggal_lahir` = '1995-04-23', `alamat` = 'Malangg', `jenis_kelamin` = 'PA', 
-        `golongan_darah` = 'AA', `agama` = 'HinduA', `nomor_RM` = '13322244555A', `jenis_pasien_id` = '2' WHERE `pasien`.`pasien_id` = 4;*/
 
         $query =
         "UPDATE `pasien` SET `nama` = '$nama', `tempat_lahir` = '$tempat_lahir', `tanggal_lahir` = '$tanggal_lahir', `alamat` = '$alamat', `jenis_kelamin` = '$jenis_kelamin', 

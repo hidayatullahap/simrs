@@ -1,10 +1,10 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'gudang.php';
 require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'barang.php';
 require_once CLASSES_DIR  . 'mastertabel.php';
+require_once CLASSES_DIR  . 'pengadaanbarang.php';
 
 class Pengadaan extends CI_Controller
 {   
@@ -33,9 +33,9 @@ class Pengadaan extends CI_Controller
             redirect('/farmasi/halamanutama', 'refresh');
 
         } else if( $this->input->post('simpan') ){
-            $gudang=new Gudang();
+            $pengadaan=new PengadaanBarang();
             $unit_id=3;
-            $return = $gudang->prosesPengadaanStok($unit_id);
+            $return = $pengadaan->prosesPengadaanStok($unit_id);
             //var_dump($return);
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", $return);
@@ -51,7 +51,7 @@ class Pengadaan extends CI_Controller
     }
     public function page($page)
     {   
-        $gudang = new Gudang();
+        $pengadaan = new PengadaanBarang();
         $unit_id = 3;
         $title['title']="Riwayat Barang Masuk";
         $limit = $_COOKIE["pageLimit"];
@@ -65,7 +65,7 @@ class Pengadaan extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
 
-        $data = $gudang->riwayatPengadaanStok($unit_id, $sort,$page,$limit);
+        $data = $pengadaan->riwayatPengadaanStok($unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/farmasi/pengadaanfarmasi', $data);

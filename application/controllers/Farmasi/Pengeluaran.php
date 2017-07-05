@@ -1,7 +1,7 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'gudang.php';
+require_once CLASSES_DIR  . 'pengeluaranbarang.php';
 require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'barang.php';
 require_once CLASSES_DIR  . 'mastertabel.php';
@@ -33,9 +33,9 @@ class Pengeluaran extends CI_Controller
             redirect('/farmasi/pengeluaran', 'refresh');
 
         } else if( $this->input->post('simpan') ){
-            $gudang=new Gudang();
+            $pengeluaran= new PengeluaranBarang();
             $unit_id=3;
-            $return = $gudang->prosesPengeluaranStok($unit_id);
+            $return = $pengeluaran->prosesPengeluaranStok($unit_id);
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", $return);
                     redirect('/farmasi/pengeluaran', 'refresh');
@@ -50,7 +50,7 @@ class Pengeluaran extends CI_Controller
     }
     public function page($page)
     {   
-        $gudang = new Gudang();
+        $pengeluaran= new PengeluaranBarang();
         $unit_id = 3;
         $title['title']="Riwayat Barang Keluar";
         $limit = $_COOKIE["pageLimit"];
@@ -64,7 +64,7 @@ class Pengeluaran extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
 
-        $data = $gudang->riwayatPengeluaranStok($unit_id, $sort,$page,$limit);
+        $data = $pengeluaran->riwayatPengeluaranStok($unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/farmasi/pengeluaranfarmasi', $data);
@@ -87,15 +87,5 @@ class Pengeluaran extends CI_Controller
         $this->load->view('navbar');
         $this->load->view('/farmasi/barangkeluar', $data);
         $this->load->view('footer');
-    }
-    
-    public function test() {
-        $gudang=new Gudang();
-        $return=$gudang->riwayatPengeluaranStok(3,"DESC",1,10);
-        var_dump($return);
-        
-        foreach ($return['data'] as $field => $values) {
-            echo $values['nama_barang'];
-        }
     }
 }

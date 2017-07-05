@@ -5,6 +5,7 @@ require_once CLASSES_DIR  . 'dbconnection.php';
 class MasterTabel{
     private $db;
     private $conn;
+    private $namatabel;
 
     public function __construct() {
         $this->db = new DB();

@@ -3,7 +3,8 @@
 }
 
 require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'gudang.php';
+require_once CLASSES_DIR  . 'pengeluaranbarang.php';
+require_once CLASSES_DIR  . 'pengadaanbarang.php';
 
 class HalamanUtama extends CI_Controller
 {   
@@ -29,18 +30,13 @@ class HalamanUtama extends CI_Controller
         $this->load->view('footer');
     }
 
-    public function ajaxPermintaanMasuk(){
-        $gudang = new Gudang();
-        echo $gudang->ajaxPermintaanMasuk();
-    }
-
-    public function ajaxStokKeluar(){
-        $gudang = new Gudang();
-        echo $gudang->ajaxStokKeluar($this->unit_id);
+   public function ajaxStokKeluar(){
+        $pengeluaran = new PengeluaranBarang();
+        echo $pengeluaran->ajaxStokKeluar($this->unit_id);
     }
 
     public function ajaxStokMasuk(){
-        $gudang = new Gudang();
-        echo $gudang->ajaxStokMasuk($this->unit_id);
+        $pengadaan = new Pengadaanbarang();
+        echo $pengadaan->ajaxStokMasuk($this->unit_id);
     }
 }

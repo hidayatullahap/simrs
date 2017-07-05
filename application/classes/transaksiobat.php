@@ -1,28 +1,21 @@
 <?php
 require_once CLASSES_DIR  . 'dbconnection.php';
+require_once CLASSES_DIR  . 'pasien.php';
 
-class Depo{
+class TransaksiObat{
     private $db;
     private $conn;
     private $generatedNomorTransaksi;
-    private $nama;
     private $total_tagihan;
     private $nomor_transaksi;
     private $tanggal_transaksi;
     private $transaksi_obat_id;
-    private $nama_satuan;
-    private $nama_barang;
-    private $jumlah;
-    private $aturan_pakai;
-    private $resep_id;
 
     public function __construct() {
         $this->db = new DB();
         $this->conn = $this->db->connect();
     }
 
-    function setNama($nama) { $this->nama = $nama; }
-    function getNama() { return $this->nama; }
     function setTotal_tagihan($total_tagihan) { $this->total_tagihan = $total_tagihan; }
     function getTotal_tagihan() { return $this->total_tagihan; }
     function setNomor_transaksi($nomor_transaksi) { $this->nomor_transaksi = $nomor_transaksi; }
@@ -31,16 +24,6 @@ class Depo{
     function getTanggal_transaksi() { return $this->tanggal_transaksi; }
     function setTransaksi_obat_id($transaksi_obat_id) { $this->transaksi_obat_id = $transaksi_obat_id; }
     function getTransaksi_obat_id() { return $this->transaksi_obat_id; }
-    function setNama_satuan($nama_satuan) { $this->nama_satuan = $nama_satuan; }
-    function getNama_satuan() { return $this->nama_satuan; }
-    function setNama_barang($nama_barang) { $this->nama_barang = $nama_barang; }
-    function getNama_barang() { return $this->nama_barang; }
-    function setJumlah($jumlah) { $this->jumlah = $jumlah; }
-    function getJumlah() { return $this->jumlah; }
-    function setAturan_pakai($aturan_pakai) { $this->aturan_pakai = $aturan_pakai; }
-    function getAturan_pakai() { return $this->aturan_pakai; }
-    function setResep_id($resep_id) { $this->resep_id = $resep_id; }
-    function getResep_id() { return $this->resep_id; }
 
     public function generateNomor($kode, $paramater){
         $md5sec=date("hi");
@@ -160,25 +143,26 @@ class Depo{
 
         $rows = [];
         $i=0;
-        $object;
+        $transaksi;
         $nestedData = array();
         $arrayData = new ArrayObject();
         while($row = mysqli_fetch_array($result))
         {   
-            $object{$i} = new Depo();
-            $object{$i}->setTransaksi_obat_id($row['transaksi_obat_id']);
-            $object{$i}->setTanggal_transaksi($row['tanggal_transaksi']);
-            $object{$i}->setNomor_transaksi($row['nomor_transaksi']);
-            $object{$i}->setTotal_tagihan($row['total_tagihan']);
-            $object{$i}->setNama($row['nama']);
+            $transaksi{$i} = new TransaksiObat();
+            $pasien{$i} = new Pasien();
+            $transaksi{$i}->setTransaksi_obat_id($row['transaksi_obat_id']);
+            $transaksi{$i}->setTanggal_transaksi($row['tanggal_transaksi']);
+            $transaksi{$i}->setNomor_transaksi($row['nomor_transaksi']);
+            $transaksi{$i}->setTotal_tagihan($row['total_tagihan']);
+            $pasien{$i}->setNama($row['nama']);
             
-            $nestedData['nama'] = $object{$i}->getNama();
-            $nestedData['total_tagihan'] = $object{$i}->getTotal_tagihan();
-            $nestedData['nomor_transaksi'] = $object{$i}->getNomor_transaksi();
-            $nestedData['tanggal_transaksi'] = $object{$i}->getTanggal_transaksi();
-            $nestedData['transaksi_obat_id'] = $object{$i}->getTransaksi_obat_id();
+            $nestedData['nama'] = $pasien{$i}->getNama();
+            $nestedData['total_tagihan'] = $transaksi{$i}->getTotal_tagihan();
+            $nestedData['nomor_transaksi'] = $transaksi{$i}->getNomor_transaksi();
+            $nestedData['tanggal_transaksi'] = $transaksi{$i}->getTanggal_transaksi();
+            $nestedData['transaksi_obat_id'] = $transaksi{$i}->getTransaksi_obat_id();
             $arrayData[] = $nestedData;
-            $object{$i}->conn->close();
+            $transaksi{$i}->conn->close();
 
             $i++;
         } 
@@ -202,64 +186,6 @@ class Depo{
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
         $data = array("data"=>$arrayData, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
-        return $data;
-    }
-
-    public function detilResep($nomorTransaksi)
-    {   
-        $data = array();
-        
-        $query =
-        "SELECT
-        resep.resep_id,
-        resep.nomor_transaksi,
-        resep.aturan_pakai,
-        resep.jumlah,
-        resep.tanggal_resep,
-        barang.nama_barang,
-        satuan.nama_satuan
-        FROM
-        resep
-        INNER JOIN barang ON resep.barang_id = barang.barang_id
-        INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
-        WHERE
-        resep.nomor_transaksi = '$nomorTransaksi'
-        ORDER BY
-        barang.nama_barang";
-        $result = $this->conn->query($query);
-
-        $rows = [];
-        $i=0;
-        $object;
-        $nestedData = array();
-        $arrayData = new ArrayObject();
-        while($row = mysqli_fetch_array($result))
-        {   
-            $object{$i} = new Depo();
-            $object{$i}->setNama_satuan($row['nama_satuan']);
-            $object{$i}->setNama_barang($row['nama_barang']);
-            $object{$i}->setTanggal_transaksi($row['tanggal_resep']);
-            $object{$i}->setJumlah($row['jumlah']);
-            $object{$i}->setAturan_pakai($row['aturan_pakai']);
-            $object{$i}->setNomor_transaksi($row['nomor_transaksi']);
-            $object{$i}->setResep_id($row['resep_id']);
-            
-            
-            $nestedData['resep_id'] = $object{$i}->getResep_id();
-            $nestedData['nomor_transaksi'] = $object{$i}->getNomor_transaksi();
-            $nestedData['aturan_pakai'] = $object{$i}->getAturan_pakai();
-            $nestedData['jumlah'] = $object{$i}->getJumlah();
-            $nestedData['tanggal_resep'] = $object{$i}->getTanggal_transaksi();
-            $nestedData['nama_barang'] = $object{$i}->getNama_barang();
-            $nestedData['nama_satuan'] = $object{$i}->getNama_satuan();
-            $arrayData[] = $nestedData;
-            $object{$i}->conn->close();
-
-            $i++;
-        } 
-        $arrayData->num_rows = $i;
-
-        $data = array("data"=>$arrayData);
         return $data;
     }
 
@@ -296,41 +222,5 @@ class Depo{
         }else{
             return false;
         }
-    }
-
-    public function printResep($nomorTransaksi)
-    {   
-        $data = array();
-        
-        $query =
-        "SELECT
-        resep.jumlah,
-        resep.tanggal_resep,
-        barang.nama_barang,
-        satuan.nama_satuan,
-        barang.harga_jual,
-        (barang.harga_jual*resep.jumlah) AS total,
-        transaksi_obat.pasien_id,
-        transaksi_obat.nomor_transaksi,
-        pasien.nama,
-        pasien.nomor_RM,
-        jenis_pasien.nama_jenis_pasien
-        FROM
-        resep
-        LEFT JOIN barang ON resep.barang_id = barang.barang_id
-        LEFT JOIN satuan ON barang.satuan_id = satuan.satuan_id
-        LEFT JOIN transaksi_obat ON transaksi_obat.nomor_transaksi = resep.nomor_transaksi
-        INNER JOIN pasien ON transaksi_obat.pasien_id = pasien.pasien_id
-        INNER JOIN jenis_pasien ON pasien.jenis_pasien_id = jenis_pasien.jenis_pasien_id
-        WHERE
-        resep.nomor_transaksi = '$nomorTransaksi'
-        ORDER BY
-        barang.nama_barang
-        ";
-
-        $result = $this->conn->query($query);
-
-        $data = array("data"=>$result);
-        return $data;
     }
 }
