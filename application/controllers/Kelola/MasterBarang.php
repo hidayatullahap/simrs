@@ -69,9 +69,12 @@ class MasterBarang extends CI_Controller
     {   
         $search = $_POST['search'];
         $barang = new Barang();
+        $master = new MasterTabel();
         $title['title']="Kelola Barang";
         
         $data = $barang->searchData($search);
+        $data['daftarGrupBarang'] = $master->getData("grup_barang");
+        $data['daftarSatuan']     = $master->getData("satuan");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterbarang', $data);

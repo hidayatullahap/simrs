@@ -165,7 +165,7 @@ class PengadaanBarang{
                             "INSERT INTO `stok` (`barang_id`, `unit_id`, `jumlah`) VALUES ('$barang_id', '$untuk_unit_id', '$jumlah_barang');";
                             $result = $conn->query($query1);
                         }
-                    }else{
+                }else{
                         $query2 =
                         "UPDATE `stok` SET `jumlah` = jumlah+$jumlah_barang WHERE `stok`.`barang_id` = $barang_id AND `stok`.`unit_id` = $untuk_unit_id; ";
                         $result = $conn->query($query2);
@@ -185,7 +185,7 @@ class PengadaanBarang{
             $conn->close();
 
             if($result){
-                return true;
+                return 'berhasil';
             }else{
                 return 'error';
             }
@@ -200,6 +200,7 @@ class PengadaanBarang{
         $conn = $db->connect();
         $page=($page*$limitItemPage)-$limitItemPage;
         
+        /*
         if (isset($_POST['tanggalAwal'])){ $tanggalAwal = $_POST['tanggalAwal']; $tanggalAwal = $tanggalAwal." 00:00:00"; $_SESSION["tanggalAwal"] = $tanggalAwal;}
         if (isset($_POST['tanggalAkhir'])){ $tanggalAkhir = $_POST['tanggalAkhir']; $tanggalAkhir = $tanggalAkhir." 23:59:59"; $_SESSION["tanggalAkhir"] = $tanggalAkhir; }
         if (isset($_POST['search'])){ $search = $_POST['search'];  $_SESSION["searchFarmasi"] = $search;} 
@@ -216,6 +217,21 @@ class PengadaanBarang{
             $sqlRangeDate = "";
         }else{
             $sqlRangeDate = "";
+        }*/
+        
+        if (isset($_POST['search'])&&isset($_POST['tanggalAwal'])&&isset($_POST['tanggalAkhir'])){ 
+            $search = $_POST['search'];  $_SESSION["searchFarmasi"] = $search;
+            $tanggalAwal = $_POST['tanggalAwal']; $tanggalAwal = $tanggalAwal." 00:00:00"; $_SESSION["tanggalAwal"] = $tanggalAwal;
+            $tanggalAkhir = $_POST['tanggalAkhir']; $tanggalAkhir = $tanggalAkhir." 23:59:59"; $_SESSION["tanggalAkhir"] = $tanggalAkhir; 
+        }else if (isset($_POST['tanggalAwal'])&&isset($_POST['tanggalAkhir'])){ 
+            $tanggalAwal = $_POST['tanggalAwal']; $tanggalAwal = $tanggalAwal." 00:00:00"; $_SESSION["tanggalAwal"] = $tanggalAwal;
+            $tanggalAkhir = $_POST['tanggalAkhir']; $tanggalAkhir = $tanggalAkhir." 23:59:59"; $_SESSION["tanggalAkhir"] = $tanggalAkhir;
+        } 
+        
+        if(!isset($tanggalAwal) || !isset($tanggalAkhir)){
+            $sqlRangeDate = "";
+        }else if(isset($tanggalAwal) && isset($tanggalAkhir)){
+            $sqlRangeDate = "AND pengadaan_barang.tanggal_masuk BETWEEN '$tanggalAwal' AND '$tanggalAkhir' ";
         }
 
         if(isset($search)){
@@ -223,6 +239,7 @@ class PengadaanBarang{
         }else{
             $sqlSearch = "";
         }
+        
 
         $data = array();
         

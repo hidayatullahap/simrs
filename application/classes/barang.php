@@ -1,11 +1,11 @@
 <?php
 require_once CLASSES_DIR  . 'dbconnection.php';
+require_once CLASSES_DIR  . 'satuan.php';
+require_once CLASSES_DIR  . 'grupbarang.php';
 
 class Barang{
     private $barang_id;
     private $nama_barang;
-    private $grup_barang_id;
-    private $satuan_id;
     private $merek_model_ukuran;
     private $harga_jual;
     private $tanggal_pencatatan;
@@ -14,10 +14,6 @@ class Barang{
     function getBarang_id() { return $this->barang_id; }
     function setNama_barang($nama_barang) { $this->nama_barang = $nama_barang; }
     function getNama_barang() { return $this->nama_barang; }
-    function setGrup_barang_id($grup_barang_id) { $this->grup_barang_id = $grup_barang_id; }
-    function getGrup_barang_id() { return $this->grup_barang_id; }
-    function setSatuan_id($satuan_id) { $this->satuan_id = $satuan_id; }
-    function getSatuan_id() { return $this->satuan_id; }
     function setMerek_model_ukuran($merek_model_ukuran) { $this->merek_model_ukuran = $merek_model_ukuran; }
     function getMerek_model_ukuran() { return $this->merek_model_ukuran; }
     function setHarga_jual($harga_jual) { $this->harga_jual = $harga_jual; }
@@ -99,6 +95,7 @@ class Barang{
         INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
         INNER JOIN unit ON stok.unit_id = unit.unit_id
         WHERE
+        unit.nama_unit != 'Gudang Farmasi' AND
         barang.nama_barang LIKE '%$barang_search%'
         AND unit.nama_unit LIKE '%$unit_search%' 
         ORDER BY `barang`.`nama_barang` 

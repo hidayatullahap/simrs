@@ -6,6 +6,7 @@ require_once CLASSES_DIR  . 'pengguna.php';
 require_once CLASSES_DIR  . 'pengeluaranbarang.php';
 require_once CLASSES_DIR  . 'pengadaanbarang.php';
 require_once CLASSES_DIR  . 'permintaanbarang.php';
+require_once CLASSES_DIR  . 'stok.php';
 
 class HalamanUtama extends CI_Controller
 {   
@@ -43,6 +44,16 @@ class HalamanUtama extends CI_Controller
     public function ajaxStokMasuk(){
         $pengadaan = new Pengadaanbarang();
         echo $pengadaan->ajaxStokMasuk(3);
+    }
+
+    public function ajaxNearExpired(){
+        $stok = new Stok();
+        echo $stok->ajaxNearExpired(3);
+    }
+
+    public function ajaxRunningOutStock(){
+        $stok = new Stok();
+        echo $stok->ajaxRunningOutStock(3);
     }
 
     public function test() {

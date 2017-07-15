@@ -12,6 +12,7 @@ class PermintaanBarang{
     private $jumlah_disetujui;
     private $status;
     private $tanggal_permintaan;
+    private $jumlah_stok;
 
     function setPermintaan_stok_id($permintaan_stok_id) { $this->permintaan_stok_id = $permintaan_stok_id; }
     function getPermintaan_stok_id() { return $this->permintaan_stok_id; }
@@ -25,6 +26,8 @@ class PermintaanBarang{
     function getStatus() { return $this->status; }
     function setTanggal_permintaan($tanggal_permintaan) { $this->tanggal_permintaan = $tanggal_permintaan; }
     function getTanggal_permintaan() { return $this->tanggal_permintaan; }
+    function setJumlah_stok($jumlah_stok) { $this->jumlah_stok = $jumlah_stok; }
+    function getJumlah_stok() { return $this->jumlah_stok; }
 
     public function ajaxPermintaanMasuk()
     {   
@@ -169,12 +172,12 @@ class PermintaanBarang{
             $object{$i}->setPermintaan_stok_id($row['permintaan_stok_id']);
             $object{$i}->setNomor_permintaan($row['nomor_permintaan']);
             $barang{$i}->setBarang_id($row['barang_id']);
-            $unit{$i}->setDari_unit_id($row['dari_unit_id']);
+            $unit{$i}->setUnit_id($row['dari_unit_id']);
             $object{$i}->setJumlah_permintaan($row['jumlah_permintaan']);
             $object{$i}->setJumlah_disetujui($row['jumlah_disetujui']);
             $object{$i}->setStatus($row['status']);
             $object{$i}->setTanggal_permintaan($row['tanggal_permintaan']);
-            $object{$i}->setStok_tersedia($row['stok_tersedia']);
+            $object{$i}->setJumlah_stok($row['stok_tersedia']);
             $barang{$i}->setNama_barang($row['nama_barang']);
             $satuan{$i}->setNama_satuan($row['nama_satuan']);
             $grupbarang{$i}->setNama_grup_barang($row['nama_grup_barang']);
@@ -183,18 +186,17 @@ class PermintaanBarang{
             $nestedData['permintaan_stok_id'] = $object{$i}->getPermintaan_stok_id();
             $nestedData['nomor_permintaan'] = $object{$i}->getNomor_permintaan();
             $nestedData['barang_id'] = $barang{$i}->getBarang_id();
-            $nestedData['dari_unit_id'] = $unit{$i}->getDari_unit_id();
+            $nestedData['dari_unit_id'] = $unit{$i}->getUnit_id();
             $nestedData['jumlah_permintaan'] = $object{$i}->getJumlah_permintaan();
             $nestedData['jumlah_disetujui'] = $object{$i}->getJumlah_disetujui();
             $nestedData['status'] = $object{$i}->getStatus();
             $nestedData['tanggal_permintaan'] = $object{$i}->getTanggal_permintaan();
-            $nestedData['stok_tersedia'] = $object{$i}->getStok_tersedia();
+            $nestedData['stok_tersedia'] = $object{$i}->getJumlah_stok();
             $nestedData['nama_barang'] = $barang{$i}->getNama_barang();
             $nestedData['nama_satuan'] = $satuan{$i}->getNama_satuan();
             $nestedData['nama_grup_barang'] = $grupbarang{$i}->getNama_grup_barang();
             $nestedData['nama_unit'] = $unit{$i}->getNama_unit();
             $arrayData[] = $nestedData;
-            $object{$i}->conn->close();
 
             $i++;
         } 

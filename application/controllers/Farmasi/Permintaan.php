@@ -2,7 +2,7 @@
     exit('No direct script access allowed');
 }
 require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'gudang.php';
+require_once CLASSES_DIR  . 'permintaanbarang.php';
 class Permintaan extends CI_Controller
 {   
     function __construct()
@@ -28,10 +28,10 @@ class Permintaan extends CI_Controller
 
     public function detil($unit_id, $nomorPermintaan)
     {   
-        $gudang = new Gudang();
+        $permintaan = new PermintaanBarang();
         $title['title']="Layanan Permintaan Masuk";
         $this->session->set_userdata('navbar_status', 'halamanutamafarmasi');
-        $data = $gudang->getDetil($unit_id, $nomorPermintaan);
+        $data = $permintaan->getDetil($unit_id, $nomorPermintaan);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/farmasi/detilpermintaan', $data);
@@ -42,10 +42,10 @@ class Permintaan extends CI_Controller
     {   
         $this->session->set_userdata('navbar_status', 'riwayatpermintaan');
         $unit_id=3;
-        $gudang = new Gudang();
+        $permintaan = new PermintaanBarang();
         $title['title']="Detil Permintaan Masuk";
         
-        $data = $gudang->getDetil($unit_id, $nomorPermintaan);
+        $data = $permintaan->getDetil($unit_id, $nomorPermintaan);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/farmasi/detilitempermintaan', $data);
@@ -62,7 +62,7 @@ class Permintaan extends CI_Controller
             echo "permintaan ke ".$i." Dengan Jumlah = ".$_POST['jumlah'.$i];
             echo "<br>";
         }*/
-        $gudang = new Gudang();
+        $permintaan = new PermintaanBarang();
         $unit_id=3;
         for ($i=1; $i <= $jumlahItem ; $i++) { 
             $id=$_POST['idpermintaan'.$i];
@@ -71,10 +71,10 @@ class Permintaan extends CI_Controller
             $untuk_unit_id = $_POST['dariunitid'.$i];
             $jumlah = $_POST['jumlah'.$i];
             
-            $gudang->prosesPermintaan($id, $idbarang, $unit_id, $untuk_unit_id, $jumlah);
+            $permintaan->prosesPermintaan($id, $idbarang, $unit_id, $untuk_unit_id, $jumlah);
         }
-        //$gudang = new Gudang();
-        //var_dump($gudang->prosesPermintaan($jumlahItem));
+        //$permintaan = new PermintaanBarang();
+        //var_dump($permintaan->prosesPermintaan($jumlahItem));
         redirect('farmasi/halamanutama');
     }
 }

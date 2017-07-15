@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/kelola/kelolabarang'); ?>"><font color='black'><strong>Cari Barang</strong></font></a>
+            <a href="<?php echo base_url('inventaris/caribarang'); ?>"><font color='black'><strong>Cari Barang</strong></font></a>
         </h1>
     </section>
 

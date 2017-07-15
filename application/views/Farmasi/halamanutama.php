@@ -66,6 +66,39 @@
                             </table>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="well">
+                        <h4 class="text-success">Obat yang hampir habis masa berlakunya</h4>
+                        <br>
+                        <table class="display responsive no-wrap" id="nearExpired" cellspacing="0" width="100%" style="text-align: left;">
+                                <thead>
+                                <tr>
+                                    <th>Kadaluarsa Dalam</th>
+                                    <th>Nama barang</th>
+                                    <th>Nomor Batch</th>
+                                    <th>Jumlah</th>
+                                    <th>Tanggal Kadaluarsa</th>
+                                    <th>Tanggal Barang Masuk</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="well">
+                        <h4 class="text-success">Stok Obat Mau Habis</h4>
+                        <br>
+                        <table class="display responsive no-wrap" id="runningOut" cellspacing="0" width="100%" style="text-align: left;">
+                                <thead>
+                                <tr>
+                                    <th>Jumlah</th>
+                                    <th>Nama barang</th>
+                                    <th>Satuan</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
                 </div><!--/row-->    
             </div><!--/col-12-->
             </div><!--/row-->
@@ -165,6 +198,45 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
         setInterval( function () {
             table_antrianUtama.ajax.reload(null, false);
         }, 10000 );
+    });
+
+    $(document).ready(function () {
+        var table_antrianUtama = $('#nearExpired').DataTable( {
+            "bSort": false,
+            "serverSide": true,
+            "info": false,
+            //"processing": true,
+            "ajax":{
+                url :"<?php Print( base_url('farmasi/halamanutama/ajaxnearexpired') ); ?>",
+                type: "post",
+                error: function(){
+                }
+            },
+            "language": {
+                "emptyTable": "Tidak ada data obat expired"
+            }
+        } );
+    });
+
+    $(document).ready(function () {
+        var table_antrianUtama = $('#runningOut').DataTable( {
+            "bSort": false,
+            "serverSide": true,
+            "info": false,
+            //"processing": true,
+            "ajax":{
+                url :"<?php Print( base_url('farmasi/halamanutama/ajaxrunningoutstock') ); ?>",
+                type: "post",
+                error: function(){
+                }
+            },
+            "language": {
+                "emptyTable": "Tidak ada data obat expired"
+            }
+        } );
+        setInterval( function () {
+            table_antrianUtama.ajax.reload(null, false);
+        }, 100000 );
     });
 </script>
 

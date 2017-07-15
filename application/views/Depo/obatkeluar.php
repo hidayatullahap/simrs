@@ -292,6 +292,7 @@
                                         $data = array(
                                             'name' => 'jumlah',
                                             'autocomplete' => 'off',
+                                            'placeholder' => 'Jumlah',
                                             'id' => 'jumlah',
                                             'type' => 'number',
                                             'class' => 'form-control'
@@ -437,7 +438,7 @@ $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
         cell8.innerHTML = "<input hidden name=\"tabel_nama_pasien[]\" value=\"" + nama_pasien.value + "\" class=\"full-width\" readonly>"+ nama_pasien.value;
         td++;
         cell9.innerHTML = "<input hidden name=\"tabel_harga_barang[]\" value=\"" + harga_barang_temp + "\" class=\"full-width\" readonly>"+ harga_barang_temp;
-        tempValue = parseInt(harga_barang_temp)*parseInt(jumlah.value);;
+        tempValue = parseInt(harga_barang_temp)*parseInt(jumlah.value);
         temp=temp+tempValue;
         totalShow.value = temp;
 

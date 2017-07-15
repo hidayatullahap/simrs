@@ -2,7 +2,7 @@
     exit('No direct script access allowed');
 }
 require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'resep.php';
+require_once CLASSES_DIR  . 'detiltransaksi.php';
 require_once CLASSES_DIR  . 'transaksiobat.php';
 
 class ResepKeluar extends CI_Controller
@@ -50,8 +50,8 @@ class ResepKeluar extends CI_Controller
     public function detilTransaksi($nomorTransaksi)
     {   
         $title['title']="Detil Permintaan Masuk";
-        $resep = new Resep();
-        $data = $resep->detilResep($nomorTransaksi);
+        $detil = new DetilTransaksi();
+        $data = $detil->detilResep($nomorTransaksi);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/depo/detilresep', $data);
@@ -61,8 +61,8 @@ class ResepKeluar extends CI_Controller
     public function printresep($nomorTransaksi)
     {   
         $title['title']="Print Resep";
-        $resep = new Resep();
-        $data = $resep->printResep($nomorTransaksi);
+        $detil = new DetilTransaksi();
+        $data = $detil->printResep($nomorTransaksi);
         $this->load->view('header',$title);
         $this->load->view('depo/printresep',$data);
     }

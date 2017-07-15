@@ -336,5 +336,280 @@ class Stok{
         return $data;
     }
     
+    public function ajaxNearExpired($unit_id)
+    {   
+        date_default_timezone_set('Asia/Jakarta');
+        $db = new DB();
+        $conn = $db->connect();
+        $requestData = $_REQUEST;
+        $page = $requestData['start'];
+        $limitItemPage = $requestData['length'];
+        $data = array();
+        
+        $query =
+        "SELECT
+        barang.nama_barang,
+        pengadaan_barang.jumlah_barang,
+        pengadaan_barang.tanggal_kadaluarsa,
+        pengadaan_barang.tanggal_masuk,
+        pengadaan_barang.no_batch
+        FROM
+        barang
+        INNER JOIN pengadaan_barang ON pengadaan_barang.barang_id = barang.barang_id
+        WHERE
+        barang.grup_barang_id = 1
+        #pengadaan_barang.tanggal_kadaluarsa > '1970-01-01'
+        AND pengadaan_barang.tanggal_kadaluarsa >= NOW()
+        AND pengadaan_barang.tanggal_kadaluarsa < DATE_SUB(NOW(), INTERVAL -3 MONTH)
+        AND pengadaan_barang.untuk_unit_id = $unit_id
+        OR (
+        barang.grup_barang_id = 4
+        AND pengadaan_barang.tanggal_kadaluarsa >= NOW()
+        AND pengadaan_barang.tanggal_kadaluarsa < DATE_SUB(NOW(), INTERVAL -3 MONTH)
+        AND pengadaan_barang.untuk_unit_id = 3
+        )
+        ORDER BY
+        pengadaan_barang.tanggal_kadaluarsa ASC
+        LIMIT $page, $limitItemPage";
+        
+        $sql = $conn->query("SELECT COUNT(*) FROM barang 
+        INNER JOIN pengadaan_barang 
+        ON pengadaan_barang.barang_id = barang.barang_id 
+        WHERE barang.grup_barang_id = 1
+        AND pengadaan_barang.tanggal_kadaluarsa >= NOW()
+        AND pengadaan_barang.tanggal_kadaluarsa < DATE_SUB(NOW(), INTERVAL -3 MONTH)
+        AND pengadaan_barang.untuk_unit_id = $unit_id
+        OR (
+        barang.grup_barang_id = 4
+        AND pengadaan_barang.tanggal_kadaluarsa >= NOW()
+        AND pengadaan_barang.tanggal_kadaluarsa < DATE_SUB(NOW(), INTERVAL -3 MONTH)
+        AND pengadaan_barang.untuk_unit_id = $unit_id
+        )");
+
+        if( !empty($requestData['search']['value']) ) {
+            $query =
+            "SELECT
+            barang.nama_barang,
+            pengadaan_barang.jumlah_barang,
+            pengadaan_barang.tanggal_kadaluarsa,
+            pengadaan_barang.tanggal_masuk,
+            pengadaan_barang.no_batch
+            FROM
+            barang
+            INNER JOIN pengadaan_barang ON pengadaan_barang.barang_id = barang.barang_id
+            WHERE
+            barang.grup_barang_id = 1
+            AND pengadaan_barang.untuk_unit_id = $unit_id
+            AND pengadaan_barang.tanggal_kadaluarsa >= NOW()
+            AND pengadaan_barang.tanggal_kadaluarsa < DATE_SUB(NOW(), INTERVAL -3 MONTH)
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
+            OR (
+            barang.grup_barang_id = 4
+            AND pengadaan_barang.tanggal_kadaluarsa >= NOW()
+            AND pengadaan_barang.tanggal_kadaluarsa < DATE_SUB(NOW(), INTERVAL -3 MONTH)
+            AND pengadaan_barang.untuk_unit_id = $unit_id
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
+            )
+            ORDER BY
+            pengadaan_barang.tanggal_kadaluarsa ASC
+            LIMIT $page, $limitItemPage";
+
+            $sql = $conn->query("SELECT COUNT(*) FROM pengadaan_barang 
+            INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id
+            WHERE barang.grup_barang_id = 1
+            AND pengadaan_barang.untuk_unit_id = $unit_id
+            AND pengadaan_barang.tanggal_kadaluarsa >= NOW()
+            AND pengadaan_barang.tanggal_kadaluarsa < DATE_SUB(NOW(), INTERVAL -3 MONTH)
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
+            OR (
+            barang.grup_barang_id = 4
+            AND pengadaan_barang.tanggal_kadaluarsa >= NOW()
+            AND pengadaan_barang.tanggal_kadaluarsa < DATE_SUB(NOW(), INTERVAL -3 MONTH)
+            AND pengadaan_barang.untuk_unit_id = $unit_id
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
+            )");
+        }
+        
+        $result = $conn->query($query);
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $nestedData = array();
+            $rowDate=strtotime($row['tanggal_masuk']);
+            $rowKadaluarsa=strtotime($row['tanggal_kadaluarsa']);
+            #hitung waktu kadaluarsa
+            $exp = $this->hitungWaktuKadaluarsa($row['tanggal_kadaluarsa']);
+            $dayExp = $exp[0];
+            $monthExp = $exp[1];
+            if($monthExp>1){
+                $dayMonthExp = $monthExp." Bulan ". $dayExp." Hari";
+                $spanDayMonthExp = "<td><h4><span class='label label-success'>".$dayMonthExp."</span></h4></td>";
+            }else if($monthExp>0){
+                $dayMonthExp = $monthExp." Bulan ". $dayExp." Hari";
+                $spanDayMonthExp = "<td><h4><span class='label label-warning'>".$dayMonthExp."</span></h4></td>";
+            }else{
+                $dayMonthExp = $dayExp." Hari";
+                $spanDayMonthExp = "<td><h4><span class='label label-danger'>".$dayMonthExp."</span></h4></td>";
+            }
+
+            $nestedData[] = $spanDayMonthExp;
+            $nestedData[] = $row['nama_barang'];
+            $nestedData[] = $row['no_batch'];
+            $nestedData[] = $row['jumlah_barang'];
+            $nestedData[] = date("d-M-Y ", $rowKadaluarsa);
+            $nestedData[] = date("d-M-Y H:i:s", $rowDate);
+            $data[] = $nestedData;
+        }
+        
+        
+        $row = $sql->fetch_row();
+        $count = $row[0];
+        $totalData = $count;
+        $conn->close();
+        $datajson = array("draw" => intval( $requestData['draw'] ), "recordsTotal"=>$totalData, "recordsFiltered"=>$totalData, "data"=>$data);
+        echo json_encode($datajson);
+    }
+
+    public function hitungWaktuKadaluarsa($tanggalKadaluarsaBarang){
+        $tanggalExp = strtotime($tanggalKadaluarsaBarang);
+        $tanggalNow = strtotime(date('Y-m-d', time() + 86400));
+
+        $dayExp = date("d", $tanggalExp);
+        $monthExp = date("m", $tanggalExp);
+
+        $dayNow = date("d", $tanggalNow);
+        $monthNow = date("m", $tanggalNow);
+
+        /*
+        $diffDay = $dayExp - $dayNow;
+        $diffMonth = $monthExp - $monthNow;
+        */
+        if($monthExp==$monthNow){
+            $diff = $tanggalExp - $tanggalNow;
+            $diffDay = date("d", $diff);
+            $diffMonth = 0;
+        }else{
+            $diff = $tanggalExp - $tanggalNow;
+            $diffDay = date("d", $diff);
+            $diffMonth = date("m", $diff);
+        }
+        $arrayDateDiff[0] = $diffDay;
+        $arrayDateDiff[1] = $diffMonth;
+        return $arrayDateDiff;
+    }
+    
+    public function ajaxRunningOutStock($unit_id)
+    {   
+        $db = new DB();
+        $conn = $db->connect();
+        $requestData = $_REQUEST;
+        $page = $requestData['start'];
+        $limitItemPage = $requestData['length'];
+        $data = array();
+        
+        $query =
+        "SELECT
+        stok.jumlah,
+        barang.nama_barang,
+        satuan.nama_satuan
+        FROM
+        stok
+        INNER JOIN barang ON stok.barang_id = barang.barang_id
+        INNER JOIN unit ON stok.unit_id = unit.unit_id
+        INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
+        INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
+        WHERE
+        unit.unit_id = $unit_id AND
+        barang.grup_barang_id = 4
+        HAVING 
+        stok.jumlah < 500
+        ORDER BY
+        stok.jumlah ASC
+        LIMIT $page, $limitItemPage";
+        
+        $sql = $conn->query("SELECT count(*)
+        FROM (
+        SELECT
+        stok.jumlah,
+        barang.nama_barang,
+        satuan.nama_satuan
+        FROM
+        stok
+        INNER JOIN barang ON stok.barang_id = barang.barang_id
+        INNER JOIN unit ON stok.unit_id = unit.unit_id
+        INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
+        INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
+        WHERE
+        unit.unit_id = $unit_id AND
+        barang.grup_barang_id = 4
+        HAVING 
+        stok.jumlah < 500) AS x");
+
+        if( !empty($requestData['search']['value']) ) {
+            $query =
+            "SELECT
+            stok.jumlah,
+            barang.nama_barang,
+            satuan.nama_satuan
+            FROM
+            stok
+            INNER JOIN barang ON stok.barang_id = barang.barang_id
+            INNER JOIN unit ON stok.unit_id = unit.unit_id
+            INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
+            INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
+            WHERE
+            unit.unit_id = $unit_id AND
+            barang.grup_barang_id = 4
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
+            HAVING 
+            stok.jumlah < 500
+            ORDER BY
+            stok.jumlah ASC
+            LIMIT $page, $limitItemPage";
+
+            $sql = $conn->query("SELECT count(*)
+            FROM (
+            SELECT
+            stok.jumlah,
+            barang.nama_barang,
+            satuan.nama_satuan
+            FROM
+            stok
+            INNER JOIN barang ON stok.barang_id = barang.barang_id
+            INNER JOIN unit ON stok.unit_id = unit.unit_id
+            INNER JOIN grup_barang ON barang.grup_barang_id = grup_barang.grup_barang_id
+            INNER JOIN satuan ON barang.satuan_id = satuan.satuan_id
+            WHERE
+            unit.unit_id = $unit_id AND
+            barang.grup_barang_id = 4
+            AND barang.nama_barang LIKE '%".$requestData['search']['value']."%'
+            HAVING 
+            stok.jumlah < 500) AS x");
+        }
+        
+        $result = $conn->query($query);
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $nestedData = array();
+            $jumlah = $row['jumlah'];
+            if($jumlah>0 && $jumlah <=200){
+                $spanJumlah = "<td><h4><span class='label label-danger'>".$jumlah."</span></h4></td>";
+            }else if($jumlah>200 && $jumlah <=300){
+                $spanJumlah = "<td><h4><span class='label label-warning'>".$jumlah."</span></h4></td>";
+            }else{
+                $spanJumlah = "<td><h4><span class='label label-success'>".$jumlah."</span></h4></td>";
+            }
+            $nestedData[] = $spanJumlah;
+            $nestedData[] = $row['nama_barang'];
+            $nestedData[] = $row['nama_satuan'];
+            $data[] = $nestedData;
+        }
+        
+        $row = $sql->fetch_row();
+        $count = $row[0];
+        $totalData = $count;
+        $conn->close();
+        $datajson = array("draw" => intval( $requestData['draw'] ), "recordsTotal"=>$totalData, "recordsFiltered"=>$totalData, "data"=>$data);
+        echo json_encode($datajson);
+    }
 }
 ?>

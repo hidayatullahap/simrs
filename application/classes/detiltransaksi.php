@@ -4,15 +4,15 @@ require_once CLASSES_DIR  . 'satuan.php';
 require_once CLASSES_DIR  . 'barang.php';
 require_once CLASSES_DIR  . 'aturanpakai.php';
 
-class Resep{
-    private $resep_id;
+class DetilTransaksi{
+    private $detil_id;
     private $nomor_transaksi;
     private $aturan_pakai;
     private $jumlah;
     private $tanggal_resep;
 
-    function setResep_id($resep_id) { $this->resep_id = $resep_id; }
-    function getResep_id() { return $this->resep_id; }
+    function setDetil_id($detil_id) { $this->detil_id = $detil_id; }
+    function getDetil_id() { return $this->detil_id; }
     function setNomor_transaksi($nomor_transaksi) { $this->nomor_transaksi = $nomor_transaksi; }
     function getNomor_transaksi() { return $this->nomor_transaksi; }
     function setAturan_pakai($aturan_pakai) { $this->aturan_pakai = $aturan_pakai; }
@@ -49,29 +49,28 @@ class Resep{
 
         $rows = [];
         $i=0;
-        $resep;
+        $detil;
         $nestedData = array();
         $arrayData = new ArrayObject();
         while($row = mysqli_fetch_array($result))
         {   
-            $resep{$i} = new Resep();
+            $detil{$i} = new DetilTransaksi();
             $satuan{$i} = new Satuan();
             $barang{$i} = new Barang();
             $aturanPakai{$i} = new AturanPakai();
             $satuan{$i}->setNama_satuan($row['nama_satuan']);
             $barang{$i}->setNama_barang($row['nama_barang']);
-            $resep{$i}->setTanggal_resep($row['tanggal_resep']);
-            $resep{$i}->setJumlah($row['jumlah']);
+            $detil{$i}->setTanggal_resep($row['tanggal_resep']);
+            $detil{$i}->setJumlah($row['jumlah']);
             $aturanPakai{$i}->setNama_aturan_pakai($row['aturan_pakai']);
-            $resep{$i}->setNomor_transaksi($row['nomor_transaksi']);
-            $resep{$i}->setResep_id($row['resep_id']);
+            $detil{$i}->setNomor_transaksi($row['nomor_transaksi']);
+            $detil{$i}->setDetil_id($row['resep_id']);
             
-            
-            $nestedData['resep_id'] = $resep{$i}->getResep_id();
-            $nestedData['nomor_transaksi'] = $resep{$i}->getNomor_transaksi();
+            $nestedData['resep_id'] = $detil{$i}->getDetil_id();
+            $nestedData['nomor_transaksi'] = $detil{$i}->getNomor_transaksi();
             $nestedData['aturan_pakai'] = $aturanPakai{$i}->getNama_aturan_pakai();
-            $nestedData['jumlah'] = $resep{$i}->getJumlah();
-            $nestedData['tanggal_resep'] = $resep{$i}->getTanggal_resep();
+            $nestedData['jumlah'] = $detil{$i}->getJumlah();
+            $nestedData['tanggal_resep'] = $detil{$i}->getTanggal_resep();
             $nestedData['nama_barang'] = $barang{$i}->getNama_barang();
             $nestedData['nama_satuan'] = $satuan{$i}->getNama_satuan();
             $arrayData[] = $nestedData;
@@ -120,5 +119,16 @@ class Resep{
         $data = array("data"=>$result);
         return $data;
     }
+
+    /*
+    public function addGroup(TransaksiObat $group) {
+        $this->groups[] = $group;
+        $group->setTotal_tagihan($this);
+    }
+
+    public function addNomorTransaksi(TransaksiObat $nomor) {
+        $this->nomor = $nomor;
+        $nomor->setNomor_transaksi($this);
+    }*/
 }
 ?>

@@ -9,7 +9,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            <a href="<?php echo base_url('/kelola/masteraturanpakaiobat'); ?>"><font color='black'><strong>Kelola - Aturan Pakai Obat</strong></font></a>
+            <a href="<?php echo base_url('/kelola/kelolaaturanpakaiobat'); ?>"><font color='black'><strong>Kelola - Aturan Pakai Obat</strong></font></a>
         </h1>
     </section>
 
@@ -23,7 +23,7 @@
                             <div class="col-xs-2">
                                 <button type="button" class="btn btn-info btn-md" id="buttonTambah" data-toggle="modal" data-target="#addForm">Tambah Aturan Pakai Obat</button>
                             </div>
-                            <form method="post" action="<?php echo base_url('/kelola/masteraturanpakaiobat/search') ?>">
+                            <form method="post" action="<?php echo base_url('/kelola/kelolaaturanpakaiobat/search') ?>">
                             <div class="input-group col-xs-2" style="float: right;padding-right:15px;">
                             <input  type="text" class="form-control" autocomplete="off" placeholder="Cari nama aturan pakai obat" name="search" id="search">
                                 <div class="input-group-btn">
@@ -67,7 +67,7 @@
                         }
                     ?>
 
-                    <form method="post" id="formModal" action="<?php echo base_url('/kelola/masteraturanpakaiobat/insertdata') ?>">
+                    <form method="post" id="formModal" action="<?php echo base_url('/kelola/kelolaaturanpakaiobat/insertdata') ?>">
                     <div class="modal fade" id="addForm" role="dialog">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
@@ -126,7 +126,7 @@
                             require_once(CLASSES_DIR  . "pagination.php");
                             $entity = new Pagination();
                         if (isset($totalPages)) {
-                            $entity->tampilkan('kelola/masteraturanpakaiobat',$currentPage, $totalPages);
+                            $entity->tampilkan('kelola/kelolaaturanpakaiobat',$currentPage, $totalPages);
                         }
                         ?>
                     </div>
@@ -172,7 +172,7 @@
         
         var modal = $(this)
         modal.find('.modal-Nama').text(dataNama)
-        document.getElementById("deletelink").href="<?php echo base_url('kelola/masteraturanpakaiobat/deletedata/'); ?>"+"/"+dataID;
+        document.getElementById("deletelink").href="<?php echo base_url('kelola/kelolaaturanpakaiobat/deletedata/'); ?>"+"/"+dataID;
     });
 </script>
 
@@ -185,7 +185,7 @@ $(document).ready(function(){
     $("#buttonTambah").click(function(){
         document.getElementById("headerModal").innerHTML = "Tambah Aturan Pakai Obat";
         document.getElementById("submitModal").innerHTML = "Simpan";
-        document.getElementById("formModal").action ="<?php echo base_url('/kelola/masteraturanpakaiobat/insertdata') ?>";
+        document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolaaturanpakaiobat/insertdata') ?>";
     });
 });
 
@@ -196,7 +196,7 @@ function editModal(row) {
 
     document.getElementById("headerModal").innerHTML = "Edit Aturan Pakai Obat";
     document.getElementById("submitModal").innerHTML = "Simpan Perubahan";
-    document.getElementById("formModal").action ="<?php echo base_url('/kelola/masteraturanpakaiobat/editdata') ?>"+"/"+id;
+    document.getElementById("formModal").action ="<?php echo base_url('/kelola/kelolaaturanpakaiobat/editdata') ?>"+"/"+id;
     $("#addForm").modal();
 }
 </script>

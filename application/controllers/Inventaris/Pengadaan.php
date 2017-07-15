@@ -38,16 +38,19 @@ class Pengadaan extends CI_Controller
             $pengadaan = new PengadaanBarang();
             $return = $pengadaan->prosesPengadaanStok($this->unit_id);
             //var_dump($return);
+            //if($return=='error'){ echo "error nih";}
+            
             if($return==false){
-                    $this->pesan("Tabel tidak boleh kosong", $return);
-                    redirect('/inventaris/pengadaan', 'refresh');
-                }else if($return==true){
-                    $this->pesan("Pengadaan barang berhasil", $return);
-                    redirect('/inventaris/pengadaan', 'refresh');
-                }else{
-                    $this->pesan("Error server", $return);
-                    redirect('/inventaris/pengadaan', 'refresh');
+                $this->pesan("Tabel tidak boleh kosong", $return);
+                redirect('/inventaris/pengadaan', 'refresh');
+            }else if($return=='berhasil'){
+                $this->pesan("Pengadaan barang berhasil", $return);
+                redirect('/inventaris/pengadaan', 'refresh');
+            }else if($return=='error'){
+                $this->pesan("Error server", $return);
+                redirect('/inventaris/pengadaan', 'refresh');
             }
+
         }
     }
     public function page($page)
