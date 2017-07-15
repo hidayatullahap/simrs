@@ -2,11 +2,6 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'antrian.php';
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'pasien.php';
-require_once CLASSES_DIR  . 'mastertabel.php';
-
 class LayananPasien extends CI_Controller
 {   
     function __construct()
@@ -14,9 +9,12 @@ class LayananPasien extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('antrianModel');
+        $this->load->model('penggunaModel');
+        $this->load->model('pasienModel');
+        $this->load->model('masterTabelModel');
         $this->session->set_userdata('navbar_status', 'daftarpasien');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -28,9 +26,6 @@ class LayananPasien extends CI_Controller
 
     public function page($page=null)
     {   
-        $antrian = new Antrian();
-        $master = new MasterTabel();
-
         if(!isset($page)){
             $page=1;
         }
@@ -44,9 +39,9 @@ class LayananPasien extends CI_Controller
         if(!isset($sort)){ 
             $sort = $this->default_setting->pagination('SORT'); 
         }
-        $data = $antrian->getPasienWithStatus($sort, $page, $limit);
-        $data['daftarUnit'] = $master->getData("unit");
-        $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
+        $data = $this->antrianModel->getPasienWithStatus($sort, $page, $limit);
+        $data['daftarUnit'] = $this->masterTabelModel->getData("unit");
+        $data['daftarJenisPasien'] = $this->masterTabelModel->getData("jenis_pasien");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/loket/layananpasien', $data);
@@ -55,11 +50,9 @@ class LayananPasien extends CI_Controller
 
     public function detil($id=null)
     {   
-        $pasien = new Pasien();
-        //$url="pasien";
         $title['title']="Layanan Pasien";
         
-        $data = $pasien->getOne($id);
+        $data = $this->pasienModel->getOne($id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/loket/layananpasien', $data);
@@ -70,13 +63,11 @@ class LayananPasien extends CI_Controller
     public function search($search=null)
     {   
         $search = $_POST['search'];
-        $antrian = new Antrian();
-        $master = new MasterTabel();
         $title['title']="Layanan Pasien";
         
-        $data = $antrian->searchPasienWithStatus($search);
-        $data['daftarUnit'] = $master->getData("unit");
-        $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
+        $data = $this->antrianModel->searchPasienWithStatus($search);
+        $data['daftarUnit'] = $this->masterTabelModel->getData("unit");
+        $data['daftarJenisPasien'] = $this->masterTabelModel->getData("jenis_pasien");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/loket/layananpasien', $data);
@@ -84,29 +75,25 @@ class LayananPasien extends CI_Controller
     }
     
     public function insertData() {
-        $pasien = new Pasien();
-        $affectedRow = $pasien->postData();
+        $affectedRow = $this->pasienModel->postData();
         $this->pesan("Tambah", $affectedRow);
         redirect('/loket/layananpasien', 'refresh');
     }
 
     public function editData($id) {
-        $pasien = new Pasien();
-        $affectedRow = $pasien->editData($id);
+        $affectedRow = $this->pasienModel->editData($id);
         $this->pesan("Edit", $affectedRow);
         redirect('/loket/layananpasien', 'refresh');
     }
 
     public function kunjungan() {
-        $antrian = new Antrian();
-        $affectedRow = $antrian->kunjungan();
+        $affectedRow = $this->antrianModel->kunjungan();
         $this->pesan("Layanan ", $affectedRow);
         redirect('/loket/layananpasien', 'refresh');
     }
 
     public function deleteData($id) {
-        $pasien = new Pasien();
-        $affectedRow = $pasien->deleteData($id);
+        $affectedRow = $this->pasienModel->deleteData($id);
         $this->pesan("Hapus", $affectedRow);
         redirect('/loket/layananpasien', 'refresh');
     }

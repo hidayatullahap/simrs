@@ -3,6 +3,12 @@
         private $grup_barang_id;
         private $nama_grup_barang;
 
+        public function __construct(
+        $grup_barang_id=null, 
+        $nama_grup_barang=null) {
+            $this->grup_barang_id = $grup_barang_id;
+            $this->nama_grup_barang = $nama_grup_barang;
+        }
         function setGrup_barang_id($grup_barang_id) { $this->grup_barang_id = $grup_barang_id; }
         function getGrup_barang_id() { return $this->grup_barang_id; }
         function setNama_grup_barang($nama_grup_barang) { $this->nama_grup_barang = $nama_grup_barang; }

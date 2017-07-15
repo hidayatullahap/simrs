@@ -13,9 +13,12 @@ class ResepKeluar extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('penggunaModel');
+        $this->load->model('transaksiObatModel');
+        $this->load->model('detilTransaksiModel');
         $this->session->set_userdata('navbar_status', 'resepkeluar');
         $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -32,7 +35,6 @@ class ResepKeluar extends CI_Controller
     {   
         $title['title']="Riwayat Resep Keluar";
         $status = 'sudah_dilayani';
-        $transaksiObat = new TransaksiObat();
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
 
@@ -40,7 +42,7 @@ class ResepKeluar extends CI_Controller
         if(!isset($limit)){ $limit = $this->default_setting->pagination('LIMIT'); }
         if(!isset($sort)){ $sort = $this->default_setting->pagination('SORT');  }
 
-        $data = $transaksiObat->riwayatResepKeluar($sort,$page,$limit);
+        $data = $this->transaksiObatModel->riwayatResepKeluar($sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/depo/riwayatresepkeluar', $data);
@@ -50,8 +52,7 @@ class ResepKeluar extends CI_Controller
     public function detilTransaksi($nomorTransaksi)
     {   
         $title['title']="Detil Permintaan Masuk";
-        $detil = new DetilTransaksi();
-        $data = $detil->detilResep($nomorTransaksi);
+        $data = $this->detilTransaksiModel->detilResep($nomorTransaksi);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/depo/detilresep', $data);
@@ -61,8 +62,7 @@ class ResepKeluar extends CI_Controller
     public function printresep($nomorTransaksi)
     {   
         $title['title']="Print Resep";
-        $detil = new DetilTransaksi();
-        $data = $detil->printResep($nomorTransaksi);
+        $data = $this->detilTransaksiModel->printResep($nomorTransaksi);
         $this->load->view('header',$title);
         $this->load->view('depo/printresep',$data);
     }

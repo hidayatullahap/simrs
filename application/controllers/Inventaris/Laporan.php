@@ -1,8 +1,6 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'stok.php';
 class Laporan extends CI_Controller
 {   
     private $unit_id = 4;
@@ -11,8 +9,9 @@ class Laporan extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        $this->load->model('stokModel');
+        $this->load->model('penggunaModel');
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -35,7 +34,6 @@ class Laporan extends CI_Controller
         }
 
         $this->session->set_userdata('navbar_status', 'laporaninventaris');
-        $stok = new Stok();
         $title['title']="Laporan";
 
         $limit = $_COOKIE["pageLimit"];
@@ -45,8 +43,7 @@ class Laporan extends CI_Controller
         if(!isset($limit)){ $limit = $this->default_setting->pagination('LIMIT'); }
         if(!isset($sort)){ $sort = $this->default_setting->pagination('SORT');  }
         
-        $data = $stok->getLaporanRange($range, $sort, $page, $limit, $this->unit_id);
-        //$data = $stok->riwayatPermintaanStok($sort, $page, $limit);
+        $data = $this->stokModel->getLaporanRange($range, $sort, $page, $limit, $this->unit_id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/inventaris/laporanlist', $data);
@@ -62,8 +59,7 @@ class Laporan extends CI_Controller
         }
 
         $title['title']="Print";
-        $stok = new Stok();
-        $data = $stok->getLaporan($range, $month, $year, $this->unit_id);
+        $data = $this->stokModel->getLaporan($range, $month, $year, $this->unit_id);
         $this->load->view('header',$title);
         $this->load->view('farmasi/laporanprint',$data);
     }
@@ -75,9 +71,7 @@ class Laporan extends CI_Controller
             }else{ 
                $range="Bulanan";
         }
-        $stok = new Stok();
-        $data = $stok->getLaporan($range, $month, $year, $this->unit_id);
-        //$this->load->view('Tests/test_excel2',$data);
+        $data = $this->stokModel->getLaporan($range, $month, $year, $this->unit_id);
 
         $tempArray = array();
         $myArray = array();

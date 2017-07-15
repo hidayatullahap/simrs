@@ -1,10 +1,6 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'pengeluaranbarang.php';
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'barang.php';
-require_once CLASSES_DIR  . 'mastertabel.php';
 
 class Pengeluaran extends CI_Controller
 {   
@@ -14,9 +10,13 @@ class Pengeluaran extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('pengeluaranBarangModel');
+        $this->load->model('penggunaModel');
+        $this->load->model('barangModel');
+        $this->load->model('masterTabelModel');
+        
         $this->session->set_userdata('navbar_status', 'pengeluaraninventaris');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -35,8 +35,7 @@ class Pengeluaran extends CI_Controller
             redirect('/inventaris/pengeluaran', 'refresh');
 
         } else if( $this->input->post('simpan') ){
-            $pengeluaran = new PengeluaranBarang();
-            $return = $pengeluaran->prosesPengeluaranStok($this->unit_id);
+            $return = $this->pengeluaranBarangModel->prosesPengeluaranStok($this->unit_id);
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", $return);
                     redirect('/inventaris/pengeluaran', 'refresh');
@@ -51,7 +50,6 @@ class Pengeluaran extends CI_Controller
     }
     public function page($page)
     {   
-        $pengeluaran = new PengeluaranBarang();
         $title['title']="Riwayat Barang Keluar";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
@@ -64,7 +62,7 @@ class Pengeluaran extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
 
-        $data = $pengeluaran->riwayatPengeluaranStok($this->unit_id, $sort,$page,$limit);
+        $data = $this->pengeluaranBarangModel->riwayatPengeluaranStok($this->unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/inventaris/pengeluaranriwayat', $data);
@@ -78,10 +76,8 @@ class Pengeluaran extends CI_Controller
 
     public function layanan() {
         $title['title']="Riwayat Barang Keluar";
-        $barang = new Barang();
-        $master = new MasterTabel();
-        $data['daftarBarang'] = $barang->getAll($this->unit_id);
-        $data['daftarUnit'] = $master->getData('unit');
+        $data['daftarBarang'] = $this->barangModel->getAll($this->unit_id);
+        $data['daftarUnit'] = $this->masterTabelModel->getData('unit');
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/inventaris/barangkeluar', $data);

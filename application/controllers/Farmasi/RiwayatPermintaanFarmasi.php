@@ -1,8 +1,6 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'permintaanbarang.php';
 class RiwayatPermintaanFarmasi extends CI_Controller
 {   
     function __construct()
@@ -10,9 +8,10 @@ class RiwayatPermintaanFarmasi extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('penggunaModel');
+        $this->load->model('permintaanBarangModel');
         $this->session->set_userdata('navbar_status', 'riwayatpermintaan');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -27,7 +26,6 @@ class RiwayatPermintaanFarmasi extends CI_Controller
         $_SESSION["tanggalAwal"]=null;
         $_SESSION["tanggalAkhir"]=null;
         $_SESSION["searchFarmasi"]=null;
-        $permintan = new PermintaanBarang();
         $title['title']="Riwayat Permintaan barang";
         $status = '';
 
@@ -38,7 +36,7 @@ class RiwayatPermintaanFarmasi extends CI_Controller
         if(!isset($limit)){ $limit = $this->default_setting->pagination('LIMIT'); }
         if(!isset($sort)){ $sort = $this->default_setting->pagination('SORT');  }
 
-        $data = $permintan->riwayatPermintaanStok($sort, $page, $limit, $status);
+        $data = $this->permintaanBarangModel->riwayatPermintaanStok($sort, $page, $limit, $status);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/farmasi/permintaanfarmasi', $data);

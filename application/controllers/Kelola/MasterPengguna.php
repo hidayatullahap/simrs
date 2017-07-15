@@ -2,8 +2,6 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'pengguna.php';
-
 class MasterPengguna extends CI_Controller
 {   
     function __construct()
@@ -11,9 +9,9 @@ class MasterPengguna extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('penggunaModel');
         $this->session->set_userdata('navbar_status', 'adminarea');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -25,7 +23,7 @@ class MasterPengguna extends CI_Controller
 
     public function page($page=null)
     {   
-        $pengguna = new Pengguna();
+        
 
         if(!isset($page)){
             $page=1;
@@ -40,7 +38,7 @@ class MasterPengguna extends CI_Controller
         if(!isset($sort)){ 
             $sort = $this->default_setting->pagination('SORT'); 
         }
-        $data = $pengguna->getData($sort, $page, $limit);
+        $data = $this->penggunaModel->getData($sort, $page, $limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterpengguna', $data);
@@ -49,10 +47,10 @@ class MasterPengguna extends CI_Controller
 
     public function detil($id=null)
     {   
-        $pengguna = new Pengguna();
+        
         $title['title']="Kelola Pengguna";
         
-        $data = $pengguna->getOne($id);
+        $data = $this->penggunaModel->getOne($id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterpengguna', $data);
@@ -63,10 +61,10 @@ class MasterPengguna extends CI_Controller
     public function search($search=null)
     {   
         $search = $_POST['search'];
-        $pengguna = new Pengguna();
+        
         $title['title']="Kelola Pengguna";
         
-        $data = $pengguna->searchData($search);
+        $data = $this->penggunaModel->searchData($search);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterpengguna', $data);
@@ -74,22 +72,22 @@ class MasterPengguna extends CI_Controller
     }
     
     public function insertData() {
-        $pengguna = new Pengguna();
-        $affectedRow = $pengguna->postData();
+        
+        $affectedRow = $this->penggunaModel->postData();
         $this->pesan("Tambah", $affectedRow);
         redirect('kelola/masterpengguna', 'refresh');
     }
 
     public function editData($id) {
-        $pengguna = new Pengguna();
-        $affectedRow = $pengguna->editData($id);
+        
+        $affectedRow = $this->penggunaModel->editData($id);
         $this->pesan("Edit", $affectedRow);
         redirect('kelola/masterpengguna', 'refresh');
     }
 
     public function deleteData($id) {
-        $pengguna = new Pengguna();
-        $affectedRow = $pengguna->deleteData($id);
+        
+        $affectedRow = $this->penggunaModel->deleteData($id);
         $this->pesan("Hapus", $affectedRow);
         redirect('kelola/masterpengguna', 'refresh');
     }

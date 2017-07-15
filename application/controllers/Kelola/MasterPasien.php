@@ -2,11 +2,6 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'pasien.php';
-require_once CLASSES_DIR  . 'mastertabel.php';
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'antrian.php';
-
 class MasterPasien extends CI_Controller
 {   
     function __construct()
@@ -14,9 +9,12 @@ class MasterPasien extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('penggunaModel');
+        $this->load->model('masterTabelModel');
+        $this->load->model('pasienModel');
+        $this->load->model('antrianModel');
         $this->session->set_userdata('navbar_status', 'adminarea');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -28,9 +26,6 @@ class MasterPasien extends CI_Controller
 
     public function page($page=null)
     {   
-        $pasien = new Pasien();
-        $master = new MasterTabel();
-
         if(!isset($page)){
             $page=1;
         }
@@ -44,8 +39,8 @@ class MasterPasien extends CI_Controller
         if(!isset($sort)){ 
             $sort = $this->default_setting->pagination('SORT'); 
         }
-        $data = $pasien->getData($sort, $page, $limit);
-        $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
+        $data = $this->pasienModel->getData($sort, $page, $limit);
+        $data['daftarJenisPasien'] = $this->masterTabelModel->getData("jenis_pasien");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterpasien', $data);
@@ -54,11 +49,11 @@ class MasterPasien extends CI_Controller
 
     public function detil($id=null)
     {   
-        $pasien = new Pasien();
+        
         //$url="pasien";
         $title['title']="Kelola Pasien";
         
-        $data = $pasien->getOne($id);
+        $data = $this->pasienModel->getOne($id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterpasien', $data);
@@ -69,12 +64,12 @@ class MasterPasien extends CI_Controller
     public function search($search=null)
     {   
         $search = $_POST['search'];
-        $pasien = new Pasien();
-        $master = new MasterTabel();
+        
+        
         $title['title']="Kelola Pasien";
         
-        $data = $pasien->searchData($search);
-        $data['daftarJenisPasien'] = $master->getData("jenis_pasien");
+        $data = $this->pasienModel->searchData($search);
+        $data['daftarJenisPasien'] = $this->masterTabelModel->getData("jenis_pasien");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterpasien', $data);
@@ -82,22 +77,22 @@ class MasterPasien extends CI_Controller
     }
     
     public function insertData() {
-        $pasien = new Pasien();
-        $affectedRow = $pasien->postData();
+        
+        $affectedRow = $this->pasienModel->postData();
         $this->pesan("Tambah", $affectedRow);
         redirect('kelola/masterpasien', 'refresh');
     }
 
     public function editData($id) {
-        $pasien = new Pasien();
-        $affectedRow = $pasien->editData($id);
+        
+        $affectedRow = $this->pasienModel->editData($id);
         $this->pesan("Edit", $affectedRow);
         redirect('kelola/masterpasien', 'refresh');
     }
 
     public function deleteData($id) {
-        $pasien = new Pasien();
-        $affectedRow = $pasien->deleteData($id);
+        
+        $affectedRow = $this->pasienModel->deleteData($id);
         $this->pesan("Hapus", $affectedRow);
         redirect('kelola/masterpasien', 'refresh');
     }

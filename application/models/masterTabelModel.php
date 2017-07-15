@@ -2,7 +2,7 @@
 require_once CLASSES_DIR  . 'dbconnection.php';
 
 
-class MasterTabel{
+class MasterTabelModel extends CI_MODEL{
     private $db;
     private $conn;
     private $namatabel;

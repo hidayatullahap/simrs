@@ -1,10 +1,6 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'pengeluaranbarang.php';
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'barang.php';
-require_once CLASSES_DIR  . 'mastertabel.php';
 
 class Pengeluaran extends CI_Controller
 {   
@@ -13,9 +9,12 @@ class Pengeluaran extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('pengeluaranBarangModel');
+        $this->load->model('penggunaModel');
+        $this->load->model('barangModel');
+        $this->load->model('masterTabelModel');
         $this->session->set_userdata('navbar_status', 'pengeluaranfarmasi');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -33,9 +32,8 @@ class Pengeluaran extends CI_Controller
             redirect('/farmasi/pengeluaran', 'refresh');
 
         } else if( $this->input->post('simpan') ){
-            $pengeluaran= new PengeluaranBarang();
             $unit_id=3;
-            $return = $pengeluaran->prosesPengeluaranStok($unit_id);
+            $return = $this->pengeluaranBarangModel->prosesPengeluaranStok($unit_id);
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", $return);
                     redirect('/farmasi/pengeluaran', 'refresh');
@@ -50,7 +48,6 @@ class Pengeluaran extends CI_Controller
     }
     public function page($page)
     {   
-        $pengeluaran= new PengeluaranBarang();
         $unit_id = 3;
         $title['title']="Riwayat Barang Keluar";
         $limit = $_COOKIE["pageLimit"];
@@ -64,7 +61,7 @@ class Pengeluaran extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
 
-        $data = $pengeluaran->riwayatPengeluaranStok($unit_id, $sort,$page,$limit);
+        $data = $this->pengeluaranBarangModel->riwayatPengeluaranStok($unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/farmasi/pengeluaranfarmasi', $data);
@@ -79,10 +76,8 @@ class Pengeluaran extends CI_Controller
     public function layanan() {
         $unit_id=3;
         $title['title']="Riwayat Barang Keluar";
-        $barang = new Barang();
-        $master = new MasterTabel();
-        $data['daftarBarang'] = $barang->getAll($unit_id);
-        $data['daftarUnit'] = $master->getData('unit');
+        $data['daftarBarang'] = $this->barangModel->getAll($unit_id);
+        $data['daftarUnit'] = $this->masterTabelModel->getData('unit');
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/farmasi/barangkeluar', $data);

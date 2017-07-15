@@ -1,10 +1,6 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'barang.php';
-require_once CLASSES_DIR  . 'mastertabel.php';
-require_once CLASSES_DIR  . 'pengadaanbarang.php';
 
 class Pengadaan extends CI_Controller
 {   
@@ -13,9 +9,12 @@ class Pengadaan extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('penggunaModel');
+        $this->load->model('barangModel');
+        $this->load->model('masterTabelModel');
+        $this->load->model('pengadaanBarangModel');
         $this->session->set_userdata('navbar_status', 'pengadaanfarmasi');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -33,14 +32,13 @@ class Pengadaan extends CI_Controller
             redirect('/farmasi/halamanutama', 'refresh');
 
         } else if( $this->input->post('simpan') ){
-            $pengadaan=new PengadaanBarang();
             $unit_id=3;
-            $return = $pengadaan->prosesPengadaanStok($unit_id);
+            $return = $this->pengadaanBarangModel->prosesPengadaanStok($unit_id);
             //var_dump($return);
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", $return);
                     redirect('/farmasi/pengadaan', 'refresh');
-                }else if($return==true){
+                }else if($return=='berhasil'){
                     $this->pesan("Pengadaan barang berhasil", $return);
                     redirect('/farmasi/pengadaan', 'refresh');
                 }else{
@@ -51,7 +49,6 @@ class Pengadaan extends CI_Controller
     }
     public function page($page)
     {   
-        $pengadaan = new PengadaanBarang();
         $unit_id = 3;
         $title['title']="Riwayat Barang Masuk";
         $limit = $_COOKIE["pageLimit"];
@@ -65,7 +62,7 @@ class Pengadaan extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
 
-        $data = $pengadaan->riwayatPengadaanStok($unit_id, $sort,$page,$limit);
+        $data = $this->pengadaanBarangModel->riwayatPengadaanStok($unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/farmasi/pengadaanfarmasi', $data);
@@ -80,10 +77,8 @@ class Pengadaan extends CI_Controller
     public function layanan() {
         $unit_id=3;
         $title['title']="Riwayat Barang Masuk";
-        $barang = new Barang();
-        $master = new MasterTabel();
-        $data['daftarBarang'] = $barang->getAll($unit_id);
-        $data['daftarJenisPenerimaan'] = $master->getData('jenis_penerimaan');
+        $data['daftarBarang'] = $this->barangModel->getAll($unit_id);
+        $data['daftarJenisPenerimaan'] = $this->masterTabelModel->getData('jenis_penerimaan');
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/farmasi/barangmasuk', $data);

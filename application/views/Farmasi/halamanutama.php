@@ -66,6 +66,23 @@
                             </table>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="well">
+                        <h4 class="text-success">Stok Obat Mau Habis</h4>
+                        <br>
+                        <table class="display responsive no-wrap" id="runningOut" cellspacing="0" width="100%" style="text-align: left;">
+                                <thead>
+                                <tr>
+                                    <th>Jumlah</th>
+                                    <th>Nama barang</th>
+                                    <th>Satuan</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
                     <div class="col-md-6">
                         <div class="well">
                         <h4 class="text-success">Obat yang hampir habis masa berlakunya</h4>
@@ -79,21 +96,6 @@
                                     <th>Jumlah</th>
                                     <th>Tanggal Kadaluarsa</th>
                                     <th>Tanggal Barang Masuk</th>
-                                </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="well">
-                        <h4 class="text-success">Stok Obat Mau Habis</h4>
-                        <br>
-                        <table class="display responsive no-wrap" id="runningOut" cellspacing="0" width="100%" style="text-align: left;">
-                                <thead>
-                                <tr>
-                                    <th>Jumlah</th>
-                                    <th>Nama barang</th>
-                                    <th>Satuan</th>
                                 </tr>
                                 </thead>
                             </table>

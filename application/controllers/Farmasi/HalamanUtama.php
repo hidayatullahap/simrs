@@ -2,22 +2,20 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'pengeluaranbarang.php';
-require_once CLASSES_DIR  . 'pengadaanbarang.php';
-require_once CLASSES_DIR  . 'permintaanbarang.php';
-require_once CLASSES_DIR  . 'stok.php';
-
 class HalamanUtama extends CI_Controller
 {   
     function __construct()
     {
         parent::__construct();
         $this->load->helper('form');
+        $this->load->model('penggunaModel');
+        $this->load->model('pengeluaranBarangModel');
+        $this->load->model('pengadaanBarangModel');
+        $this->load->model('permintaanBarangModel');
+        $this->load->model('stokModel');
         $this->load->model('default_setting');
         $this->session->set_userdata('navbar_status', 'halamanutamafarmasi');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -32,28 +30,23 @@ class HalamanUtama extends CI_Controller
     }
 
     public function ajaxPermintaanMasuk(){
-        $permintaan = new PermintaanBarang();
-        echo $permintaan->ajaxPermintaanMasuk();
+        echo $this->permintaanBarangModel->ajaxPermintaanMasuk();
     }
 
     public function ajaxStokKeluar(){
-        $pengeluaran = new PengeluaranBarang();
-        echo $pengeluaran->ajaxStokKeluar(3);
+        echo $this->pengeluaranBarangModel->ajaxStokKeluar(3);
     }
 
     public function ajaxStokMasuk(){
-        $pengadaan = new Pengadaanbarang();
-        echo $pengadaan->ajaxStokMasuk(3);
+        echo $this->pengadaanBarangModel->ajaxStokMasuk(3);
     }
 
     public function ajaxNearExpired(){
-        $stok = new Stok();
-        echo $stok->ajaxNearExpired(3);
+        echo $this->stokModel->ajaxNearExpired(3);
     }
 
     public function ajaxRunningOutStock(){
-        $stok = new Stok();
-        echo $stok->ajaxRunningOutStock(3);
+        echo $this->stokModel->ajaxRunningOutStock(3);
     }
 
     public function test() {

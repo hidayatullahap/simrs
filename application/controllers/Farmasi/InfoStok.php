@@ -1,10 +1,6 @@
 <?php if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-require_once CLASSES_DIR  . 'stok.php';
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'barang.php';
-require_once CLASSES_DIR  . 'mastertabel.php';
 
 class InfoStok extends CI_Controller
 {   
@@ -13,9 +9,12 @@ class InfoStok extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('stokModel');
+        $this->load->model('penggunaModel');
+        $this->load->model('barangModel');
+        $this->load->model('masterTabelModel');
         $this->session->set_userdata('navbar_status', 'infostok');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -27,7 +26,6 @@ class InfoStok extends CI_Controller
 
     public function page($page)
     {   
-        $stok = new Stok();
         $unit_id = 3;
         $title['title']="Info Stok";
         $limit = $_COOKIE["pageLimit"];
@@ -41,7 +39,7 @@ class InfoStok extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
 
-        $data = $stok->infoStok($unit_id, $sort,$page,$limit);
+        $data = $this->stokModel->infoStok($unit_id, $sort,$page,$limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/farmasi/stokfarmasidepo', $data);
@@ -56,8 +54,7 @@ class InfoStok extends CI_Controller
     public function printStok() {
         $unit_id=3;
         $title['title']="Cetak Stok Hari Ini";
-        $stok = new Stok();
-        $data = $stok->printInfoStok($unit_id);
+        $data = $this->stokModel->printInfoStok($unit_id);
         $this->load->view('header',$title);
         $this->load->view('/farmasi/printstokhariini', $data);
     }

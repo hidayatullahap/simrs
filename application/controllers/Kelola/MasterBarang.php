@@ -2,10 +2,6 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'barang.php';
-require_once CLASSES_DIR  . 'mastertabel.php';
-require_once CLASSES_DIR  . 'pengguna.php';
-
 class MasterBarang extends CI_Controller
 {   
     function __construct()
@@ -13,9 +9,11 @@ class MasterBarang extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('penggunaModel');
+        $this->load->model('masterTabelModel');
+        $this->load->model('barangModel');
         $this->session->set_userdata('navbar_status', 'kelola');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -27,8 +25,6 @@ class MasterBarang extends CI_Controller
 
     public function page($page=null)
     {   
-        $barang = new Barang();
-        $master = new MasterTabel();
 
         if(!isset($page)){
             $page=1;
@@ -43,9 +39,9 @@ class MasterBarang extends CI_Controller
         if(!isset($sort)){ 
             $sort = $this->default_setting->pagination('SORT'); 
         }
-        $data = $barang->getData($sort, $page, $limit);
-        $data['daftarGrupBarang'] = $master->getData("grup_barang");
-        $data['daftarSatuan']     = $master->getData("satuan");
+        $data = $this->barangModel->getData($sort, $page, $limit);
+        $data['daftarGrupBarang'] = $this->masterTabelModel->getData("grup_barang");
+        $data['daftarSatuan']     = $this->masterTabelModel->getData("satuan");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterbarang', $data);
@@ -54,10 +50,10 @@ class MasterBarang extends CI_Controller
 
     public function detil($id=null)
     {   
-        $barang = new Barang();
+        
         $title['title']="Kelola Barang";
         
-        $data = $barang->getOne($id);
+        $data = $this->barangModel->getOne($id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterbarang', $data);
@@ -68,13 +64,13 @@ class MasterBarang extends CI_Controller
     public function search($search=null)
     {   
         $search = $_POST['search'];
-        $barang = new Barang();
-        $master = new MasterTabel();
+        
+        
         $title['title']="Kelola Barang";
         
-        $data = $barang->searchData($search);
-        $data['daftarGrupBarang'] = $master->getData("grup_barang");
-        $data['daftarSatuan']     = $master->getData("satuan");
+        $data = $this->barangModel->searchData($search);
+        $data['daftarGrupBarang'] = $this->masterTabelModel->getData("grup_barang");
+        $data['daftarSatuan']     = $this->masterTabelModel->getData("satuan");
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterbarang', $data);
@@ -82,22 +78,22 @@ class MasterBarang extends CI_Controller
     }
     
     public function insertData() {
-        $barang = new Barang();
-        $affectedRow = $barang->postData();
+        
+        $affectedRow = $this->barangModel->postData();
         $this->pesan("Tambah", $affectedRow);
         redirect('kelola/masterbarang', 'refresh');
     }
 
     public function editData($id) {
-        $barang = new Barang();
-        $affectedRow = $barang->editData($id);
+        
+        $affectedRow = $this->barangModel->editData($id);
         $this->pesan("Edit", $affectedRow);
         redirect('kelola/masterbarang', 'refresh');
     }
 
     public function deleteData($id) {
-        $barang = new Barang();
-        $affectedRow = $barang->deleteData($id);
+        
+        $affectedRow = $this->barangModel->deleteData($id);
         $this->pesan("Hapus", $affectedRow);
         redirect('kelola/masterbarang', 'refresh');
     }

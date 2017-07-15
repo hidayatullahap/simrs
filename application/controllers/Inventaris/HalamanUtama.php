@@ -14,9 +14,11 @@ class HalamanUtama extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('pengeluaranBarangModel');
+        $this->load->model('pengadaanBarangModel');
+        $this->load->model('penggunaModel');
         $this->session->set_userdata('navbar_status', 'halamanutamainventaris');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -31,12 +33,10 @@ class HalamanUtama extends CI_Controller
     }
 
    public function ajaxStokKeluar(){
-        $pengeluaran = new PengeluaranBarang();
-        echo $pengeluaran->ajaxStokKeluar($this->unit_id);
+        echo $this->pengeluaranBarangModel->ajaxStokKeluar($this->unit_id);
     }
 
     public function ajaxStokMasuk(){
-        $pengadaan = new Pengadaanbarang();
-        echo $pengadaan->ajaxStokMasuk($this->unit_id);
+        echo $this->pengadaanBarangModel->ajaxStokMasuk($this->unit_id);
     }
 }

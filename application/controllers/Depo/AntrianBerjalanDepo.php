@@ -2,12 +2,6 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'antrian.php';
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'mastertabel.php';
-require_once CLASSES_DIR  . 'barang.php';
-require_once CLASSES_DIR  . 'pasien.php';
-
 class AntrianBerjalanDepo extends CI_Controller
 {   
     private $title;
@@ -17,11 +11,15 @@ class AntrianBerjalanDepo extends CI_Controller
     {
         parent::__construct();
         $this->load->helper('form');
-        $this->load->model('default_setting');
+        $this->load->model('antrianModel');
+        $this->load->model('penggunaModel');
+        $this->load->model('masterTabelModel');
+        $this->load->model('barangModel');
+        $this->load->model('pasienModel');
+        $this->load->model('transaksiObatModel');
         $this->session->set_userdata('navbar_status', 'antrianberjalandepo');
         $this->title['title']="Antrian Berjalan";
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -33,11 +31,10 @@ class AntrianBerjalanDepo extends CI_Controller
 
     public function page($page=null)
     {   
-        $master = new MasterTabel();
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
         
-        $data['daftarUnit'] = $master->getData("unit");
+        $data['daftarUnit'] = $this->masterTabelModel->getData("unit");
         $this->load->view('header',$this->title);
         $this->load->view('navbar');
         $this->load->view('/depo/antrianberjalan',$data);
@@ -50,23 +47,18 @@ class AntrianBerjalanDepo extends CI_Controller
     }
     
     public function ajaxAntrianBerjalan($unit_id){
-        $antrian = new Antrian();
-        echo $antrian->ajaxAntrianHariIni($unit_id);
+        echo $this->antrianModel->ajaxAntrianHariIni($unit_id);
     }
 
     public function layananObatKeluar($pasien_id)
     {   
-        $master = new MasterTabel();
-        $barang = new Barang();
-        $pasien = new Pasien();
-
         $title['title']="Antrian Berjalan";
         $limit = $_COOKIE["pageLimit"];
         $sort = $_COOKIE["pageSort"];
         
-        $data = $pasien->getOne($pasien_id);
-        $data['daftarAturanPakai'] = $master->getData("aturan_pakai");
-        $data['daftarBarang'] = $barang->getAll($this->unit_id);
+        $data = $this->pasienModel->getOne($pasien_id);
+        $data['daftarAturanPakai'] = $this->masterTabelModel->getData("aturan_pakai");
+        $data['daftarBarang'] = $this->barangModel->getAll($this->unit_id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('/depo/obatkeluar',$data);
@@ -79,8 +71,7 @@ class AntrianBerjalanDepo extends CI_Controller
             redirect('depo/antrianberjalandepo', 'refresh');
 
         } else if( $this->input->post('simpan') ){
-            $depo=new Depo();
-            $return = $depo->prosesPengeluaranObat($this->unit_id, $pasien_id);
+            $return = $this->transaksiObatModel->prosesPengeluaranObat($this->unit_id, $pasien_id);
             if($return==false){
                     $this->pesan("Tabel tidak boleh kosong", "");
                     redirect('depo/antrianberjalandepo', 'refresh');

@@ -2,8 +2,6 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'mastertabel.php';
-require_once CLASSES_DIR  . 'pengguna.php';
 
 class MasterJenisPasien extends CI_Controller
 {   
@@ -12,9 +10,10 @@ class MasterJenisPasien extends CI_Controller
         parent::__construct();
         $this->load->helper('form');
         $this->load->model('default_setting');
+        $this->load->model('penggunaModel');
+        $this->load->model('masterTabelModel');
         $this->session->set_userdata('navbar_status', 'kelola');
-        $pengguna = new Pengguna();
-        if (!$pengguna->is_loggedin()){
+        if (!$this->penggunaModel->is_loggedin()){
             redirect('login');
         }
     }
@@ -27,7 +26,7 @@ class MasterJenisPasien extends CI_Controller
     public function page($page=null)
     {   
         $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
+        
         if(!isset($page)){
             $page=1;
         }
@@ -42,7 +41,7 @@ class MasterJenisPasien extends CI_Controller
             $sort = $this->default_setting->pagination('SORT'); 
         }
         
-        $data = $master->getData($namatabel, $sort, $page, $limit);
+        $data = $this->masterTabelModel->getData($namatabel, $sort, $page, $limit);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterjenispasien', $data);
@@ -52,10 +51,10 @@ class MasterJenisPasien extends CI_Controller
     public function detil($id=null)
     {   
         $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
+        
         $title['title']="Kelola Jenis Pasien";
         
-        $data = $master->getOne($namatabel, $id);
+        $data = $this->masterTabelModel->getOne($namatabel, $id);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterjenispasien', $data);
@@ -67,10 +66,10 @@ class MasterJenisPasien extends CI_Controller
     {   
         $namatabel = "jenis_pasien";
         $search = $_POST['search'];
-        $master = new MasterTabel();
+        
         $title['title']="Kelola Jenis Pasien";
         
-        $data = $master->searchData($namatabel, $search);
+        $data = $this->masterTabelModel->searchData($namatabel, $search);
         $this->load->view('header',$title);
         $this->load->view('navbar');
         $this->load->view('kelola/masterjenispasien', $data);
@@ -79,24 +78,24 @@ class MasterJenisPasien extends CI_Controller
     
     public function insertData() {
         $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->postData($namatabel);
+        
+        $affectedRow = $this->masterTabelModel->postData($namatabel);
         $this->pesan("Tambah", $affectedRow);
         redirect('kelola/masterjenispasien', 'refresh');
     }
 
     public function editData($id) {
         $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->editData($namatabel, $id);
+        
+        $affectedRow = $this->masterTabelModel->editData($namatabel, $id);
         $this->pesan("Edit", $affectedRow);
         redirect('kelola/masterjenispasien', 'refresh');
     }
 
     public function deleteData($id) {
         $namatabel = "jenis_pasien";
-        $master = new MasterTabel();
-        $affectedRow = $master->deleteData($namatabel, $id);
+        
+        $affectedRow = $this->masterTabelModel->deleteData($namatabel, $id);
         $this->pesan("Hapus", $affectedRow);
         redirect('kelola/masterjenispasien', 'refresh');
     }
