@@ -261,7 +261,6 @@ class PengadaanBarangModel extends CI_Model{
         while($row = mysqli_fetch_array($result))
         {   
             $object{$i} = new PengadaanBarang();
-            $barang{$i} = new Barang();
             $jenispenerimaan{$i} = new JenisPenerimaan();
             
             $object{$i}->setJumlah_barang($row['jumlah_barang']);
@@ -273,11 +272,11 @@ class PengadaanBarangModel extends CI_Model{
             $object{$i}->setTanggal_kadaluarsa($row['tanggal_kadaluarsa']);
             $object{$i}->setNo_batch($row['no_batch']);
             $object{$i}->setNo_faktur($row['no_faktur']);
-            $barang{$i}->setNama_barang($row['nama_barang']);
-            $barang{$i}->setBarang_id($row['barang_id']);
-            $satuan = $barang{$i}->satuan(null, $row['nama_satuan']);
+            $object{$i}->setNama_barang($row['nama_barang']);
+            $object{$i}->setBarang_id($row['barang_id']);
+            $satuan = $object{$i}->satuan(null, $row['nama_satuan']);
             
-            $nestedData['nama_barang'] = $barang{$i}->getNama_barang();
+            $nestedData['nama_barang'] = $object{$i}->getNama_barang();
             $nestedData['nama_satuan'] = $satuan->getNama_satuan();
             $nestedData['jumlah_barang'] = $object{$i}->getJumlah_barang();
             $nestedData['terima_dari'] = $object{$i}->getTerima_dari();

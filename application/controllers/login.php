@@ -1,19 +1,15 @@
 <?php
-require_once CLASSES_DIR  . 'pengguna.php';
 
 class Login extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->helper('form');
-        
+        $this->load->model('penggunaModel');
     }
 
     function index() {
-        $pengguna = new Pengguna();
-        //if ($this->is_loggedin()){
-        if ($pengguna->is_loggedin()){
-            redirect('kelola/masterpasien');
-            //$this->proses();
+        if ($this->penggunaModel->is_loggedin()){
+            redirect('login');
         } else {
             $title['title']="Login";
             $this->load->view('header',$title);
@@ -29,7 +25,6 @@ class Login extends CI_Controller {
     }*/
 
     function proses() {
-        $pengguna = new Pengguna();
         $username = $_POST['username'];
         $password = $_POST['password'];
 
@@ -38,7 +33,7 @@ class Login extends CI_Controller {
 
         $hashpass = md5($password);
 
-        $cek = $pengguna->checkCredential($username, $hashpass);
+        $cek = $this->penggunaModel->checkCredential($username, $hashpass);
         var_dump($cek['data']);
         echo "<br><br>";
         
@@ -77,8 +72,7 @@ class Login extends CI_Controller {
         }
     }
     function logout() {
-        $pengguna = new Pengguna();
-        $pengguna->logout();
+        $this->penggunaModel->logout();
         redirect('login');
     }
 }
