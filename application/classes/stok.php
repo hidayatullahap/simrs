@@ -1,8 +1,7 @@
 <?php
 require_once CLASSES_DIR  . 'barang.php';
-require_once CLASSES_DIR  . 'satuan.php';
 
-class Stok{
+class Stok extends Barang{
     private $stok_id;
     private $jumlah;
     private $tanggal_pencatatan;

@@ -1,6 +1,5 @@
 <?php
 require_once CLASSES_DIR  . 'dbconnection.php';
-require_once CLASSES_DIR  . 'barang.php';
 require_once CLASSES_DIR  . 'jenispenerimaan.php';
 require_once CLASSES_DIR  . 'pengadaanbarang.php';
 

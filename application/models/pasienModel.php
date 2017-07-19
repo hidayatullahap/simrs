@@ -79,7 +79,7 @@ public function getData($sort, $page, $limitItemPage)
         $count = $row[0];
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
-        $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        $data = array("data"=>$arrayData, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
 
         return $data;
     }

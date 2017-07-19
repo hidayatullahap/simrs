@@ -1,10 +1,8 @@
 <?php 
 require_once CLASSES_DIR  . 'dbconnection.php';
-require_once CLASSES_DIR  . 'satuan.php';
 require_once CLASSES_DIR  . 'barang.php';
-require_once CLASSES_DIR  . 'aturanpakai.php';
 
-class DetilTransaksi{
+class DetilTransaksi extends Barang{
     private $detil_id;
     private $nomor_transaksi;
     private $aturan_pakai;

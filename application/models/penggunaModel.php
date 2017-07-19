@@ -84,13 +84,6 @@ class PenggunaModel extends CI_Model{
 
     public function checkCredential($username, $password)
     {   
-        $pengguna = new Pengguna(
-            null,
-            null,
-            null,
-            $username
-        );
-        $username = $pengguna->getUsername();
         $query =
         "SELECT
         pengguna.nama,
@@ -102,8 +95,31 @@ class PenggunaModel extends CI_Model{
         pengguna.username = '$username' AND
         pengguna.password ='$password'
         ";
+        $rows = [];
+        $i=0;
+        $object; 
+        $nestedData = array();
+        $arrayData = new ArrayObject();
         $result = $this->conn->query($query);
-        $data = array("data"=>$result);
+        while($row = mysqli_fetch_array($result))
+        {   
+            $pengguna = new Pengguna(
+                null,
+                $row['nama'],
+                null,
+                $row['username'],
+                $row['role']
+            );
+            
+            $nestedData['nama'] = $pengguna->getNama();
+            $nestedData['username'] = $pengguna->getUsername();
+            $nestedData['role'] = $pengguna->getRole();
+            $arrayData[] = $nestedData;
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
+        $data = array("data"=>$arrayData);
         
         return $data;
     }

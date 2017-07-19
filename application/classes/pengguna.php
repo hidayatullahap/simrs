@@ -1,5 +1,4 @@
 <?php
-require_once CLASSES_DIR  . 'dbconnection.php';
 
 class Pengguna{
     private $pengguna_id;

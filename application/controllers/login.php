@@ -9,7 +9,7 @@ class Login extends CI_Controller {
 
     function index() {
         if ($this->penggunaModel->is_loggedin()){
-            redirect('login');
+            redirect('kelola/masterpasien');
         } else {
             $title['title']="Login";
             $this->load->view('header',$title);

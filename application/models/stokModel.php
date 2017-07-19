@@ -1,7 +1,5 @@
 <?php
 require_once CLASSES_DIR  . 'dbconnection.php';
-require_once CLASSES_DIR  . 'barang.php';
-require_once CLASSES_DIR  . 'satuan.php';
 require_once CLASSES_DIR  . 'stok.php';
 
 class StokModel extends CI_Model{
@@ -59,7 +57,32 @@ class StokModel extends CI_Model{
         barang.nama_barang ASC
         LIMIT $page, $limitItemPage";
         $result = $conn->query($query);
-        
+
+        $rows = [];
+        $i=0;
+        $object; $barang; $satuan;
+        $nestedData = array();
+        $arrayData = new ArrayObject();
+        while($row = mysqli_fetch_array($result))
+        {   
+            $object{$i} = new Stok();
+            $object{$i}->setBarang_id($row['barang_id']);
+            $object{$i}->setNama_barang($row['nama_barang']);
+            $satuan = $object{$i}->satuan(null, $row['nama_satuan']);
+            $object{$i}->setJumlah($row['jumlah']);
+            $object{$i}->setTanggal_pencatatan($row['tanggal_pencatatan']);
+            
+            $nestedData['barang_id'] = $object{$i}->getBarang_id();
+            $nestedData['nama_barang'] = $object{$i}->getNama_barang();
+            $nestedData['nama_satuan'] = $satuan->getNama_satuan();
+            $nestedData['jumlah'] =  $object{$i}->getJumlah();
+            $nestedData['tanggal_pencatatan'] =  $object{$i}->getTanggal_pencatatan();
+            $arrayData[] = $nestedData;
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
+
         $sql = $conn->query("SELECT COUNT(*) FROM stok INNER JOIN barang ON barang.barang_id = stok.barang_id WHERE stok.unit_id = $unit_id  $sqlSearch");
         $row = $sql->fetch_row();
         $count = $row[0];
@@ -114,6 +137,30 @@ class StokModel extends CI_Model{
         ORDER BY
         barang.nama_barang ASC";
         $result = $conn->query($query);
+        $rows = [];
+        $i=0;
+        $object; $barang; $satuan;
+        $nestedData = array();
+        $arrayData = new ArrayObject();
+        while($row = mysqli_fetch_array($result))
+        {   
+            $object{$i} = new Stok();
+            $object{$i}->setBarang_id($row['barang_id']);
+            $object{$i}->setNama_barang($row['nama_barang']);
+            $satuan = $object{$i}->satuan(null, $row['nama_satuan']);
+            $object{$i}->setJumlah($row['jumlah']);
+            $object{$i}->setTanggal_pencatatan($row['tanggal_pencatatan']);
+            
+            $nestedData['barang_id'] = $object{$i}->getBarang_id();
+            $nestedData['nama_barang'] = $object{$i}->getNama_barang();
+            $nestedData['nama_satuan'] = $satuan->getNama_satuan();
+            $nestedData['jumlah'] =  $object{$i}->getJumlah();
+            $nestedData['tanggal_pencatatan'] =  $object{$i}->getTanggal_pencatatan();
+            $arrayData[] = $nestedData;
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
         
         $data = array("data"=>$result);
         $conn->close();
@@ -279,11 +326,10 @@ class StokModel extends CI_Model{
         while($row = mysqli_fetch_array($result))
         {   
             $object{$i} = new Stok();
-            $barang{$i} = new Barang();
-            $barang{$i}->setBarang_id($row['barang_id']);
-            $barang{$i}->setNama_barang($row['nama_barang']);
-            $satuan = $barang{$i}->satuan(null, $row['nama_satuan']);
-            $barang{$i}->setHarga_jual($row['harga_jual']);
+            $object{$i}->setBarang_id($row['barang_id']);
+            $object{$i}->setNama_barang($row['nama_barang']);
+            $satuan = $object{$i}->satuan(null, $row['nama_satuan']);
+            $object{$i}->setHarga_jual($row['harga_jual']);
             $object{$i}->setJumlah_barang_keluar($row['jumlah_barang_keluar']);
             $object{$i}->setJumlah_pengeluaran_in_rp($row['jumlah_pengeluaran_in_rp']);
             $object{$i}->setJumlah_barang_masuk($row['jumlah_barang_masuk']);
@@ -291,10 +337,10 @@ class StokModel extends CI_Model{
             $object{$i}->setStok_sekarang($row['stok_sekarang']);
             $object{$i}->setJumlah_stok_in_rp($row['jumlah_stok_in_rp']);
             
-            $nestedData['barang_id'] = $barang{$i}->getBarang_id();
-            $nestedData['nama_barang'] = $barang{$i}->getNama_barang();
+            $nestedData['barang_id'] = $object{$i}->getBarang_id();
+            $nestedData['nama_barang'] = $object{$i}->getNama_barang();
             $nestedData['nama_satuan'] = $satuan->getNama_satuan();
-            $nestedData['harga_jual'] = $barang{$i}->getHarga_jual();
+            $nestedData['harga_jual'] = $object{$i}->getHarga_jual();
             $nestedData['jumlah_barang_keluar'] = $object{$i}->getJumlah_barang_keluar();
             $nestedData['jumlah_pengeluaran_in_rp'] = $object{$i}->getJumlah_pengeluaran_in_rp();
             $nestedData['jumlah_barang_masuk'] = $object{$i}->getJumlah_barang_masuk();

@@ -90,6 +90,36 @@ class BarangModel extends CI_Model{
         ORDER BY `barang`.`nama_barang` 
         $sort LIMIT $page,$limitItemPage";
         $result = $conn->query($query);
+
+        $rows = [];
+        $i=0;
+        $object;
+        $nestedData = array();
+        $arrayData = new ArrayObject();
+        while($row = mysqli_fetch_array($result))
+        {   
+            $object{$i} = new Stok(
+                $row['stok_id'],
+                $row['jumlah'],
+                $row['tanggal_pencatatan']
+            );
+            $object{$i}->setNama_barang($row['nama_barang']);
+            $satuan = $object{$i}->satuan(null, $row['nama_satuan']);
+            $grupBarang = $object{$i}->grupBarang(null, $row['nama_grup_barang']);
+
+            $nestedData['stok_id'] = $object{$i}->getStok_id();
+            $nestedData['nama_barang'] = $object{$i}->getNama_barang();
+            $nestedData['nama_satuan'] = $satuan->getNama_satuan();
+            $nestedData['nama_grup_barang'] = $grupBarang->getNama_grup_barang();
+            $nestedData['merek_model_ukuran'] = $row['merek_model_ukuran'];
+            $nestedData['nama_unit'] = $row['nama_unit'];
+            $nestedData['jumlah'] =  $object{$i}->getJumlah();
+            $nestedData['tanggal_pencatatan'] =  $object{$i}->getTanggal_pencatatan();
+            $arrayData[] = $nestedData;
+
+            $i++;
+        } 
+        $arrayData->num_rows = $i;
         
         $sql = $conn->query("SELECT COUNT(*) FROM 
         (SELECT
@@ -113,7 +143,7 @@ class BarangModel extends CI_Model{
         $count = $row[0];
         $totalData = $count;
         $totalPages = ceil($totalData/$limitItemPage);
-        $data = array("data"=>$result, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
+        $data = array("data"=>$arrayData, "currentPage"=>$page/$limitItemPage+1, "totalPages"=>$totalPages, "totalData"=>$totalData);
         $conn->close();
 
         return $data;

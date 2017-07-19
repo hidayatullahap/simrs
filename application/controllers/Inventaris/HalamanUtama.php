@@ -2,10 +2,6 @@
     exit('No direct script access allowed');
 }
 
-require_once CLASSES_DIR  . 'pengguna.php';
-require_once CLASSES_DIR  . 'pengeluaranbarang.php';
-require_once CLASSES_DIR  . 'pengadaanbarang.php';
-
 class HalamanUtama extends CI_Controller
 {   
     private $unit_id=4;
