@@ -103,7 +103,6 @@ class PengadaanBarangModel extends CI_Model{
             $tabel_harga_jual           = $_POST['tabel_harga_jual'];
             $tabel_tanggal_kadaluarsa   = $_POST['tabel_tanggal_kadaluarsa'];
             $tabel_jenis_penerimaan_id  = $_POST['tabel_jenis_penerimaan_id'];
-            $tabel_nomor_batch          = $_POST['tabel_nomor_batch'];
             $tabel_terima_dari          = $_POST['tabel_terima_dari'];
             $tabel_no_faktur            = $_POST['tabel_no_faktur'];
             $tabel_tanggal_faktur       = $_POST['tabel_tanggal_faktur'];

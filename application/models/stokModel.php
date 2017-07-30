@@ -277,7 +277,7 @@ class StokModel extends CI_Model{
         SELECT
         pengeluaran_barang.barang_id,
         SUM(pengeluaran_barang.jumlah_pengeluaran) AS jumlah_barang_keluar,
-        (pengeluaran_barang.jumlah_pengeluaran*barang.harga_jual) AS jumlah_pengeluaran_rp
+        (SUM(pengeluaran_barang.jumlah_pengeluaran)*barang.harga_jual) AS jumlah_pengeluaran_rp
         FROM
         pengeluaran_barang
         INNER JOIN barang ON pengeluaran_barang.barang_id = barang.barang_id
@@ -292,7 +292,7 @@ class StokModel extends CI_Model{
         SELECT
         pengadaan_barang.barang_id,
         SUM(pengadaan_barang.jumlah_barang) AS jumlah_barang_masuk,
-        (pengadaan_barang.jumlah_barang*barang.harga_jual) AS jumlah_pengadaan_rp
+        (SUM(pengadaan_barang.jumlah_barang)*barang.harga_jual) AS jumlah_pengadaan_rp
         FROM
         pengadaan_barang
         INNER JOIN barang ON pengadaan_barang.barang_id = barang.barang_id
